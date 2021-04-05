@@ -53,72 +53,41 @@ router.post("/", registerCheck, (req, res) => {
         password,
         username,
       });
-      bcrypt.genSalt(10, (err, salt) => {
-        if (err) throw err;
-        bcrypt.hash(newUser.password, salt, (err, hash) => {
-          if (err) throw err;
-          newUser.password = hash;
-          newUser
-            .save()
-            .then((user) => {
-              bcrypt.genSalt(10, (err, salt) => {
-                if (err) throw err;
-                bcrypt.hash(user.password, salt, (err, hash) => {
-                  if (err) throw err;
-                  const link =
-                    req.protocol +
-                    "://" +
-                    req.get("host") +
-                    "/verify/" +
-                    user.username +
-                    "/" +
-                    base64url(hash);
-                  console.log(link);
-                  // sendVerificationLink(user, link);
-                  authUser(user, (authData) => {
-                    res.json({
-                      ...authData,
-                    });
-                  });
-                });
-              });
-            })
-            .catch((err) => res.status(401).json({ msg: err.message }));
+      newUser.save().then((user) => {
+        const link =
+          req.protocol +
+          "://" +
+          req.hostname +
+          ":3000/verify/" +
+          user.username +
+          "/" +
+          user._id;
+        console.log(link);
+        sendVerificationLink(user, link);
+        authUser(user, (authData) => {
+          res.json({
+            ...authData,
+          });
         });
       });
     })
     .catch((err) => res.status(401).json({ msg: err.message }));
 });
 
-// @route GET /users/verify/:username/:hash
+// @route GET api/users/verify/:username/:id
 // @desc Verify email link resolve
 // @access Public
-router.get("/verify/:username/:hash", (req, res) => {
-  const { username, hash } = req.params;
-  console.log(username, hash);
-  User.findOne({
-    username,
-  }).then((user) => {
-    if (!user)
-      return res.status(400).json({ msg: `User ${username} not found.` });
-    bcrypt.compare(user.password, base64url.decode(hash), (err, isMatch) => {
-      if (err) throw err;
-      else if (isMatch) {
-        user.verified = true;
-        user.save().then((user) => {
-          res.redirect(req.protocol + "://" + req.get("host"));
-        });
-      } else {
-        console.log("Bad Link");
-        return res.status(401).json({
-          msg: "Wrong verification link",
-        });
-      }
-    });
+router.get("/verify/:username/:id", (req, res) => {
+  const { username, id } = req.params;
+  console.log(username, id);
+  User.findById(id).then((user) => {
+    if (!user) return res.status(400).json({ msg: `User not found.` });
+    user.verified = true;
+    user.save();
   });
 });
 // @route POST /api/users/follow
-// @desc Follow User
+// @desc Follow Users
 // @access Public
 
 router.post("/follow", (req, res) => {

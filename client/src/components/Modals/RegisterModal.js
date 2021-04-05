@@ -15,6 +15,7 @@ import { connect } from "react-redux";
 import propTypes from "prop-types";
 import { register } from "../../actions/authActions";
 import { returnErrors, clearErrors } from "../../actions/errorActions";
+import axios from "axios";
 function RegisterModal(props) {
   const [info, setInfo] = useState({
     username: "",
@@ -35,24 +36,23 @@ function RegisterModal(props) {
     props.clearErrors();
     setModal(!modal);
   }
-  function onSubmit() {
-    if (info.password != info.passwordRepeat) {
-      props.returnErrors({
-        msg: "Passwords have to match",
-        status: -1,
-      });
-    }
+  function onSubmit(e) {
+    e.preventDefault();
+    const newUser = { ...info };
+    return props.register(newUser);
   }
   function onChange(e) {
     setInfo({
       ...info,
       [e.target.name]: e.target.value,
     });
-    if (e.target.name == "passwordRepeat") {
+    if (e.target.name == "passwordRepeat" && info.password != e.target.value) {
       props.returnErrors({
         msg: "Passwords have to match",
         status: -1,
       });
+    } else if (e.target.name == "passwordRepeat") {
+      props.clearErrors();
     }
   }
   return (
@@ -65,10 +65,20 @@ function RegisterModal(props) {
         <ModalBody>
           <Form onSubmit={onSubmit}>
             <FormGroup>
+              <Label for="email">Email:</Label>
+              <Input
+                type="email"
+                placeholder="Name..."
+                onChange={onChange}
+                value={info.email}
+                name="email"
+              />
+            </FormGroup>
+            <FormGroup>
               <Label for="name">Name:</Label>
               <Input
                 type="text"
-                placeholder="Name..."
+                placeholder="Enter your full name"
                 onChange={onChange}
                 value={info.name}
                 name="name"
@@ -78,7 +88,7 @@ function RegisterModal(props) {
               <Label for="username">Username:</Label>
               <Input
                 type="text"
-                placeholder="username..."
+                placeholder="Enter your username"
                 onChange={onChange}
                 value={info.username}
                 name="username"
@@ -88,6 +98,7 @@ function RegisterModal(props) {
               <Label for="password">Password:</Label>
               <Input
                 type="password"
+                placeholder="Password"
                 onChange={onChange}
                 value={info.password}
                 name="password"
@@ -97,13 +108,14 @@ function RegisterModal(props) {
               <Label for="passwordRepeat">Repeat Password:</Label>
               <Input
                 type="password"
+                placeholder="Repeat Password"
                 onChange={onChange}
                 value={info.passwordRepeat}
                 name="passwordRepeat"
               />
             </FormGroup>
             <div>{props.error.msg.msg}</div>
-            <Button type="submit" color="success">
+            <Button className="mr-2" type="submit" color="success">
               Register
             </Button>
             <Button onClick={toggleModal}>Cancel</Button>

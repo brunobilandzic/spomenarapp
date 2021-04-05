@@ -1,7 +1,6 @@
 const express = require("express");
 const config = require("./config");
 const mongoose = require("mongoose");
-const bodyParser = require("body-parser");
 
 const { MONGO_URI, JWT_SECRET } = config;
 
@@ -20,8 +19,10 @@ mongoose
   });
 
 const app = express();
-
-app.use(bodyParser.json());
+app.use(express.json());
+app.get("/test", (req, res) => {
+  return res.send(req.get("host"));
+});
 app.use("/api/dicts", require("./routes/api/dicts"));
 app.use("/api/users", require("./routes/api/users"));
 app.use("/api/auth", require("./routes/api/auth"));

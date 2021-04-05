@@ -27,7 +27,7 @@ function App() {
             <Route exact path="/">
               <DictionariesWrap />
             </Route>
-            <Route exact path="/verify/:username/:hash">
+            <Route exact path="/verify/:username/:id">
               <EmailConfirm />
             </Route>
           </Switch>
