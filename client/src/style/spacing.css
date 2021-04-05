@@ -1,0 +1,32 @@
+.input-submit {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.input-submit-submit {
+  height: auto;
+}
+.modal-navigation {
+  margin-top: 1rem;
+}
+.modal-navigation > button {
+  margin-right: 0.5rem;
+}
+
+.question-preview {
+  display: flex;
+  justify-content: space-between;
+  margin: 1rem auto;
+}
+
+.dictionary-item.big {
+  font-size: 2rem;
+  color: red;
+}
+
+.expand {
+  transform: scale(1.2);
+}
+.narrow {
+  transform: scale(0.833);
+}

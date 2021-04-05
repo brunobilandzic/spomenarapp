@@ -1,0 +1,6 @@
+.env
+node_modules
+client/node_modules
+client/build
+build
+client/README.md
