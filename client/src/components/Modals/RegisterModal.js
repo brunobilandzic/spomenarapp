@@ -24,7 +24,6 @@ function RegisterModal(props) {
     name: "",
   });
   const [modal, setModal] = useState(false);
-  const [expandError, setExpandError] = useState(false);
   function toggleModal() {
     setInfo({
       username: "",
@@ -42,7 +41,6 @@ function RegisterModal(props) {
         msg: "Passwords have to match",
         status: -1,
       });
-      setExpandError(true);
     }
   }
   function onChange(e) {
@@ -104,9 +102,7 @@ function RegisterModal(props) {
                 name="passwordRepeat"
               />
             </FormGroup>
-            <div className={expandError ? "expand" : undefined}>
-              {props.error.msg.msg}
-            </div>
+            <div>{props.error.msg.msg}</div>
             <Button type="submit" color="success">
               Register
             </Button>

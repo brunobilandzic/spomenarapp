@@ -23,10 +23,3 @@
   font-size: 2rem;
   color: red;
 }
-
-.expand {
-  transform: scale(1.2);
-}
-.narrow {
-  transform: scale(0.833);
-}
