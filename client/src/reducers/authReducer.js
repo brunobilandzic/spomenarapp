@@ -6,6 +6,7 @@ import {
   AUTH_ERROR,
   LOGOUT_SUCCESS,
   LOAD_USER,
+  PASS_RESET_SUCCESS,
 } from "../actions/types";
 
 const initialState = {
@@ -23,6 +24,7 @@ export default function authReducer(state = initialState, action) {
       };
     case REGISTER_SUCCESS:
     case LOGIN_SUCCESS:
+    case PASS_RESET_SUCCESS:
       localStorage.setItem("token", action.payload.token);
       return {
         ...action.payload,

@@ -8,10 +8,12 @@ module.exports = function authUser(user, next) {
     { expiresIn: 3600 },
     (err, token) => {
       if (err) throw err;
+      userData = { ...user._doc };
+      delete userData["password"];
       next({
         token,
         user: {
-          ...user._doc,
+          ...userData,
         },
       });
     }

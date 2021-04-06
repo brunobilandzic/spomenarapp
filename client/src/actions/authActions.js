@@ -7,6 +7,10 @@ import {
   AUTH_ERROR,
   LOGOUT_SUCCESS,
   LOAD_USER,
+  GRANT_PASS_RESET,
+  DENY_PASS_RESET,
+  PASS_RESET_SUCCESS,
+  PASS_RESET_FAILURE,
 } from "../actions/types";
 import { returnErrors } from "../actions/errorActions";
 
@@ -95,6 +99,65 @@ export const logout = () => (dispatch) => {
   dispatch({
     type: LOGOUT_SUCCESS,
   });
+};
+
+export const passResetAuthRequest = (password) => (dispatch, getState) => {
+  const config = {
+    headers: {
+      "Content-type": "application/json",
+    },
+  };
+  const user = getState().auth.user ? getState().auth.user.username : null;
+  const body = { user, password };
+  axios
+    .post("/api/auth", body, config)
+    .then((res) => {
+      dispatch({
+        type: GRANT_PASS_RESET,
+      });
+    })
+    .catch((err) => {
+      dispatch({
+        type: DENY_PASS_RESET,
+      });
+      dispatch(
+        returnErrors(
+          err.response.data,
+          err.response.status,
+          "PASS_RESET_AUTH_FAILURE"
+        )
+      );
+    });
+};
+
+export const submitNewPassword = (newPassword) => (dispatch, getState) => {
+  const config = {
+    headers: {
+      "Content-type": "application/json",
+    },
+  };
+  const username = getState().auth.user ? getState().auth.user.username : null;
+  const body = { username, newPassword };
+  axios
+    .post("/api/auth/pwd/newpwd", body, config)
+    .then((res) => {
+      dispatch({
+        type: PASS_RESET_SUCCESS,
+        payload: res.data,
+      });
+    })
+    .catch((err) => {
+      dispatch({
+        type: PASS_RESET_FAILURE,
+      });
+      dispatch(
+        returnErrors(
+          err.response.data,
+          err.response.status,
+          "PASS_RESET_FAILURE"
+        )
+      );
+    });
 };
 
 export const tokenConfig = (getState) => {

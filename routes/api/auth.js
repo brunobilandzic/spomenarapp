@@ -58,9 +58,8 @@ router.post("/pwd", (req, res) => {
         const link =
           req.protocol +
           "://" +
-          req.get("host") +
-          req.originalUrl +
-          "/" +
+          req.hostname +
+          ":3000/resetpassword/" +
           user.username +
           "/" +
           base64url(hash);
@@ -84,11 +83,9 @@ router.get("/pwd/:username/:hash", (req, res) => {
     bcrypt.compare(user.password, base64url.decode(hash), (err, isMatch) => {
       if (err) throw err;
       else if (isMatch) {
-        authUser(user, res);
-        return res.json({ msg: "GOod Link" });
+        return res.json({ passResetAuth: true });
       } else {
-        console.log("Bad Link");
-        return res.status(401).json({
+        return res.status(400).json({
           msg: "Wrong password activation link",
         });
       }
@@ -99,8 +96,8 @@ router.get("/pwd/:username/:hash", (req, res) => {
 // @route POST /api/auth/pwd/newpwd
 // @desc New Password Form resolve
 // @access Public
-router.post("/pwd/newpwd", auth, (req, res) => {
-  const { username } = req.user.username;
+router.post("/pwd/newpwd", (req, res) => {
+  const { username, newPassword } = req.body;
   User.findOne({
     username,
   }).then((user) => {
@@ -108,11 +105,13 @@ router.post("/pwd/newpwd", auth, (req, res) => {
       return res.status(400).json({ msg: `User ${username} not found.` });
     bcrypt.genSalt(10, (err, salt) => {
       if (err) throw err;
-      bcrypt.hash(req.body.newPass, salt, (err, hash) => {
+      bcrypt.hash(newPassword, salt, (err, hash) => {
         if (err) throw err;
         user.password = hash;
         user.save().then((user) => {
-          authUser(user, res);
+          authUser(user, (authData) => {
+            res.json(authData);
+          });
         });
       });
     });

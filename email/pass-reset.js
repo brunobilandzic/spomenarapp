@@ -1,7 +1,7 @@
 const nodemailer = require("nodemailer");
 const config = require("../config");
 
-module.exports = function sendPasswordResetLink(to, link, res) {
+module.exports = function sendPasswordResetLink(to, link) {
   let transporter = nodemailer.createTransport({
     host: "smtp.gmail.com",
     tls: {
@@ -24,13 +24,6 @@ module.exports = function sendPasswordResetLink(to, link, res) {
   };
   transporter.sendMail(message, (err, info) => {
     if (err) throw err;
-    `return res.status(500).json({
-        msg: "Something went wrong. Try again or contact support.",
-        err,
-      });`;
     console.log(info);
-    return res.json({
-      msg: `Email to ${to.email} with directions to reset password is sent.`,
-    });
   });
 };

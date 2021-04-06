@@ -8,6 +8,7 @@ import AppNavbar from "./components/AppNavbar";
 import CreateDictionary from "./components/CreateDictionary/CreateDictionary";
 import DictionariesWrap from "./components/Dictionaries/DictionariesWrap";
 import Dictionary from "./components/Dictionary/Dictionary";
+import PasswordChange from "./components/User/Settings/PasswordChange";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
 import "./style/spacing.css";
@@ -35,6 +36,9 @@ function App() {
             </Route>
             <Route exact path="/verify/:username/:id">
               <EmailConfirm />
+            </Route>
+            <Route exact path="/changepassword">
+              <PasswordChange />
             </Route>
           </Switch>
         </Container>
