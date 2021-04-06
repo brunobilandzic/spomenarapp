@@ -1,7 +1,9 @@
 import { Container } from "reactstrap";
 import { Provider } from "react-redux";
+import React, { useEffect } from "react";
 import { Route, Switch } from "react-router-dom";
 import store from "./store";
+import { loadUser } from "./actions/authActions";
 import AppNavbar from "./components/AppNavbar";
 import CreateDictionary from "./components/CreateDictionary/CreateDictionary";
 import DictionariesWrap from "./components/Dictionaries/DictionariesWrap";
@@ -12,6 +14,10 @@ import "./style/spacing.css";
 import EmailConfirm from "./components/Modals/EmailConfirm";
 
 function App() {
+  useEffect(() => {
+    console.log("Loading user...");
+    store.dispatch(loadUser());
+  });
   return (
     <Provider store={store}>
       <div className="App">

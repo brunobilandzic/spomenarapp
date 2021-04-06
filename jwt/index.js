@@ -11,10 +11,7 @@ module.exports = function authUser(user, next) {
       next({
         token,
         user: {
-          id: user.id,
-          name: user.name,
-          username: user.username,
-          verified: user.verified,
+          ...user._doc,
         },
       });
     }

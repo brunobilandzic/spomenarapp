@@ -11,6 +11,8 @@ import {
 } from "reactstrap";
 import { Link } from "react-router-dom";
 import RegisterModal from "./Modals/RegisterModal";
+import LoginModal from "./Modals/LoginModal";
+import LogoutButton from "./Modals/LogoutButton";
 export default function AppNavbar() {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -43,6 +45,12 @@ export default function AppNavbar() {
               </NavItem>
               <NavItem>
                 <RegisterModal />
+              </NavItem>
+              <NavItem>
+                <LoginModal />
+              </NavItem>
+              <NavItem>
+                <LogoutButton />
               </NavItem>
             </Nav>
           </Collapse>

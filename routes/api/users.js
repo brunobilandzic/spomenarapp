@@ -53,25 +53,30 @@ router.post("/", registerCheck, (req, res) => {
         password,
         username,
       });
-      newUser.save().then((user) => {
-        const link =
-          req.protocol +
-          "://" +
-          req.hostname +
-          ":3000/verify/" +
-          user.username +
-          "/" +
-          user._id;
-        console.log(link);
-        sendVerificationLink(user, link);
-        authUser(user, (authData) => {
-          res.json({
-            ...authData,
+      bcrypt.genSalt(10, (err, salt) => {
+        if (err) throw err;
+        bcrypt.hash(newUser.password, salt, (err, hash) => {
+          newUser.password = hash;
+          newUser.save().then((user) => {
+            const link =
+              req.protocol +
+              "://" +
+              req.hostname +
+              ":3000/verify/" +
+              user.username +
+              "/" +
+              user._id;
+            sendVerificationLink(user, link);
+            authUser(user, (authData) => {
+              res.json({
+                ...authData,
+              });
+            });
           });
         });
       });
     })
-    .catch((err) => res.status(401).json({ msg: err.message }));
+    .catch((err) => res.status(400).json({ msg: err.message }));
 });
 
 // @route GET api/users/verify/:username/:id

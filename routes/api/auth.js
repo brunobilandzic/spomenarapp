@@ -17,17 +17,22 @@ router.post("/", (req, res) => {
   const { user, password } = req.body;
   if (!user || !password)
     return res.status(400).json({ msg: "Please enter all fields" });
-  User.findOne({ $or: [{ email: user }, { username: user }] }).then((user) => {
-    if (!user) return res.status(404).json({ msg: `User ${user} not found.` });
-    bcrypt.compare(password, user.password).then((isMatch) => {
-      if (isMatch) {
-        authUser(user, res);
-      } else return res.status(401).json({ msg: "Wrong password." });
-    });
-  });
+  User.findOne({ $or: [{ email: user }, { username: user }] }).then(
+    (userFound) => {
+      if (!userFound)
+        return res.status(400).json({ msg: `User ${user} not found.` });
+      bcrypt.compare(password, userFound.password).then((isMatch) => {
+        if (isMatch) {
+          authUser(userFound, (authData) => {
+            res.json(authData);
+          });
+        } else return res.status(401).json({ msg: "Wrong password." });
+      });
+    }
+  );
 });
 
-// @route GET /api/auth/users
+// @route GET /api/auth/user
 // @desc Get User Info Via Token
 // @access Public
 router.get("/user", auth, (req, res) => {
