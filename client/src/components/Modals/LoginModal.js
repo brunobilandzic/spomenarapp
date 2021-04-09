@@ -10,7 +10,7 @@ import {
   Label,
   Input,
 } from "reactstrap";
-
+import { Link } from "react-router-dom";
 import { connect } from "react-redux";
 import propTypes from "prop-types";
 import { login } from "../../actions/authActions";
@@ -77,6 +77,9 @@ function LoginModal(props) {
                 value={info.password}
                 name="password"
               />
+              <Link to="/forgotpassword" onClick={toggleModal}>
+                Forgot Password
+              </Link>
             </FormGroup>
             <div style={{ height: "2rem" }}>{props.error.msg.msg}</div>
             <Button className="mr-2" type="submit" color="success">

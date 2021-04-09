@@ -51,6 +51,7 @@ router.post("/pwd", (req, res) => {
   }).then((user) => {
     if (!user)
       return res.status(400).json({ msg: `User ${userInfo} not found.` });
+
     bcrypt.genSalt(10, (err, salt) => {
       if (err) throw err;
       bcrypt.hash(user.password, salt, (err, hash) => {
@@ -64,6 +65,10 @@ router.post("/pwd", (req, res) => {
           "/" +
           base64url(hash);
         sendPasswordResetLink(user, link);
+        return res.json({
+          username: user.username,
+          email: user.email,
+        });
       });
     });
   });
@@ -83,7 +88,9 @@ router.get("/pwd/:username/:hash", (req, res) => {
     bcrypt.compare(user.password, base64url.decode(hash), (err, isMatch) => {
       if (err) throw err;
       else if (isMatch) {
-        return res.json({ passResetAuth: true });
+        return authUser(user, (authData) => {
+          res.json(authData);
+        });
       } else {
         return res.status(400).json({
           msg: "Wrong password activation link",

@@ -1,27 +1,14 @@
 import React, { useState } from "react";
-import axios from "axios";
 import { Input, Button, Label } from "reactstrap";
 import { connect } from "react-redux";
 import propTypes from "prop-types";
-import {
-  passResetAuthRequest,
-  submitNewPassword,
-} from "../../../actions/authActions";
-import { clearErrors } from "../../../actions/errorActions";
-function PasswordChange(props) {
+import { submitNewPassword } from "../../../../actions/authActions";
+function SetNewPassword(props) {
   const [passwords, setPasswords] = useState({
-    oldPassword: "",
     newPassword: "",
     newPasswordRepeat: "",
   });
   const [newPasswordReceived, setNewPasswordReceived] = useState(false);
-  const submitOldPassword = (e) => {
-    if (!props.user) {
-      console.log("User not loaded");
-      return -1;
-    }
-    props.passResetAuthRequest(passwords.oldPassword);
-  };
 
   const submitNewPassword = () => {
     const { newPassword } = passwords;
@@ -38,7 +25,6 @@ function PasswordChange(props) {
 
   const handleBack = () => {
     setPasswords({
-      ...passwords,
       newPassword: "",
       newPasswordRepeat: "",
     });
@@ -53,21 +39,7 @@ function PasswordChange(props) {
 
   return (
     <div>
-      {!props.passResetAuth && (
-        <div>
-          <Label>Enter Your Password</Label>
-          <Input
-            type="password"
-            name="oldPassword"
-            placeholder="Enter your old password"
-            onChange={onChange}
-            value={passwords.oldPassword}
-          />
-          <div style={{ height: "2rem" }}>{props.error.msg.msg}</div>
-          <Button onClick={submitOldPassword}>Submit</Button>
-        </div>
-      )}
-      {props.passResetAuth && !newPasswordReceived && (
+      {!newPasswordReceived ? (
         <div>
           <Label>Enter Your New Password</Label>
           <Input
@@ -85,8 +57,7 @@ function PasswordChange(props) {
           </div>
           <Button onClick={submitNewPassword}>Next</Button>
         </div>
-      )}
-      {props.passResetAuth && newPasswordReceived && (
+      ) : !props.passResetSuccess ? (
         <div>
           <Label>Reaeat Your New Password</Label>
           <Input
@@ -103,26 +74,23 @@ function PasswordChange(props) {
             <Button onClick={submitNewPasswordRepeat}>Ok</Button>
           )}
         </div>
+      ) : (
+        <div>Password reset successfull.</div>
       )}
     </div>
   );
 }
 
-PasswordChange.propTypes = {
-  user: propTypes.object,
-  passResetAuth: propTypes.bool,
-  passResetAuthRequest: propTypes.func.isRequired,
-  error: propTypes.object.isRequired,
+SetNewPassword.propTypes = {
   submitNewPassword: propTypes.func.isRequired,
 };
 
 const mapStateToProps = (state) => ({
   user: state.auth.user,
   passResetAuth: state.passwordReset.passResetAuth,
-  error: state.error,
+  passResetSuccess: state.passwordReset.passResetSuccess,
 });
 
 export default connect(mapStateToProps, {
-  passResetAuthRequest,
   submitNewPassword,
-})(PasswordChange);
+})(SetNewPassword);

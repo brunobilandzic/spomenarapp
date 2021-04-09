@@ -11,6 +11,10 @@ import {
   DENY_PASS_RESET,
   PASS_RESET_SUCCESS,
   PASS_RESET_FAILURE,
+  EMAIL_SENT_SUCCESS,
+  EMAIL_SENT_FAILURE,
+  LINK_VERIFICATION_SUCCESS,
+  LINK_VERIFICATION_FAILURE,
 } from "../actions/types";
 import { returnErrors } from "../actions/errorActions";
 
@@ -27,7 +31,9 @@ export const loadUser = () => (dispatch, getState) => {
       dispatch({
         type: AUTH_ERROR,
       });
-      dispatch(returnErrors(err.response.data, err.response.status));
+      dispatch(
+        returnErrors(err.response.data, err.response.status, "AUTH_ERROR")
+      );
     });
 };
 export const register = ({
@@ -129,7 +135,56 @@ export const passResetAuthRequest = (password) => (dispatch, getState) => {
       );
     });
 };
-
+export const forgotPasswordRequest = (userInfo) => (dispatch) => {
+  const config = {
+    headers: {
+      "Content-type": "application/json",
+    },
+  };
+  const body = { userInfo };
+  axios
+    .post("/api/auth/pwd", body, config)
+    .then((res) => {
+      dispatch({
+        type: EMAIL_SENT_SUCCESS,
+        payload: res.data,
+      });
+    })
+    .catch((err) => {
+      dispatch({
+        type: EMAIL_SENT_FAILURE,
+      });
+      dispatch(
+        returnErrors(
+          err.response.data,
+          err.response.status,
+          "FORGOT_PASSWORD_EMAIL_FAILURE"
+        )
+      );
+    });
+};
+export const checkEmailLink = (username, hash) => (dispatch) => {
+  axios
+    .get(`/api/auth/pwd/${username}/${hash}`)
+    .then((res) => {
+      dispatch({
+        type: LINK_VERIFICATION_SUCCESS,
+        payload: res.data,
+      });
+    })
+    .catch((err) => {
+      dispatch({
+        type: LINK_VERIFICATION_FAILURE,
+      });
+      dispatch(
+        returnErrors(
+          err.response.data,
+          err.response.status,
+          "FORGOT_PASSWORD_LINK_FAILURE"
+        )
+      );
+    });
+};
 export const submitNewPassword = (newPassword) => (dispatch, getState) => {
   const config = {
     headers: {

@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import propTypes from "prop-types";
 import { useParams } from "react-router";
 import { returnErrors } from "../../actions/errorActions";
-import { CircleLoader, ClipLoader } from "react-spinners";
+import { ClipLoader } from "react-spinners";
 function EmailConfirm(props) {
   const [confirmed, setConfirmed] = useState(false);
   const { username, id } = useParams();
