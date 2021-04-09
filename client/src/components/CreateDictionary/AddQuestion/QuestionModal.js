@@ -116,7 +116,7 @@ export default function QuestionModal(props) {
           <p>
             <b>Question Type:</b>
           </p>
-          <ButtonGroup>
+          <ButtonGroup className="d-flex justify-content-around">
             <Button
               className="mr-2"
               color="primary"
@@ -166,7 +166,7 @@ export default function QuestionModal(props) {
             {error}
             <div className="modal-navigation">
               <Button type="submit" color="success" onClick={onSubmit}>
-                Finish
+                Add
               </Button>
               <Button onClick={toggle}>Cancel</Button>
             </div>

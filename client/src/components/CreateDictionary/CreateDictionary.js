@@ -1,11 +1,10 @@
 import React, { useState } from "react";
-import { Button, Input } from "reactstrap";
-import propTypes from "prop-types";
-import { connect } from "react-redux";
+import { Button, Input, Label, ButtonGroup } from "reactstrap";
 import QuestionModal from "./AddQuestion/QuestionModal";
 import InformationModal from "../Modals/InformationModal";
 import { v4 as uuid } from "uuid";
 import axios from "axios";
+import AddAccess from "./Access/AddAccess";
 export default function CreateDictionary(props) {
   const [questions, setQuestions] = useState([]);
   const [modal, setModal] = useState({
@@ -16,6 +15,7 @@ export default function CreateDictionary(props) {
     title: "",
     description: "",
   });
+  const [access, setAccess] = useState(false);
   const [error, setError] = useState("");
   const toggleSuccess = () => {
     setModal({
@@ -133,23 +133,31 @@ export default function CreateDictionary(props) {
         modalHeader={"Fail"}
         modalBody={"Something went wrong."}
       />
-      <Input
-        type="text"
-        name="title"
-        value={meta.title}
-        onChange={onChange}
-        placeholder="Dictionary title..."
-      />
-      <textarea
-        type="text"
-        name="description"
-        value={meta.description}
-        className="form-control"
-        onChange={onChange}
-        placeholder="Dictionary description..."
-        rows={3}
-      />
+      <div className="create-dictionary-meta">
+        <div className="title-description">
+          <Label>Title</Label>
+          <Input
+            type="text"
+            name="title"
+            value={meta.title}
+            onChange={onChange}
+            placeholder="Dictionary title..."
+          />
+          <Label>Description</Label>
+          <textarea
+            type="text"
+            name="description"
+            value={meta.description}
+            className="form-control"
+            onChange={onChange}
+            placeholder="Dictionary description..."
+            rows={3}
+          />
+        </div>
+        <AddAccess access={access} setAccess={setAccess} />
+      </div>
       <ol>{questions.map(renderQuestion)}</ol>
+
       <QuestionModal
         addQuestion={(q) => {
           addQuestion(q);
