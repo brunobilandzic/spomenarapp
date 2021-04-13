@@ -11,7 +11,9 @@ function EmailConfirm(props) {
   useEffect(() => {
     axios
       .get("/api/users/verify/" + username + "/" + id)
-      .then((res) => {})
+      .then((res) => {
+        setConfirmed(true);
+      })
       .catch((err) => {
         props.returnErrors(
           err.response.data,
@@ -22,8 +24,14 @@ function EmailConfirm(props) {
   }, [username]);
   return (
     <div>
-      <ClipLoader loading={!confirmed} />
-      {username}, {id}
+      {!confirmed ? (
+        <div>
+          <ClipLoader loading={!confirmed} />
+          {username}, {id}
+        </div>
+      ) : (
+        <div>Email verified!</div>
+      )}
     </div>
   );
 }

@@ -39,8 +39,8 @@ export default function AppNavbar() {
                 </Link>
               </NavItem>
               <NavItem className="mr-2">
-                <Link className="nav-link" to="/third">
-                  Third
+                <Link className="nav-link" to="/profile">
+                  Profile
                 </Link>
               </NavItem>
               <NavItem>

@@ -88,7 +88,16 @@ router.get("/verify/:username/:id", (req, res) => {
   User.findById(id).then((user) => {
     if (!user) return res.status(400).json({ msg: `User not found.` });
     user.verified = true;
-    user.save();
+    user.save()
+      .then(user => {
+        let newUser = {
+          ...user,
+          verified: true
+        }
+        authUser(newUser, (authData) => {
+          res.json({...authData})
+        })
+      })
   });
 });
 // @route POST /api/users/follow

@@ -3,6 +3,7 @@ import errorReducer from "./errorReducer";
 import answerReducer from "./answerReducer";
 import authReducer from "./authReducer";
 import passwordResetReducer from "./passwordResetReducer";
+import friendsReducer from "./friendsReducer";
 // root reducer
 // imported in store.js
 export default combineReducers({
@@ -10,5 +11,6 @@ export default combineReducers({
   answering: answerReducer,
   auth: authReducer,
   passwordReset: passwordResetReducer,
+  friends: friendsReducer,
   //xyz: xyzReducer
 });

@@ -13,12 +13,15 @@ import PasswordForgot from "./components/User/Settings/Password/PasswordForgot";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
 import "./style/spacing.css";
+import "./style/graphic.css";
 import EmailConfirm from "./components/Modals/EmailConfirm";
 import ResetPasswordCheck from "./components/User/Settings/Password/ResetPasswordCheck";
+import Profile from "./components/User/Profile";
+import Settings from "./components/User/Settings/Settings";
+import Friends from "./components/User/Friends/Friends";
 
 function App() {
   useEffect(() => {
-    console.log("Loading user...");
     store.dispatch(loadUser());
   });
   return (
@@ -47,6 +50,15 @@ function App() {
             </Route>
             <Route exact path="/resetpassword/:username/:hash">
               <ResetPasswordCheck />
+            </Route>
+            <Route exact path="/profile">
+              <Profile />
+            </Route>
+            <Route exact path="/friends">
+              <Friends />
+            </Route>
+            <Route exact path="/settings">
+              <Settings />
             </Route>
           </Switch>
         </Container>

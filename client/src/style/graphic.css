@@ -1,0 +1,9 @@
+.app-navigation-link {
+  color: #1d3557;
+  text-decoration: none;
+}
+
+.app-navigation-link:hover {
+  color: #457b9d;
+  text-decoration: none;
+}

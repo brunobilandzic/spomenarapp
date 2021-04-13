@@ -62,7 +62,9 @@ function PasswordChange(props) {
             onChange={onChange}
             value={passwords.oldPassword}
           />
-          <div style={{ height: "2rem" }}>{props.error.msg.msg}</div>
+          <div style={{ height: "2rem" }}>
+            {props.error.id != "AUTH_ERROR" && props.error.msg.msg}
+          </div>
           <Button onClick={submitOldPassword}>Submit</Button>
         </div>
       ) : (
