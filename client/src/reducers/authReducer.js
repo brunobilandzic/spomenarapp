@@ -8,6 +8,8 @@ import {
   LOAD_USER,
   PASS_RESET_SUCCESS,
   LINK_VERIFICATION_SUCCESS,
+  EMAIL_VERIFICATION_SUCCESS,
+  EMAIL_VERIFICATION_FAILURE,
 } from "../actions/types";
 
 const initialState = {
@@ -27,6 +29,7 @@ export default function authReducer(state = initialState, action) {
     case LOGIN_SUCCESS:
     case PASS_RESET_SUCCESS:
     case LINK_VERIFICATION_SUCCESS:
+    case EMAIL_VERIFICATION_SUCCESS:
       localStorage.setItem("token", action.payload.token);
       return {
         ...action.payload,
@@ -36,6 +39,7 @@ export default function authReducer(state = initialState, action) {
     case LOGIN_FAIL:
     case AUTH_ERROR:
     case LOGOUT_SUCCESS:
+    case EMAIL_VERIFICATION_FAILURE:
       localStorage.removeItem("token");
       return {
         token: null,

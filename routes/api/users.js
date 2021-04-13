@@ -88,16 +88,15 @@ router.get("/verify/:username/:id", (req, res) => {
   User.findById(id).then((user) => {
     if (!user) return res.status(400).json({ msg: `User not found.` });
     user.verified = true;
-    user.save()
-      .then(user => {
-        let newUser = {
-          ...user,
-          verified: true
-        }
-        authUser(newUser, (authData) => {
-          res.json({...authData})
-        })
-      })
+    user.save().then((user) => {
+      let newUser = {
+        ...user,
+        verified: true,
+      };
+      authUser(newUser, (authData) => {
+        res.json({ ...authData });
+      });
+    });
   });
 });
 // @route POST /api/users/follow
@@ -180,7 +179,15 @@ router.delete("/:id", (req, res) => {
       user
         .delete()
         .then((val) => {
-          res.json({ success: true });
+          User.updateMany(
+            {},
+            {
+              $pull: {
+                followers: val._id,
+                following: val._id,
+              },
+            }
+          ).then((users) => res.json({ success: true }));
         })
         .catch((err) => {
           res.status(401).json({ msg: err.message });

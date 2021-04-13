@@ -15,6 +15,8 @@ import {
   EMAIL_SENT_FAILURE,
   LINK_VERIFICATION_SUCCESS,
   LINK_VERIFICATION_FAILURE,
+  EMAIL_VERIFICATION_SUCCESS,
+  EMAIL_VERIFICATION_FAILURE,
 } from "../actions/types";
 import { returnErrors } from "../actions/errorActions";
 
@@ -96,6 +98,29 @@ export const login = ({ user, password }) => (dispatch) => {
       });
       dispatch(
         returnErrors(err.response.data, err.response.status, "LOGIN_FAIL")
+      );
+    });
+};
+
+export const verifyEmail = (username, userId) => (dispatch) => {
+  axios
+    .get(`/api/users/verify/${username}/${userId}`)
+    .then((res) => {
+      dispatch({
+        type: EMAIL_VERIFICATION_SUCCESS,
+        payload: res.data,
+      });
+    })
+    .catch((err) => {
+      dispatch({
+        type: EMAIL_VERIFICATION_FAILURE,
+      });
+      dispatch(
+        returnErrors(
+          err.response.data,
+          err.response.status,
+          "EMAIL_VERIFICATION_FAILURE"
+        )
       );
     });
 };
