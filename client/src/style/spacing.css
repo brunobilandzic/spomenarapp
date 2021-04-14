@@ -23,3 +23,20 @@
   font-size: 2rem;
   color: red;
 }
+
+.follow-container {
+  display: flex;
+  justify-content: space-around;
+}
+
+.follow-box {
+}
+
+.follow-header {
+  font-size: 1.25rem;
+  margin-bottom: 1.25rem;
+  text-align: center;
+}
+.follow-list {
+  text-align: start;
+}

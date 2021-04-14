@@ -1,4 +1,4 @@
-import { GET_FOLLOWERS, GET_FOLLOWING } from "../actions/types";
+import { GET_FOLLOWERS, GET_FOLLOWING, CLEAR_FOLLOW } from "../actions/types";
 
 const initialState = {
   followers: [],
@@ -10,12 +10,18 @@ export default function friendsReducer(state = initialState, action) {
     case GET_FOLLOWERS:
       return {
         ...state,
-        followers: [...action.payload],
+        followers: [...action.payload.users],
       };
     case GET_FOLLOWING:
       return {
         ...state,
-        following: [...action.payload],
+        following: [...action.payload.users],
+      };
+    case CLEAR_FOLLOW:
+      return {
+        ...state,
+        following: [],
+        followers: [],
       };
     default:
       return {

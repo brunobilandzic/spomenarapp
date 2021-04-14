@@ -177,18 +177,21 @@ router.post("/unfollow", (req, res) => {
 // @access Private
 router.get("/f/:direction", auth, (req, res) => {
   const { id } = req.user;
-  User.findById(id).then((user) => {
-    if (!user) return res.status(404).json({ msg: USER_NOT_FOUND });
-    User.find({
-      _id: {
-        $in: user[req.params.direction],
-      },
-    }).then((users) =>
-      res.json({
-        users: users.map((u) => ({ username: u.username, id: user._id })),
-      })
-    );
-  });
+  User.findById(id)
+    .then((user) => {
+      if (!user) throw USER_NOT_FOUND;
+      User.find({
+        _id: {
+          $in: user[req.params.direction],
+        },
+      }).then((users) => {
+        console.log(users);
+        res.json({
+          users: users.map((u) => ({ username: u.username })),
+        });
+      });
+    })
+    .catch((err) => res.status(400).json({ msg: err }));
 });
 
 // @route DELETE /api/users
