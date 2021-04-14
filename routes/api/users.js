@@ -6,7 +6,7 @@ const sendVerificationLink = require("../../email/verification");
 const router = express.Router();
 const base64url = require("base64url");
 const authUser = require("../../jwt");
-const config = require("../../config");
+const auth = require("../../middleware/auth");
 const { USER_NOT_FOUND } = require("../../config/errors");
 // @route GET /api/users
 // @desc Fetches all users in DB
@@ -172,6 +172,25 @@ router.post("/unfollow", (req, res) => {
     })
     .catch((err) => res.status(400).json({ msg: err }));
 });
+// @route GET /api/users/f/following
+// @desc Get who is user following
+// @access Private
+router.get("/f/:direction", auth, (req, res) => {
+  const { id } = req.user;
+  User.findById(id).then((user) => {
+    if (!user) return res.status(404).json({ msg: USER_NOT_FOUND });
+    User.find({
+      _id: {
+        $in: user[req.params.direction],
+      },
+    }).then((users) =>
+      res.json({
+        users: users.map((u) => ({ username: u.username, id: user._id })),
+      })
+    );
+  });
+});
+
 // @route DELETE /api/users
 // @desc Delete All Users
 // @access Public

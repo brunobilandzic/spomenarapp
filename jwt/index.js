@@ -9,7 +9,6 @@ module.exports = function authUser(user, next) {
     (err, token) => {
       if (err) throw err;
       let userData = { ...user._doc };
-      console.log(userData);
       next({
         token,
         user: {
