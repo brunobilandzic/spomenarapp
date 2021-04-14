@@ -1,4 +1,4 @@
-import React, { useState, Fragment } from "react";
+import React, { useState, Fragment, useEffect } from "react";
 import {
   Form,
   Button,
@@ -15,7 +15,7 @@ import { connect } from "react-redux";
 import propTypes from "prop-types";
 import { register } from "../../actions/authActions";
 import { returnErrors, clearErrors } from "../../actions/errorActions";
-import axios from "axios";
+
 function RegisterModal(props) {
   const [info, setInfo] = useState({
     username: "",
@@ -25,6 +25,11 @@ function RegisterModal(props) {
     name: "",
   });
   const [modal, setModal] = useState(false);
+  useEffect(() => {
+    if (props.isAuthenticated && modal) {
+      return toggleModal();
+    }
+  }, [props.isAuthenticated]);
   function toggleModal() {
     setInfo({
       username: "",
@@ -131,10 +136,12 @@ RegisterModal.propTypes = {
   returnErrors: propTypes.func.isRequired,
   error: propTypes.object.isRequired,
   register: propTypes.func.isRequired,
+  isAuthenticated: propTypes.bool,
 };
 
 const mapStateToProps = (state) => ({
   error: state.error,
+  isAuthenticated: state.auth.isAuthenticated,
 });
 
 export default connect(mapStateToProps, {

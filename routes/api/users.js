@@ -58,18 +58,24 @@ router.post("/", registerCheck, (req, res) => {
         bcrypt.hash(newUser.password, salt, (err, hash) => {
           newUser.password = hash;
           newUser.save().then((user) => {
-            const link =
-              req.protocol +
-              "://" +
-              req.hostname +
-              ":3000/verify/" +
-              user.username +
-              "/" +
-              user._id;
-            sendVerificationLink(user, link);
-            authUser(user, (authData) => {
-              res.json({
-                ...authData,
+            bcrypt.genSalt(10, (err, salt) => {
+              if (err) throw err;
+              bcrypt.hash(String(user._id), salt, (err, hash) => {
+                if (err) throw err;
+                const link =
+                  req.protocol +
+                  "://" +
+                  req.hostname +
+                  ":3000/verify/" +
+                  user.username +
+                  "/" +
+                  base64url(hash);
+                sendVerificationLink(user, link);
+                authUser(user, (authData) => {
+                  res.json({
+                    ...authData,
+                  });
+                });
               });
             });
           });
@@ -85,17 +91,21 @@ router.post("/", registerCheck, (req, res) => {
 router.get("/verify/:username/:id", (req, res) => {
   const { username, id } = req.params;
   console.log(username, id);
-  User.findById(id).then((user) => {
+  User.findOne({ username }).then((user) => {
     if (!user) return res.status(400).json({ msg: `User not found.` });
-    user.verified = true;
-    user.save().then((user) => {
-      let newUser = {
-        ...user,
-        verified: true,
-      };
-      authUser(newUser, (authData) => {
-        res.json({ ...authData });
-      });
+    bcrypt.compare(String(user._id), base64url.decode(id), (err, isMatch) => {
+      if (isMatch) {
+        user.verified = true;
+        user.save().then((user) => {
+          let newUser = {
+            ...user,
+            verified: true,
+          };
+          authUser(newUser, (authData) => {
+            res.json({ ...authData });
+          });
+        });
+      }
     });
   });
 });
