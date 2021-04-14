@@ -20,10 +20,8 @@ function QuestionsWrap(props) {
     ) {
       return setModal({ ...modal, emptyAnswers: true });
     }
-    props.postAnswers(dictId, (res) => {
-      toggleModal("answered");
-      console.log(res.data);
-    });
+    props.postAnswers(dictId);
+    toggleModal("answered");
   }
   function toggleModal(type) {
     setModal({

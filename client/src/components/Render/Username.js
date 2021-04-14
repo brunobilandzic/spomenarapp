@@ -15,7 +15,7 @@ export default function Username(props) {
     return () => {
       isMounted = false;
     };
-  }, [dictId]);
+  }, [userId]);
   return (
     <span className="rendered-username">{author ? author.username : "no"}</span>
   );

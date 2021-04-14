@@ -34,7 +34,7 @@ router.get("/:id", (req, res) => {
 router.post("/", (req, res) => {
   console.log(req.body);
   const { author, title, description } = req.body;
-  User.findOne({ username: author })
+  User.findById(author)
     .then((user) => {
       if (!user) throw { message: USER_NOT_FOUND };
       const newDict = new Dictionary({

@@ -1,12 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { v4 as uuid } from "uuid";
-import {
-  MULTIPLE_CHOICE,
-  OPEN,
-  APPROVAL,
-} from "../../CreateDictionary/AddQuestion/QuestionTypes";
-import { connect } from "react-redux";
-import propTypes from "prop-types";
+import { MULTIPLE_CHOICE } from "../../CreateDictionary/AddQuestion/QuestionTypes";
 import axios from "axios";
 import Username from "../../Render/Username";
 

@@ -15,7 +15,7 @@ export const addQuestions = (dictId) => (dispatch) => {
     })
     .catch((err) => console.log(err));
 };
-export const cleaeAnswers = () => (dispatch) => {
+export const clearAnswers = () => (dispatch) => {
   dispatch({
     type: CLEAR_ANSWERS,
   });
@@ -27,8 +27,9 @@ export const addAnswer = (qId, answer) => (dispatch) => {
   });
 };
 
-export const postAnswers = (dictId, next) => (dispatch, getState) => {
+export const postAnswers = (dictId) => (dispatch, getState) => {
   const questions = getState().answering.questions;
+  const author = getState().auth.user._id;
   const answers = questions.map((q) => ({
     question: q._id,
     value: q.answer,
@@ -36,11 +37,9 @@ export const postAnswers = (dictId, next) => (dispatch, getState) => {
   axios
     .post("/api/answers/dict/" + dictId, {
       dictionary: dictId,
-      author: "6059f8ec21c57a06b0bb81e1",
+      author: author,
       answers,
     })
-    .then((res) => {
-      next(res);
-    })
+    .then((res) => {})
     .catch((err) => console.log(err));
 };

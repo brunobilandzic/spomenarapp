@@ -2,10 +2,12 @@ import React, { useState } from "react";
 import { Button, Input, Label, ButtonGroup } from "reactstrap";
 import QuestionModal from "./AddQuestion/QuestionModal";
 import InformationModal from "../Modals/InformationModal";
+import { connect } from "react-redux";
+import propTypes from "prop-types";
 import { v4 as uuid } from "uuid";
 import axios from "axios";
 import AddAccess from "./Access/AddAccess";
-export default function CreateDictionary(props) {
+function CreateDictionary(props) {
   const [questions, setQuestions] = useState([]);
   const [modal, setModal] = useState({
     success: false,
@@ -96,7 +98,7 @@ export default function CreateDictionary(props) {
     }
     axios
       .post("/api/dicts", {
-        author: "bruzo1950",
+        author: props.user._id,
         title: meta.title,
         description: meta.description,
       })
@@ -182,3 +184,13 @@ export default function CreateDictionary(props) {
     </div>
   );
 }
+
+CreateDictionary.propTypes = {
+  user: propTypes.object,
+};
+
+const mapStateToProps = (state) => ({
+  user: state.auth.user,
+});
+
+export default connect(mapStateToProps, {})(CreateDictionary);
