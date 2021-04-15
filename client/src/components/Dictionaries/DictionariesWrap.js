@@ -1,31 +1,50 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import {
+  loadUserDictionaries,
+  loadAllDictionaries,
+  clearDictionaries,
+} from "../../actions/dictionaryActions";
 import DictionaryItem from "./DictionaryItem";
+import { connect } from "react-redux";
+import propTypes from "prop-types";
 
-export default function DictionariesWrap() {
-  const [dictionaries, setDictionaries] = useState(null);
+function DictionariesWrap(props) {
   const [dontRun] = useState(null);
   useEffect(() => {
-    let isMounted = true;
-    axios
-      .get("/api/dicts")
-      .then((response) => {
-        if (isMounted) setDictionaries([...response.data]);
-      })
-      .catch((err) => console.log(err));
+    props.author
+      ? props.loadUserDictionaries(props.author)
+      : props.loadAllDictionaries();
+
     return () => {
-      isMounted = false;
+      props.clearDictionaries();
     };
   }, [dontRun]);
 
   function renderDictionaries() {
-    if (dictionaries === null) {
+    if (props.dictionaries === null) {
       return "...Loading";
     }
-    return dictionaries.map((dict) => (
+    return props.dictionaries.map((dict) => (
       <DictionaryItem key={dict._id} dict={{ ...dict }} />
     ));
   }
 
   return <div className="dictionaries-wrap">{renderDictionaries()}</div>;
 }
+
+DictionariesWrap.propTypes = {
+  loadAllDictionaries: propTypes.func.isRequired,
+  loadUserDictionaries: propTypes.func.isRequired,
+  clearDictionaries: propTypes.func.isRequired,
+  dictionaries: propTypes.object,
+};
+
+const mapStateToProps = (state) => ({
+  dictionaries: state.dictionaries.dictionaries,
+});
+
+export default connect(mapStateToProps, {
+  loadAllDictionaries,
+  loadUserDictionaries,
+  clearDictionaries,
+})(DictionariesWrap);

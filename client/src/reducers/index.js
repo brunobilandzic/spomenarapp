@@ -4,6 +4,7 @@ import answerReducer from "./answerReducer";
 import authReducer from "./authReducer";
 import passwordResetReducer from "./passwordResetReducer";
 import friendsReducer from "./friendsReducer";
+import dictionaryReducer from "./dictionaryReducer";
 // root reducer
 // imported in store.js
 export default combineReducers({
@@ -12,5 +13,6 @@ export default combineReducers({
   auth: authReducer,
   passwordReset: passwordResetReducer,
   friends: friendsReducer,
+  dictionaries: dictionaryReducer,
   //xyz: xyzReducer
 });

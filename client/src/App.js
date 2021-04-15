@@ -19,6 +19,7 @@ import ResetPasswordCheck from "./components/User/Settings/Password/ResetPasswor
 import Profile from "./components/User/Profile";
 import Settings from "./components/User/Settings/Settings";
 import Friends from "./components/User/Friends/Friends";
+import UserProfile from "./components/User/Others/UserProfile";
 
 function App() {
   useEffect(() => {
@@ -59,6 +60,9 @@ function App() {
             </Route>
             <Route exact path="/settings">
               <Settings />
+            </Route>
+            <Route exact path="/:username">
+              <UserProfile />
             </Route>
           </Switch>
         </Container>

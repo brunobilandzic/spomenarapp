@@ -35,6 +35,21 @@ router.get("/:id", (req, res) => {
     })
     .catch((err) => res.status(401).json({ msg: err.message }));
 });
+
+// @route GET /api/users/u/:username
+// @desc Fetches user by username
+// @access Public
+
+router.get("/u/:username", (req, res) => {
+  const username = req.params.username;
+  User.findOne({ username })
+    .then((user) => {
+      user
+        ? res.send(user)
+        : res.status(400).json({ msg: "User does not exist" });
+    })
+    .catch((err) => res.status(401).json({ msg: err.message }));
+});
 // @route POST /api/users
 // @desc Register new user
 // @access Public
@@ -172,20 +187,19 @@ router.post("/unfollow", (req, res) => {
     })
     .catch((err) => res.status(400).json({ msg: err }));
 });
-// @route GET /api/users/f/following
-// @desc Get who is user following
-// @access Private
-router.get("/f/:direction", auth, (req, res) => {
-  const { id } = req.user;
-  User.findById(id)
+// @route GET /api/users/f/:diection/:username
+// @desc Get who is user following/followers
+// @access Public
+router.get("/f/:direction/:username", (req, res) => {
+  const { username, direction } = req.params;
+  User.findOne({ username })
     .then((user) => {
       if (!user) throw USER_NOT_FOUND;
       User.find({
         _id: {
-          $in: user[req.params.direction],
+          $in: user[direction],
         },
       }).then((users) => {
-        console.log(users);
         res.json({
           users: users.map((u) => ({ username: u.username })),
         });

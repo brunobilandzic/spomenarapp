@@ -11,11 +11,12 @@ import Following from "./Following";
 
 function Friends(props) {
   useEffect(() => {
-    console.log("Reloaded");
     if (!props.user) return;
-    console.log("Updating");
-    props.getFollowers();
-    props.getFollowing();
+    props.getFollowers(props.user.username);
+    props.getFollowing(props.user.username);
+    return () => {
+      props.clearFollow();
+    };
   }, [props.user]);
   return (
     <div className="follow-container">

@@ -31,6 +31,21 @@ router.get("/:id", (req, res) => {
     .catch((err) => res.status(500).json({ msg: err.message }));
 });
 
+// @route GET /api/dicts/u/:author
+// @desc Fetches dictionaries by author
+// @access Public
+
+router.get("/u/:author", (req, res) => {
+  const author = req.params.author;
+  Dictionary.find({ author })
+    .then((dicts) => {
+      if (!dicts)
+        res.status(400).json({ msg: "User does not have dictionaries" });
+      return res.send(dicts);
+    })
+    .catch((err) => res.status(500).json({ msg: err.message }));
+});
+
 router.post("/", (req, res) => {
   console.log(req.body);
   const { author, title, description } = req.body;

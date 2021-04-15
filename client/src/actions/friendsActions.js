@@ -1,11 +1,10 @@
 import { GET_FOLLOWERS, GET_FOLLOWING, CLEAR_FOLLOW } from "../actions/types";
 import axios from "axios";
-import { tokenConfig } from "./authActions";
 import { returnErrors } from "./errorActions";
 
-export const getFollowers = () => (dispatch, getState) => {
+export const getFollowers = (username) => (dispatch) => {
   axios
-    .get("/api/users/f/followers", tokenConfig(getState))
+    .get("/api/users/f/followers/" + username)
     .then((res) => {
       dispatch({
         type: GET_FOLLOWERS,
@@ -22,9 +21,9 @@ export const getFollowers = () => (dispatch, getState) => {
     });
 };
 
-export const getFollowing = () => (dispatch, getState) => {
+export const getFollowing = (username) => (dispatch) => {
   axios
-    .get("/api/users/f/following", tokenConfig(getState))
+    .get("/api/users/f/following/" + username)
     .then((res) => {
       dispatch({
         type: GET_FOLLOWING,
