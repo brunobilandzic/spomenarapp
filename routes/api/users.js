@@ -124,66 +124,56 @@ router.get("/verify/:username/:id", (req, res) => {
     });
   });
 });
+
 // @route POST /api/users/follow
 // @desc Follow Users
-// @access Public
+// @access Private
 
-router.post("/follow", (req, res) => {
-  const { followId, userId } = req.body;
-  User.findByIdAndUpdate(userId, {
-    $addToSet: {
-      following: followId,
-    },
-  })
-    .then((user) => {
-      if (!user) throw USER_NOT_FOUND;
-      User.findByIdAndUpdate(followId, {
-        $addToSet: {
-          followers: userId,
-        },
-      })
-        .then((following) => {
-          if (!following) throw USER_NOT_FOUND;
-          return res.json({
-            user: user.username,
-            following: following.username,
+router.post("/follow", auth, (req, res) => {
+  const userId = req.user.id;
+  const { followId } = req.body;
+  if (followId == userId) return res.status(400).send({ msg: USER_NOT_FOUND });
+  User.findById(followId)
+    .then((followUser) => {
+      if (!followUser) throw USER_NOT_FOUND;
+      User.findById(userId)
+        .then((user) => {
+          if (!user) throw USER_NOT_FOUND;
+          followUser.followers.push(userId);
+          user.following.push(followId);
+          followUser.save().then((_f) => {
+            user.save().then((_u) => {
+              res.json({ followUsername: followUser.username });
+            });
           });
         })
-        .catch((err) => {
-          res.status(400).json({ msg: err });
-        });
+        .catch((err) => res.status(400).json({ msg: err }));
     })
     .catch((err) => res.status(400).json({ msg: err }));
 });
 
-// @route POST /api/users/follow
-// @desc Follow User
-// @access Public
+// @route POST /api/users/unfollow
+// @desc Unollow User
+// @access Private
 
-router.post("/unfollow", (req, res) => {
-  const { followId, userId } = req.body;
-  User.findByIdAndUpdate(userId, {
-    $pull: {
-      following: followId,
-    },
-  })
-    .then((user) => {
-      if (!user) throw USER_NOT_FOUND;
-      User.findByIdAndUpdate(followId, {
-        $pull: {
-          followers: userId,
-        },
-      })
-        .then((following) => {
-          if (!following) throw USER_NOT_FOUND;
-          return res.json({
-            user: user.username,
-            unfollowing: following.username,
+router.post("/unfollow", auth, (req, res) => {
+  const userId = req.user.id;
+  const { followId } = req.body;
+  User.findById(followId)
+    .then((followUser) => {
+      if (!followUser) throw USER_NOT_FOUND;
+      User.findById(userId)
+        .then((user) => {
+          if (!user) throw USER_NOT_FOUND;
+          followUser.followers.pull(userId);
+          user.following.pull(followId);
+          followUser.save().then((_f) => {
+            user.save().then((_u) => {
+              res.send({ followUsername: followUser.username });
+            });
           });
         })
-        .catch((err) => {
-          res.status(400).json({ msg: err });
-        });
+        .catch((err) => res.status(400).json({ msg: err }));
     })
     .catch((err) => res.status(400).json({ msg: err }));
 });
@@ -201,11 +191,22 @@ router.get("/f/:direction/:username", (req, res) => {
         },
       }).then((users) => {
         res.json({
-          users: users.map((u) => ({ username: u.username })),
+          users: users.map((u) => ({ username: u.username, id: u._id })),
         });
       });
     })
     .catch((err) => res.status(400).json({ msg: err }));
+});
+
+// @route GET /api/users/bool/follow/:followId
+// @desc Check if user follow other guy
+// @access Private
+router.get("/bool/follow/:followId", auth, (req, res) => {
+  const { followId } = req.params;
+  const userId = req.user.id;
+  User.findById(userId).then((user) => {
+    user.following.includes(followId) ? res.json(true) : res.json(false);
+  });
 });
 
 // @route DELETE /api/users

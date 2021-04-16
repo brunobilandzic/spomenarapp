@@ -13,6 +13,7 @@ import { loadUserDictionaries } from "../../../actions/dictionaryActions";
 import Following from "../Friends/Following";
 import Followers from "../Friends/Followers";
 import DictionariesWrap from "../../Dictionaries/DictionariesWrap";
+import FollowButton from "../../Buttons/FollowButton";
 function UserProfile(props) {
   const { username } = useParams();
   const [userProfile, setUserProfile] = useState(null);
@@ -41,6 +42,7 @@ function UserProfile(props) {
   return (
     <div>
       <div>User {username}</div>
+      <FollowButton followId={userProfile && userProfile._id} />
       <div>
         <div>
           <Followers followers={props.followers} />

@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { v4 as uuid } from "uuid";
+import FollowButton from "../../Buttons/FollowButton";
 export default function Following(props) {
   return (
     <div>
@@ -8,9 +9,11 @@ export default function Following(props) {
       <div className="follow-list">
         {props.following.map((f) => (
           <div key={uuid()}>
-            <Link to={"/users/" + f.username} className="app-navigation-link">
+            <Link to={"/" + f.username} className="app-navigation-link">
               {f.username}
             </Link>
+            &nbsp;
+            <FollowButton key={uuid()} followId={f.id} />
           </div>
         ))}
       </div>
