@@ -1,7 +1,14 @@
-import { ADD_QUESTIONS, ADD_ANSWER, CLEAR_ANSWERS } from "../actions/types";
+import {
+  ADD_QUESTIONS,
+  ADD_ANSWER,
+  CLEAR_ANSWERS,
+  FORBID_ANSWERING,
+  ALLOW_ANSWERING,
+} from "../actions/types";
 
 const initialState = {
   questions: [],
+  isAnswered: false,
 };
 
 export default function answerReducer(state = initialState, action) {
@@ -29,7 +36,18 @@ export default function answerReducer(state = initialState, action) {
       };
     case CLEAR_ANSWERS:
       return {
+        ...state,
         questions: [],
+      };
+    case FORBID_ANSWERING:
+      return {
+        ...state,
+        isAnswered: true,
+      };
+    case ALLOW_ANSWERING:
+      return {
+        ...state,
+        isAnswered: true,
       };
     default:
       return state;

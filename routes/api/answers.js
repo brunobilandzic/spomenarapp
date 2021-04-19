@@ -1,10 +1,8 @@
 const Dictionary = require("../../models/Dictionary");
-const Question = require("../../models/Question");
 const Answer = require("../../models/Answer");
-const User = require("../../models/User");
 const express = require("express");
 const router = express.Router();
-
+const auth = require("../../middleware/auth");
 // @route GET /api/answers
 // @desc Fetches all answers in the App
 // @access Public
@@ -14,7 +12,7 @@ router.get("/", (req, res) => {
       return res.send(answers);
     })
     .catch((err) => {
-      return res.status(500).json({ msg: err.message });
+      return res.status(400).json({ msg: err.message });
     });
 });
 
@@ -52,6 +50,21 @@ router.post("/dict/:dictId", (req, res) => {
     .catch((err) => res.status(500).json({ msg: err.message }));
 });
 
+// @route POST /api/answers/check/:question
+// @desc Check if user has answered the dictionary
+// @access Private
+router.get("/check/:question", auth, (req, res) => {
+  const author = req.user.id;
+  const { question } = req.params;
+  Answer.findOne({
+    $and: [{ question }, { author }],
+  })
+    .then((answer) => {
+      if (answer) return res.json({ answer: true });
+      else return res.json({ answer: false });
+    })
+    .catch((err) => res.status(400).json({ msg: err.message }));
+});
 router.delete("/", (req, res) => {
   Answer.deleteMany({})
     .then((res) => null)

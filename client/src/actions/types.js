@@ -1,6 +1,8 @@
 export const GET_ERRORS = "GET_ERRORS";
 export const CLEAR_ERRORS = "CLEAR_ERRORS";
 export const ADD_ANSWER = "ADD_ANSWER";
+export const FORBID_ANSWERING = "FORBID_ANSWERING";
+export const ALLOW_ANSWERING = "ALLOW_ANSWERING";
 export const ADD_QUESTIONS = "ADD_QUESTIONS";
 export const CLEAR_ANSWERS = "CLEAR_ANSWERS";
 export const USER_LOADING = "USER_LOADING";

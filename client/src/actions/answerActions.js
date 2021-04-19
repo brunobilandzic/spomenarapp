@@ -1,6 +1,12 @@
-import { ADD_QUESTIONS, ADD_ANSWER, CLEAR_ANSWERS } from "./types";
+import {
+  ADD_QUESTIONS,
+  ADD_ANSWER,
+  CLEAR_ANSWERS,
+  ALLOW_ANSWERING,
+  FORBID_ANSWERING,
+} from "./types";
 import axios from "axios";
-
+import { tokenConfig } from "./authActions";
 export const addQuestions = (dictId) => (dispatch) => {
   dispatch({
     type: CLEAR_ANSWERS,
@@ -12,6 +18,7 @@ export const addQuestions = (dictId) => (dispatch) => {
         type: ADD_QUESTIONS,
         payload: response.data.map((q) => ({ ...q, answer: null })),
       });
+      // If user has answered the dictionary he had to answer the FIRST question
     })
     .catch((err) => console.log(err));
 };
@@ -46,4 +53,23 @@ export const postAnswers = (dictId) => (dispatch, getState) => {
       console.log(res.data);
     })
     .catch((err) => console.log(err));
+};
+
+export const checkIfAnswered = (questionId) => (dispatch, getState) => {
+  axios
+    .get("/api/answers/check/" + questionId, tokenConfig(getState))
+    .then((res) => {
+      if (res.data.answer) {
+        dispatch({
+          type: ALLOW_ANSWERING,
+        });
+      } else {
+        dispatch({
+          type: FORBID_ANSWERING,
+        });
+      }
+    })
+    .catch((err) => {
+      console.log(err.response.data);
+    });
 };
