@@ -1,7 +1,5 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import Username from "../Render/Username";
-import { v4 as uuid } from "uuid";
 export default function DictionaryItem(props) {
   const { dict } = props;
 
@@ -14,8 +12,10 @@ export default function DictionaryItem(props) {
       </div>
       <div className="">{dict.description}</div>
       <div className="">{dict.date}</div>
-      <div className="">
-        <Username key={uuid()} dictId={dict._id} userId={dict.author} />
+      <div>
+        <Link className="app-navigation-link" to={"/" + dict.author_username}>
+          {dict.author_username}
+        </Link>
       </div>
     </div>
   );

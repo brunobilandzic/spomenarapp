@@ -34,7 +34,7 @@ router.get("/quest/:questId", (req, res) => {
 // @desc Adds an array of answers to dictionary
 // @access Public
 router.post("/dict/:dictId", (req, res) => {
-  const { dictionary, answers, author } = req.body;
+  const { dictionary, answers, author, author_username } = req.body;
   Dictionary.findById(dictionary)
     .then((dict) => {
       if (!dict)
@@ -42,7 +42,7 @@ router.post("/dict/:dictId", (req, res) => {
           .status(404)
           .json({ msg: `Dictionary with id (${dictionary}) does not exist` });
       Answer.insertMany(
-        answers.map((a) => ({ ...a, author })),
+        answers.map((a) => ({ ...a, author, author_username })),
         (err, answers) => {
           if (err) return res.send(err);
           else res.send(answers);

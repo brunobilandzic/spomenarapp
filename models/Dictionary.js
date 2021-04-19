@@ -4,6 +4,11 @@ const Schema = mongoose.Schema;
 const DictionarySchema = new Schema({
   author: {
     type: Schema.Types.ObjectId,
+    required: true,
+  },
+  author_username: {
+    type: String,
+    required: true,
   },
   title: {
     type: String,

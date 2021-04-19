@@ -46,7 +46,8 @@ router.get("/user", auth, (req, res) => {
         name: userData.name,
         email: userData.email,
       })
-    );
+    )
+    .catch((err) => res.status(400).json({ msg: "AUTH_ERROR" }));
 });
 
 // @route POST /api/auth/pwd

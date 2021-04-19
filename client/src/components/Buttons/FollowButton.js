@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Fragment } from "react";
 import { connect } from "react-redux";
 import propTypes from "prop-types";
 import axios from "axios";
@@ -7,10 +7,11 @@ import { Button } from "reactstrap";
 import { follow, unfollow } from "../../actions/friendsActions";
 function FollowButton(props) {
   const followId = props.followId;
-  const [state, setState] = useState("Loading");
+  const [state, setState] = useState("SAME");
 
   useEffect(() => {
     let isMounted = true;
+    if (!followId) return;
     const config = {
       headers: {
         "Content-type": "application/json",
@@ -22,7 +23,7 @@ function FollowButton(props) {
     axios
       .get("/api/users/bool/follow/" + followId, config)
       .then((res) => {
-        res.data && isMounted ? setState("Unfollow") : setState("Follow");
+        if (isMounted) setState(res.data.answer);
       })
       .catch((err) => console.log(err));
 
@@ -33,26 +34,34 @@ function FollowButton(props) {
 
   const handleClick = () => {
     switch (state) {
-      case "Loading":
-        return;
-      case "Follow":
+      case "FOLLOWS_NOT":
         props.follow(followId);
-        setState("Unfollow");
+        setState("FOLLOWS");
         return;
-      case "Unfollow":
+      case "FOLLOWS":
         props.unfollow(followId);
-        setState("Follow");
+        setState("FOLLOWS_NOT");
         return;
+      case "SAME":
+      default:
+        return;
+    }
+  };
+
+  const text = () => {
+    switch (state) {
+      case "FOLLOWS":
+        return "Unfollow";
+      case "FOLLOWS_NOT":
+        return "Follow";
       default:
         return;
     }
   };
   return (
-    <div>
-      <Button onClick={handleClick}>
-        {state == "Loading" ? <ClipLoader size="1rem" /> : state}
-      </Button>
-    </div>
+    <Fragment>
+      {state != "SAME" && <Button onClick={handleClick}>{text()}</Button>}
+    </Fragment>
   );
 }
 

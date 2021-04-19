@@ -14,6 +14,10 @@ const AnswerSchema = new Schema({
     type: Schema.Types.ObjectId,
     required: true,
   },
+  author_username: {
+    type: String,
+    required: true,
+  },
 });
 
 module.exports = Answer = mongoose.model("answer", AnswerSchema);

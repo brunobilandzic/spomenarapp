@@ -12,10 +12,14 @@ const { USER_NOT_FOUND } = require("../../config/errors");
 // @desc Fetches all users in DB
 // @access Public
 
-router.get("/", (req, res) => {
-  User.find()
+router.get("/", auth, (req, res) => {
+  User.find({
+    _id: {
+      $ne: req.user.id,
+    },
+  })
     .then((users) => {
-      return res.send(users);
+      return res.json({ users });
     })
     .catch((err) => {
       return res.status(401).json({ msg: err.message });
@@ -204,8 +208,11 @@ router.get("/f/:direction/:username", (req, res) => {
 router.get("/bool/follow/:followId", auth, (req, res) => {
   const { followId } = req.params;
   const userId = req.user.id;
+  if (userId == followId) return res.json({ answer: "SAME" });
   User.findById(userId).then((user) => {
-    user.following.includes(followId) ? res.json(true) : res.json(false);
+    user.following.includes(followId)
+      ? res.json({ answer: "FOLLOWS" })
+      : res.json({ answer: "FOLLOWS_NOT" });
   });
 });
 

@@ -81,7 +81,7 @@ function LoginModal(props) {
                 Forgot Password
               </Link>
             </FormGroup>
-            <div style={{ height: "2rem" }}>{props.error.msg.msg}</div>
+            <div>{props.error.msg.msg}</div>
             <Button className="mr-2" type="submit" color="success">
               Login
             </Button>

@@ -1,4 +1,10 @@
-import { GET_FOLLOWERS, GET_FOLLOWING, CLEAR_FOLLOW } from "../actions/types";
+import {
+  GET_FOLLOWERS,
+  GET_FOLLOWING,
+  CLEAR_FOLLOW,
+  CLEAR_EXPLORE,
+  GET_EXPLORE,
+} from "../actions/types";
 import axios from "axios";
 import { tokenConfig } from "./authActions";
 import { returnErrors } from "./errorActions";
@@ -37,6 +43,25 @@ export const getFollowing = (username) => (dispatch) => {
       );
       dispatch({
         type: CLEAR_FOLLOW,
+      });
+    });
+};
+
+export const getUsers = () => (dispatch, getState) => {
+  axios
+    .get("/api/users", tokenConfig(getState))
+    .then((res) => {
+      dispatch({
+        type: GET_EXPLORE,
+        payload: res.data,
+      });
+    })
+    .catch((err) => {
+      dispatch(
+        returnErrors(err.response.data, err.response.status, "EXPLORE_ERROR")
+      );
+      dispatch({
+        type: CLEAR_EXPLORE,
       });
     });
 };

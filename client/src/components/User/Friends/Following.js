@@ -13,7 +13,7 @@ export default function Following(props) {
               {f.username}
             </Link>
             &nbsp;
-            <FollowButton key={uuid()} followId={f.id} />
+            <FollowButton followId={f.id} />
           </div>
         ))}
       </div>

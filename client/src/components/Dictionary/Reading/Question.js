@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { v4 as uuid } from "uuid";
+import { Link } from "react-router-dom";
 import { MULTIPLE_CHOICE } from "../../CreateDictionary/AddQuestion/QuestionTypes";
 import axios from "axios";
-import Username from "../../Render/Username";
 
 export default function Question(props) {
   const { question, type, choices, _id } = props;
@@ -35,7 +35,14 @@ export default function Question(props) {
         {answers != undefined &&
           answers.map((a) => (
             <div key={uuid()}>
-              <Username userId={a.author} />: {a.value}
+              <Link
+                className="app-navigation-link"
+                key={uuid()}
+                to={"/" + a.author_username}
+              >
+                {a.author_username}
+              </Link>
+              <div>{a.value}</div>
             </div>
           ))}
       </div>

@@ -48,19 +48,19 @@ router.get("/u/:author", (req, res) => {
 
 router.post("/", (req, res) => {
   console.log(req.body);
-  const { author, title, description } = req.body;
+  const { author, author_username, title, description } = req.body;
   User.findById(author)
     .then((user) => {
       if (!user) throw { message: USER_NOT_FOUND };
       const newDict = new Dictionary({
         author: user._id,
+        author_username: user.username,
         title,
         description,
       });
       newDict
         .save()
         .then((dict) => {
-          console.log(dict);
           res.send(dict);
         })
         .catch((err) => res.status(400).json({ msg: err.message }));

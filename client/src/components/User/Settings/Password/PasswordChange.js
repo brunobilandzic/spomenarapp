@@ -2,47 +2,17 @@ import React, { useState } from "react";
 import { Input, Button, Label } from "reactstrap";
 import { connect } from "react-redux";
 import propTypes from "prop-types";
-import {
-  passResetAuthRequest,
-  submitNewPassword,
-} from "../../../../actions/authActions";
+import { passResetAuthRequest } from "../../../../actions/authActions";
 import SetNewPassword from "./SetNewPassword";
 function PasswordChange(props) {
   const [passwords, setPasswords] = useState({
     oldPassword: "",
-    newPassword: "",
-    newPasswordRepeat: "",
   });
-  const [newPasswordReceived, setNewPasswordReceived] = useState(false);
   const submitOldPassword = (e) => {
-    if (!props.user) {
-      console.log("User not loaded");
-      return -1;
-    }
+    if (!props.user) return;
     props.passResetAuthRequest(passwords.oldPassword);
   };
 
-  const submitNewPassword = () => {
-    const { newPassword } = passwords;
-    if (newPassword.length < 6) {
-      return;
-    }
-    setNewPasswordReceived(true);
-  };
-  const submitNewPasswordRepeat = () => {
-    const { newPassword, newPasswordRepeat } = passwords;
-    if (newPasswordRepeat != newPassword) return handleBack();
-    props.submitNewPassword(passwords.newPassword);
-  };
-
-  const handleBack = () => {
-    setPasswords({
-      ...passwords,
-      newPassword: "",
-      newPasswordRepeat: "",
-    });
-    setNewPasswordReceived(false);
-  };
   const onChange = (e) => {
     setPasswords({
       ...passwords,
@@ -62,9 +32,7 @@ function PasswordChange(props) {
             onChange={onChange}
             value={passwords.oldPassword}
           />
-          <div style={{ height: "2rem" }}>
-            {props.error.id != "AUTH_ERROR" && props.error.msg.msg}
-          </div>
+          <div>{props.error.msg.msg}</div>
           <Button onClick={submitOldPassword}>Submit</Button>
         </div>
       ) : (

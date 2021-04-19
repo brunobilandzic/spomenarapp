@@ -36,7 +36,7 @@ DictionariesWrap.propTypes = {
   loadAllDictionaries: propTypes.func.isRequired,
   loadUserDictionaries: propTypes.func.isRequired,
   clearDictionaries: propTypes.func.isRequired,
-  dictionaries: propTypes.object,
+  dictionaries: propTypes.array,
 };
 
 const mapStateToProps = (state) => ({

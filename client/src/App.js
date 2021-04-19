@@ -20,7 +20,8 @@ import Profile from "./components/User/Profile";
 import Settings from "./components/User/Settings/Settings";
 import Friends from "./components/User/Friends/Friends";
 import UserProfile from "./components/User/Others/UserProfile";
-
+import ExploreUsers from "./components/User/Friends/ExploreUsers";
+import ProtectedRoute from "./routes/ProtectedRoute";
 function App() {
   useEffect(() => {
     store.dispatch(loadUser());
@@ -31,9 +32,6 @@ function App() {
         <AppNavbar></AppNavbar>
         <Container>
           <Switch>
-            <Route exact path="/new">
-              <CreateDictionary />
-            </Route>
             <Route exact path="/dictionary/:dictId">
               <Dictionary />
             </Route>
@@ -43,15 +41,18 @@ function App() {
             <Route exact path="/verify/:username/:id">
               <EmailConfirm />
             </Route>
-            <Route exact path="/changepassword">
-              <PasswordChange />
-            </Route>
             <Route exact path="/forgotpassword">
               <PasswordForgot />
             </Route>
             <Route exact path="/resetpassword/:username/:hash">
               <ResetPasswordCheck />
             </Route>
+            <ProtectedRoute path="/changepassword" component={PasswordChange} />
+            <ProtectedRoute path="/profile" component={Profile} />
+            <ProtectedRoute path="/friends" component={Friends} />
+            <ProtectedRoute path="/settings" component={Settings} />
+            <ProtectedRoute path="/explore" component={ExploreUsers} />
+            <ProtectedRoute path="/new" component={CreateDictionary} />
             <Route exact path="/profile">
               <Profile />
             </Route>
@@ -60,6 +61,9 @@ function App() {
             </Route>
             <Route exact path="/settings">
               <Settings />
+            </Route>
+            <Route exact path="/explore">
+              <ExploreUsers />
             </Route>
             <Route exact path="/:username">
               <UserProfile />

@@ -29,7 +29,8 @@ export const addAnswer = (qId, answer) => (dispatch) => {
 
 export const postAnswers = (dictId) => (dispatch, getState) => {
   const questions = getState().answering.questions;
-  const author = getState().auth.user._id;
+  const author = getState().auth.user.id;
+  const author_username = getState().auth.user.username;
   const answers = questions.map((q) => ({
     question: q._id,
     value: q.answer,
@@ -37,9 +38,12 @@ export const postAnswers = (dictId) => (dispatch, getState) => {
   axios
     .post("/api/answers/dict/" + dictId, {
       dictionary: dictId,
-      author: author,
+      author,
+      author_username,
       answers,
     })
-    .then((res) => {})
+    .then((res) => {
+      console.log(res.data);
+    })
     .catch((err) => console.log(err));
 };

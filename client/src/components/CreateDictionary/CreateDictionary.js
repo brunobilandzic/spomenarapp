@@ -32,7 +32,7 @@ function CreateDictionary(props) {
     });
   };
   const addQuestion = (question) => {
-    setQuestions((q) => [...q, { ...question, key: uuid() }]);
+    setQuestions((q) => [...q, { ...question }]);
     setError("");
   };
   const deleteQuestion = (index) => {
@@ -62,14 +62,14 @@ function CreateDictionary(props) {
             {question.choices.length != 0 && (
               <div>
                 <div>Choices:</div>
-                <ol>
+                <ul>
                   {question.choices.map((c) => (
                     <li key={uuid()}>
                       <div>{c.letter}</div>
                       <div>{c.choice}</div>
                     </li>
                   ))}
-                </ol>
+                </ul>
               </div>
             )}
           </div>
@@ -89,6 +89,7 @@ function CreateDictionary(props) {
     );
   }
   const submitDictionary = () => {
+    if (!props.user) return toggleFail();
     if (
       meta.title.length == 0 ||
       meta.description.length == 0 ||
@@ -98,7 +99,8 @@ function CreateDictionary(props) {
     }
     axios
       .post("/api/dicts", {
-        author: props.user._id,
+        author: props.user.id,
+        author_username: props.user.username,
         title: meta.title,
         description: meta.description,
       })
