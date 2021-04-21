@@ -10,7 +10,7 @@ export default function InformationModal(props) {
           <div>{props.modalBody}</div>
           {props.modalPath && (
             <a href={"http://localhost:3000/" + props.modalPath}>
-              {"http://localhost:3000/" + props.modalPath}
+              {"http://localhost:3000" + props.modalPath}
             </a>
           )}
         </ModalBody>

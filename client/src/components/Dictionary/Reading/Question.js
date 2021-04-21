@@ -1,8 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { v4 as uuid } from "uuid";
 import { Link } from "react-router-dom";
-import { MULTIPLE_CHOICE } from "../../CreateDictionary/AddQuestion/QuestionTypes";
+import {
+  APPROVAL,
+  MULTIPLE_CHOICE,
+} from "../../CreateDictionary/AddQuestion/QuestionTypes";
 import axios from "axios";
+import Statistics from "./Statistics/Statistics";
 
 export default function Question(props) {
   const { question, type, choices, _id } = props;
@@ -12,7 +16,19 @@ export default function Question(props) {
     axios
       .get("/api/answers/quest/" + _id)
       .then((res) => {
-        if (isMounted) setAnswers(res.data);
+        if (isMounted) {
+          let answersTemp = [...res.data];
+          if (type == MULTIPLE_CHOICE) {
+            setAnswers([
+              ...answersTemp.map((ans) => ({
+                ...ans,
+                text: choices.filter((c) => c.letter == ans.value)[0].choice,
+              })),
+            ]);
+          } else {
+            setAnswers(res.data);
+          }
+        }
       })
       .catch((err) => console.log(err));
     return () => {
@@ -36,6 +52,7 @@ export default function Question(props) {
       </div>
       <div>
         {answers != undefined &&
+          choices != undefined &&
           answers.map((a) => (
             <div key={uuid()}>
               <Link
@@ -51,11 +68,19 @@ export default function Question(props) {
                     {choices.filter((c) => c.letter == a.value)[0].choice}
                   </div>
                 ) : (
-                  <div>{a.value}</div>
+                  <div>{a.value != "I_DONT_KNOW" ? a.value : "Dont Know"}</div>
                 )}
               </div>
             </div>
           ))}
+        {(type == MULTIPLE_CHOICE || type == APPROVAL) && answers && (
+          <Statistics
+            question={_id}
+            choices={choices}
+            answers={answers}
+            type={type}
+          ></Statistics>
+        )}
       </div>
     </div>
   );

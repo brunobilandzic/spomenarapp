@@ -40,16 +40,16 @@ function Question(props) {
   const approvalAnswer = (
     <div onChange={(e) => props.addAnswer(_id, e.target.value)}>
       <div>
-        <input type="radio" name={_id} value={"YES"} />
-        <label htmlFor={"YES"}>YES</label>
+        <input type="radio" name={_id} value={"Yes"} />
+        <label>Yes</label>
       </div>
       <div>
-        <input type="radio" name={_id} value={"NO"} />
-        <label htmlFor={"NO"}>NO</label>
+        <input type="radio" name={_id} value={"No"} />
+        <label>No</label>
       </div>
       <div>
-        <input type="radio" name={_id} value={"I DONT KNOW"} />
-        <label htmlFor={"iDontKnow"}>I DONT KNOW</label>
+        <input type="radio" name={_id} value={"I_DONT_KNOW"} />
+        <label>Dont Know</label>
       </div>
     </div>
   );
