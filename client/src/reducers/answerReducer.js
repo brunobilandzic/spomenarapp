@@ -4,11 +4,14 @@ import {
   CLEAR_ANSWERS,
   FORBID_ANSWERING,
   ALLOW_ANSWERING,
+  SET_ANSWER_COUNT,
+  CLEAR_ANSWER_COUNT,
 } from "../actions/types";
 
 const initialState = {
   questions: [],
   isAnswered: false,
+  answerCount: 0,
 };
 
 export default function answerReducer(state = initialState, action) {
@@ -17,6 +20,16 @@ export default function answerReducer(state = initialState, action) {
       return {
         ...state,
         questions: [...action.payload],
+      };
+    case SET_ANSWER_COUNT:
+      return {
+        ...state,
+        answerCount: action.payload,
+      };
+    case CLEAR_ANSWER_COUNT:
+      return {
+        ...state,
+        answerCount: 0,
       };
     case ADD_ANSWER:
       // payload is {qid, answer}
@@ -47,9 +60,9 @@ export default function answerReducer(state = initialState, action) {
     case ALLOW_ANSWERING:
       return {
         ...state,
-        isAnswered: true,
+        isAnswered: false,
       };
     default:
-      return state;
+      return { ...state };
   }
 }

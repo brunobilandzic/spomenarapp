@@ -65,6 +65,16 @@ router.get("/check/:question", auth, (req, res) => {
     })
     .catch((err) => res.status(400).json({ msg: err.message }));
 });
+
+// @route POST /api/answers/count/:question
+// @desc Get answer count for dictionary
+// @access Private
+router.get("/count/:question", (req, res) => {
+  const { question } = req.params;
+  Answer.count({ question })
+    .then((count) => res.json({ count }))
+    .catch((err) => res.status(400).json({ msg: err.message }));
+});
 router.delete("/", (req, res) => {
   Answer.deleteMany({})
     .then((res) => null)

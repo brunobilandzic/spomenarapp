@@ -19,6 +19,7 @@ function CreateDictionary(props) {
   });
   const [access, setAccess] = useState(false);
   const [error, setError] = useState("");
+  const [dictId, setDictId] = useState("");
   const toggleSuccess = () => {
     setModal({
       ...modal,
@@ -105,6 +106,7 @@ function CreateDictionary(props) {
         description: meta.description,
       })
       .then((res) => {
+        setDictId(res.data._id);
         axios
           .post("/api/quests", {
             dictionary: res.data._id,
@@ -129,7 +131,10 @@ function CreateDictionary(props) {
         modal={modal.success}
         toggle={toggleSuccess}
         modalHeader={"Success"}
-        modalBody={"Dictionary created"}
+        modalBody={
+          "Dictionary created. Share it with friends via the link below."
+        }
+        modalPath={"/dictionary/" + dictId}
       />
       <InformationModal
         modal={modal.fail}

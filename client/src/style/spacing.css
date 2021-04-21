@@ -40,3 +40,8 @@
 .follow-list {
   text-align: start;
 }
+
+.reading-question {
+  font-style: bold;
+  font-size: 1.2rem;
+}

@@ -23,13 +23,16 @@ export default function Question(props) {
   return (
     <div>
       <div>
-        <div>{question}</div>
-        {type === MULTIPLE_CHOICE &&
-          choices.map((c) => (
-            <div key={uuid()}>
-              {c.letter}. {c.choice}
-            </div>
-          ))}
+        <div className="question reading-question">{question}</div>
+        {type === MULTIPLE_CHOICE && (
+          <div className="choices reading-choices">
+            {choices.map((c) => (
+              <div key={uuid()}>
+                {c.letter}) {c.choice}
+              </div>
+            ))}
+          </div>
+        )}
       </div>
       <div>
         {answers != undefined &&
@@ -42,7 +45,15 @@ export default function Question(props) {
               >
                 {a.author_username}
               </Link>
-              <div>{a.value}</div>
+              <div>
+                {choices.length ? (
+                  <div>
+                    {choices.filter((c) => c.letter == a.value)[0].choice}
+                  </div>
+                ) : (
+                  <div>{a.value}</div>
+                )}
+              </div>
             </div>
           ))}
       </div>

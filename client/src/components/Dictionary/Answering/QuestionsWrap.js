@@ -9,6 +9,7 @@ import {
 } from "../../../actions/answerActions";
 import { connect } from "react-redux";
 import propTypes from "prop-types";
+import { PromiseProvider } from "mongoose";
 
 function QuestionsWrap(props) {
   const { dictId, questions } = props;
@@ -56,6 +57,8 @@ function QuestionsWrap(props) {
     <div>
       {props.isAnswered ? (
         <div>You already answered this dictionary.</div>
+      ) : !props.isAuthenticated ? (
+        <div>Please register or log in in order to answer the dictionary.</div>
       ) : (
         <div>
           <InformationModal
@@ -90,11 +93,13 @@ QuestionsWrap.propTypes = {
   addQuestions: propTypes.func.isRequired,
   postAnswers: propTypes.func.isRequired,
   checkIfAnswered: propTypes.func.isRequired,
+  isAuthenticated: propTypes.bool,
 };
 
 const mapStateToProps = (state) => ({
   questions: state.answering.questions,
   isAnswered: state.answering.isAnswered,
+  isAuthenticated: state.auth.isAuthenticated,
 });
 
 export default connect(mapStateToProps, {

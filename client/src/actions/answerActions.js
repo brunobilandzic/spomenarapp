@@ -4,6 +4,8 @@ import {
   CLEAR_ANSWERS,
   ALLOW_ANSWERING,
   FORBID_ANSWERING,
+  CLEAR_ANSWER_COUNT,
+  SET_ANSWER_COUNT,
 } from "./types";
 import axios from "axios";
 import { tokenConfig } from "./authActions";
@@ -19,6 +21,22 @@ export const addQuestions = (dictId) => (dispatch) => {
         payload: response.data.map((q) => ({ ...q, answer: null })),
       });
       // If user has answered the dictionary he had to answer the FIRST question
+    })
+    .catch((err) => console.log(err));
+};
+
+export const checkAnswerCount = (questionId) => (dispatch) => {
+  dispatch({
+    type: CLEAR_ANSWER_COUNT,
+  });
+  axios
+    .get("/api/answers/count/" + questionId)
+    .then((res) => {
+      console.log(res.data);
+      dispatch({
+        type: SET_ANSWER_COUNT,
+        payload: res.data.count,
+      });
     })
     .catch((err) => console.log(err));
 };
@@ -59,7 +77,7 @@ export const checkIfAnswered = (questionId) => (dispatch, getState) => {
   axios
     .get("/api/answers/check/" + questionId, tokenConfig(getState))
     .then((res) => {
-      if (res.data.answer) {
+      if (!res.data.answer) {
         dispatch({
           type: ALLOW_ANSWERING,
         });
