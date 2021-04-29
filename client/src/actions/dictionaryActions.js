@@ -1,6 +1,11 @@
-import { LOAD_DICTIONARIES, CLEAR_DICTIONARIES } from "../actions/types";
+import {
+  LOAD_DICTIONARIES,
+  CLEAR_DICTIONARIES,
+  DELETE_DICTIONARY,
+} from "../actions/types";
 import axios from "axios";
 import { returnErrors } from "./errorActions";
+import { tokenConfig } from "./authActions";
 export const loadAllDictionaries = () => (dispatch) => {
   clearDictionaries();
   axios
@@ -25,10 +30,10 @@ export const loadAllDictionaries = () => (dispatch) => {
     });
 };
 
-export const loadUserDictionaries = (userId) => (dispatch) => {
+export const loadUserDictionaries = () => (dispatch, getState) => {
   clearDictionaries();
   axios
-    .get("/api/dicts/u/" + userId)
+    .get("/api/dicts/u/" + getState().auth.user.id)
     .then((res) => {
       dispatch({
         type: LOAD_DICTIONARIES,
@@ -44,6 +49,25 @@ export const loadUserDictionaries = (userId) => (dispatch) => {
           err.response.data,
           err.response.status,
           "DICTIONARY_LOAD_FAILURE"
+        )
+      );
+    });
+};
+export const deleteDictionary = (dictId) => (dispatch, getState) => {
+  axios
+    .delete("/api/dicts/" + dictId, tokenConfig(getState))
+    .then((res) => {
+      dispatch({
+        type: DELETE_DICTIONARY,
+        payload: res.data,
+      });
+    })
+    .catch((err) => {
+      dispatch(
+        returnErrors(
+          err.response.data,
+          err.response.status,
+          "DICTIONARY_DELETE_FAILURE"
         )
       );
     });

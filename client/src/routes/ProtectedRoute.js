@@ -6,7 +6,11 @@ import { Route, Redirect } from "react-router-dom";
 function ProtectedRoute(props) {
   return (
     <Route exact path={props.path}>
-      {props.isAuthenticated ? <props.component /> : <Redirect to="/" />}
+      {props.isAuthenticated ? (
+        <props.component {...props.props} />
+      ) : (
+        <Redirect to="/" />
+      )}
     </Route>
   );
 }

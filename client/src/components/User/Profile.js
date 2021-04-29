@@ -6,6 +6,11 @@ export default function Profile() {
     <div>
       <h1>Profile</h1>
       <div>
+        <Link className="app-navigation-link" to="/user/dictionaries">
+          Your dictionaries
+        </Link>
+      </div>
+      <div>
         <Link className="app-navigation-link" to="/friends">
           Friends
         </Link>
@@ -17,7 +22,7 @@ export default function Profile() {
       </div>
       <div>
         <Link className="app-navigation-link" to="/explore">
-          Explore
+          Connect with others
         </Link>
       </div>
     </div>

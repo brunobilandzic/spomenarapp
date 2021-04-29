@@ -11,9 +11,7 @@ import propTypes from "prop-types";
 function DictionariesWrap(props) {
   const [dontRun] = useState(null);
   useEffect(() => {
-    props.author
-      ? props.loadUserDictionaries(props.author)
-      : props.loadAllDictionaries();
+    props.author ? props.loadUserDictionaries() : props.loadAllDictionaries();
 
     return () => {
       props.clearDictionaries();

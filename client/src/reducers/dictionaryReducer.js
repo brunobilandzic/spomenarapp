@@ -1,4 +1,8 @@
-import { LOAD_DICTIONARIES, CLEAR_DICTIONARIES } from "../actions/types";
+import {
+  LOAD_DICTIONARIES,
+  CLEAR_DICTIONARIES,
+  DELETE_DICTIONARY,
+} from "../actions/types";
 
 const initialState = {
   dictionaries: [],
@@ -15,6 +19,12 @@ export default function dictionaryReducer(state = initialState, action) {
       return {
         ...state,
         dictionaries: [],
+      };
+    case DELETE_DICTIONARY:
+      const dictId = action.payload.dictId;
+      return {
+        ...state,
+        dictionaries: [state.dictionaries.filter((d) => d != dictId)],
       };
     default:
       return {

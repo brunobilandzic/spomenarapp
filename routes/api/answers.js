@@ -71,7 +71,7 @@ router.get("/check/:question", auth, (req, res) => {
 // @access Private
 router.get("/count/:question", (req, res) => {
   const { question } = req.params;
-  Answer.count({ question })
+  Answer.countDocuments({ question })
     .then((count) => res.json({ count }))
     .catch((err) => res.status(400).json({ msg: err.message }));
 });

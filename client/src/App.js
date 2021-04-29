@@ -53,6 +53,7 @@ function App() {
             <ProtectedRoute path="/settings" component={Settings} />
             <ProtectedRoute path="/explore" component={ExploreUsers} />
             <ProtectedRoute path="/new" component={CreateDictionary} />
+            <ProtectedRoute path="/user/dictionaries" component={DictionariesWrap} props={{author:true}} />
             <Route exact path="/profile">
               <Profile />
             </Route>

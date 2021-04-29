@@ -2,6 +2,7 @@ const Dictionary = require("../../models/Dictionary");
 const User = require("../../models/User");
 const express = require("express");
 const router = express.Router();
+const auth = require("../../middleware/auth");
 const { USER_NOT_FOUND } = require("../../config/errors");
 // @route GET /api/dicts
 // @desc Fetches all dictionaries in DB
@@ -79,18 +80,12 @@ router.delete("/", (req, res) => {
 // @route DELETE /api/dicts/:id
 // @desc Delete Dictionary By Id
 // @access Public
-router.delete("/:id", (req, res) => {
+router.delete("/:id", auth, (req, res) => {
   Dictionary.findById(req.params.id)
     .then((dict) => {
-      dict
-        .delete()
-        .then((val) => {
-          res.json({ success: true });
-        })
-        .catch((err) => {
-          res.status(401).json({ msg: err.message });
-        });
+      return dict.delete();
     })
+    .then((dict) => res.json({ dictId: dict.id }))
     .catch((err) => res.status(400).json({ msg: err.message }));
 });
 module.exports = router;
