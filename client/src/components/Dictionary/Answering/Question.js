@@ -15,6 +15,7 @@ function Question(props) {
     <input
       type="text"
       autoComplete="off"
+      value={answer}
       name={_id}
       onChange={(e) => {
         props.addAnswer(_id, e.target.value);
@@ -55,11 +56,15 @@ function Question(props) {
   );
   return (
     <div>
-      {question}, {type}
-      <br />
-      {type == MULTIPLE_CHOICE && multipleChoiceAnswer}
-      {type == OPEN && openAnswer}
-      {type == APPROVAL && approvalAnswer}
+      {props.index == props.order && (
+        <div>
+          {question}, {type}
+          <br />
+          {type == MULTIPLE_CHOICE && multipleChoiceAnswer}
+          {type == OPEN && openAnswer}
+          {type == APPROVAL && approvalAnswer}
+        </div>
+      )}
     </div>
   );
 }

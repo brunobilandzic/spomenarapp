@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from "react";
 import Question from "./Question";
-import { Button } from "reactstrap";
+import { Button, ButtonGroup } from "reactstrap";
 import { addQuestions, checkAnswerCount } from "../../../actions/answerActions";
 import { connect } from "react-redux";
 import propTypes from "prop-types";
+import classNames from "classnames";
 
 function QuestionsWrap(props) {
   const { dictId, questions } = props;
+  const [index, setIndex] = useState(0);
   useEffect(() => {
     let isMounted = true;
     if (isMounted) {
@@ -22,11 +24,21 @@ function QuestionsWrap(props) {
     props.checkAnswerCount(questions[0]._id);
   }, [questions]);
 
+  function handlePrevious() {
+    if (index == 0) return;
+    setIndex(index - 1);
+  }
+
+  function handleNext() {
+    if (index == questions.length - 1) return;
+    setIndex(index + 1);
+  }
+
   function renderQuestions() {
     if (questions === null) {
       return "...Loading";
     }
-    return questions.map((q) => <Question {...q} key={q._id} />);
+    return questions.map((q) => <Question index={index} {...q} key={q._id} />);
   }
   return (
     <div>
@@ -36,6 +48,25 @@ function QuestionsWrap(props) {
         )}
       </div>
       <div>{renderQuestions()}</div>
+      <ButtonGroup>
+        <Button
+          className={classNames("nav-btn", { disabled: index == 0 })}
+          onClick={handlePrevious}
+          active="false"
+        >
+          {" "}
+          &lt;{" "}
+        </Button>
+        <Button
+          className={classNames("nav-btn", {
+            disabled: questions && index == questions.length - 1,
+          })}
+          onClick={handleNext}
+        >
+          {" "}
+          &gt;{" "}
+        </Button>
+      </ButtonGroup>
     </div>
   );
 }

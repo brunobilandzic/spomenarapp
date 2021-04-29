@@ -38,50 +38,56 @@ export default function Question(props) {
 
   return (
     <div>
-      <div>
-        <div className="question reading-question">{question}</div>
-        {type === MULTIPLE_CHOICE && (
-          <div className="choices reading-choices">
-            {choices.map((c) => (
-              <div key={uuid()}>
-                {c.letter}) {c.choice}
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
-      <div>
-        {answers != undefined &&
-          choices != undefined &&
-          answers.map((a) => (
-            <div key={uuid()}>
-              <Link
-                className="app-navigation-link"
-                key={uuid()}
-                to={"/" + a.author_username}
-              >
-                {a.author_username}
-              </Link>
-              <div>
-                {choices.length ? (
-                  <div>
-                    {choices.filter((c) => c.letter == a.value)[0].choice}
+      {props.index == props.order && (
+        <div>
+          <div>
+            <div className="question reading-question">{question}</div>
+            {type === MULTIPLE_CHOICE && (
+              <div className="choices reading-choices">
+                {choices.map((c) => (
+                  <div key={uuid()}>
+                    {c.letter}) {c.choice}
                   </div>
-                ) : (
-                  <div>{a.value != "I_DONT_KNOW" ? a.value : "Dont Know"}</div>
-                )}
+                ))}
               </div>
-            </div>
-          ))}
-        {(type == MULTIPLE_CHOICE || type == APPROVAL) && answers && (
-          <Statistics
-            question={_id}
-            choices={choices}
-            answers={answers}
-            type={type}
-          ></Statistics>
-        )}
-      </div>
+            )}
+          </div>
+          <div>
+            {answers != undefined &&
+              choices != undefined &&
+              answers.map((a) => (
+                <div key={uuid()}>
+                  <Link
+                    className="app-navigation-link"
+                    key={uuid()}
+                    to={"/" + a.author_username}
+                  >
+                    {a.author_username}
+                  </Link>
+                  <div>
+                    {choices.length ? (
+                      <div>
+                        {choices.filter((c) => c.letter == a.value)[0].choice}
+                      </div>
+                    ) : (
+                      <div>
+                        {a.value != "I_DONT_KNOW" ? a.value : "Dont Know"}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              ))}
+            {(type == MULTIPLE_CHOICE || type == APPROVAL) && answers && (
+              <Statistics
+                question={_id}
+                choices={choices}
+                answers={answers}
+                type={type}
+              ></Statistics>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

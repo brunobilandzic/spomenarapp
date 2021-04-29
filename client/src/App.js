@@ -14,6 +14,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
 import "./style/spacing.css";
 import "./style/graphic.css";
+import "./style/functional.css";
 import EmailConfirm from "./components/Modals/EmailConfirm";
 import ResetPasswordCheck from "./components/User/Settings/Password/ResetPasswordCheck";
 import Profile from "./components/User/Profile";

@@ -18,7 +18,11 @@ export const addQuestions = (dictId) => (dispatch) => {
     .then((response) => {
       dispatch({
         type: ADD_QUESTIONS,
-        payload: response.data.map((q) => ({ ...q, answer: null })),
+        payload: response.data.map((q, i) => ({
+          ...q,
+          answer: null,
+          active: i == 0 ? true : false,
+        })),
       });
       // If user has answered the dictionary he had to answer the FIRST question
     })

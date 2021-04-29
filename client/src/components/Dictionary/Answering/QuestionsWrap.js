@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Question from "./Question";
-import { Button, Form } from "reactstrap";
+import { Button, ButtonGroup, Form } from "reactstrap";
 import InformationModal from "../../Modals/InformationModal";
 import {
   addQuestions,
@@ -9,32 +9,16 @@ import {
 } from "../../../actions/answerActions";
 import { connect } from "react-redux";
 import propTypes from "prop-types";
-import { PromiseProvider } from "mongoose";
+import classNames from "classnames";
 
 function QuestionsWrap(props) {
   const { dictId, questions } = props;
+  const [index, setIndex] = useState(0);
   const [modal, setModal] = useState({
     answered: false,
     emptyAnswers: false,
   });
 
-  function onSubmit(e) {
-    e.preventDefault();
-    if (
-      questions.filter((q) => q.answer == null || q.answer === "").length > 0
-    ) {
-      return setModal({ ...modal, emptyAnswers: true });
-    }
-    props.postAnswers(dictId);
-    toggleModal("answered");
-  }
-  function toggleModal(type) {
-    setModal({
-      ...modal,
-      [type]: !modal[type],
-    });
-    if (type == "answered" && modal.answered) window.location.pathname = "/";
-  }
   useEffect(() => {
     let isMounted = true;
     if (isMounted) {
@@ -47,12 +31,52 @@ function QuestionsWrap(props) {
   useEffect(() => {
     if (questions.length) props.checkIfAnswered(questions[0]._id);
   }, [questions]);
+
+  useEffect(() => {
+    if (!questions.length) return;
+  });
+
+  function onSubmit(e) {
+    e.preventDefault();
+    if (
+      questions.filter((q) => q.answer == null || q.answer === "").length > 0
+    ) {
+      return setModal({ ...modal, emptyAnswers: true });
+    }
+    props.postAnswers(dictId);
+    toggleModal("answered");
+  }
+
+  function handlePrevious() {
+    if (index == 0) return;
+    setIndex(index - 1);
+  }
+
+  function handleNext() {
+    if (index == questions.length - 1) return;
+    setIndex(index + 1);
+  }
+
+  function toggleModal(type) {
+    setModal({
+      ...modal,
+      [type]: !modal[type],
+    });
+    if (type == "answered" && modal.answered) window.location.pathname = "/";
+  }
+
   function renderQuestions() {
+    console.log(index);
     if (questions === null) {
       return "...Loading";
     }
-    return questions.map((q) => <Question {...q} key={q._id} />);
+    const q = questions.filter((q, i) => i == index)[0];
+    console.log(q);
+    return questions.map((q, i) => (
+      <Question index={index} {...q} key={q._id} />
+    ));
   }
+
   return (
     <div>
       {props.isAnswered ? (
@@ -77,10 +101,31 @@ function QuestionsWrap(props) {
             modalHeader={"Wait a minute"}
             modalBody={"You haven't answered all questions."}
           />
-          <Form onSubmit={onSubmit}>{renderQuestions()}</Form>
-          <Button onClick={onSubmit} type="submit">
-            Submit
-          </Button>
+          <div>{renderQuestions()}</div>
+          <ButtonGroup>
+            <Button
+              className={classNames("nav-btn", { disabled: index == 0 })}
+              onClick={handlePrevious}
+              active="false"
+            >
+              {" "}
+              &lt;{" "}
+            </Button>
+            <Button
+              className={classNames("nav-btn", {
+                disabled: questions && index == questions.length - 1,
+              })}
+              onClick={handleNext}
+            >
+              {" "}
+              &gt;{" "}
+            </Button>
+          </ButtonGroup>
+          {questions && index == questions.length - 1 && (
+            <Button onClick={onSubmit} type="submit">
+              Submit
+            </Button>
+          )}
         </div>
       )}
     </div>
