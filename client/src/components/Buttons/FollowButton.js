@@ -19,7 +19,6 @@ function FollowButton(props) {
       },
     };
     const body = { followId };
-    console.log(body, "\n", config);
     axios
       .get("/api/users/bool/follow/" + followId, config)
       .then((res) => {

@@ -36,12 +36,13 @@ function UserProfile(props) {
     props.getFollowing(username);
   }, [username]);
   useEffect(() => {
-    console.log("Loading dictionaries");
     if (userProfile) props.loadUserDictionaries(userProfile._id);
   }, [userProfile]);
   return (
     <div>
-      <div>User {username}</div>
+      <div className="user-profile-head">
+        <h4>@{username}</h4>
+      </div>
       <FollowButton followId={userProfile && userProfile._id} />
       <div>
         <div>
@@ -52,7 +53,10 @@ function UserProfile(props) {
         </div>
       </div>
       <div>
-        <DictionariesWrap />
+        <h4 className="user-dicts-hedaer">Dictionaries</h4>
+        {userProfile && (
+          <DictionariesWrap author={true} userId={userProfile._id} />
+        )}
       </div>
     </div>
   );

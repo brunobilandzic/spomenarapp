@@ -30,10 +30,12 @@ export const loadAllDictionaries = () => (dispatch) => {
     });
 };
 
-export const loadUserDictionaries = () => (dispatch, getState) => {
+export const loadUserDictionaries = (userId = null) => (dispatch, getState) => {
   clearDictionaries();
+  console.log("getting dicts for " + userId);
+  const path = userId ? userId : getState().auth.user.id;
   axios
-    .get("/api/dicts/u/" + getState().auth.user.id)
+    .get("/api/dicts/u/" + path)
     .then((res) => {
       dispatch({
         type: LOAD_DICTIONARIES,

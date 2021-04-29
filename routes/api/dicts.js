@@ -40,11 +40,12 @@ router.get("/u/:author", (req, res) => {
   const author = req.params.author;
   Dictionary.find({ author })
     .then((dicts) => {
-      if (!dicts)
-        res.status(400).json({ msg: "User does not have dictionaries" });
+      if (!dicts) throw new Error("User does not have dictionaries yet");
       return res.send(dicts);
     })
-    .catch((err) => res.status(500).json({ msg: err.message }));
+    .catch((err) => {
+      res.status(400).json({ msg: err.message });
+    });
 });
 
 router.post("/", (req, res) => {

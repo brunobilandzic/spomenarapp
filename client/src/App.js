@@ -36,6 +36,7 @@ function App() {
               <Dictionary />
             </Route>
             <Route exact path="/">
+              <h4 className="main-hedaer">All dictionaries</h4>
               <DictionariesWrap />
             </Route>
             <Route exact path="/verify/:username/:id">
@@ -53,7 +54,11 @@ function App() {
             <ProtectedRoute path="/settings" component={Settings} />
             <ProtectedRoute path="/explore" component={ExploreUsers} />
             <ProtectedRoute path="/new" component={CreateDictionary} />
-            <ProtectedRoute path="/user/dictionaries" component={DictionariesWrap} props={{author:true}} />
+            <ProtectedRoute
+              path="/user/dictionaries"
+              component={DictionariesWrap}
+              props={{ author: true }}
+            />
             <Route exact path="/profile">
               <Profile />
             </Route>

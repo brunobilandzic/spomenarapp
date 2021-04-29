@@ -134,7 +134,7 @@ function CreateDictionary(props) {
         modalBody={
           "Dictionary created. Share it with friends via the link below."
         }
-        modalPath={"/dictionary/" + dictId}
+        modalPath={"dictionary/" + dictId}
       />
       <InformationModal
         modal={modal.fail}

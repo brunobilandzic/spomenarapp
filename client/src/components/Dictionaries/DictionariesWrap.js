@@ -11,7 +11,9 @@ import propTypes from "prop-types";
 function DictionariesWrap(props) {
   const [dontRun] = useState(null);
   useEffect(() => {
-    props.author ? props.loadUserDictionaries() : props.loadAllDictionaries();
+    props.author
+      ? props.loadUserDictionaries(props.userId)
+      : props.loadAllDictionaries();
 
     return () => {
       props.clearDictionaries();
@@ -21,6 +23,9 @@ function DictionariesWrap(props) {
   function renderDictionaries() {
     if (props.dictionaries === null) {
       return "...Loading";
+    }
+    if (props.dictionaries.length == 0) {
+      return <div>No dictionaries here yet.</div>;
     }
     return props.dictionaries.map((dict) => (
       <DictionaryItem key={dict._id} dict={{ ...dict }} />
