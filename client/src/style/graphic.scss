@@ -1,9 +1,11 @@
+@import "base/colors";
+
 .app-navigation-link {
-  color: #1d3557;
+  color: $dark-blue;
   text-decoration: none;
 }
 
 .app-navigation-link:hover {
-  color: #457b9d;
+  color: $light-blue;
   text-decoration: none;
 }
