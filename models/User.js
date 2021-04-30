@@ -25,6 +25,14 @@ const UserSchema = new Schema({
     type: Boolean,
     default: false,
   },
+  imageUrl: {
+    type: String,
+    default: null,
+  },
+  imageId: {
+    type: String,
+    default: null,
+  },
   following: {
     type: [Schema.Types.ObjectId],
     default: [],

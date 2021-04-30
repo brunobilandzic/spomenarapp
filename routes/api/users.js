@@ -8,10 +8,19 @@ const base64url = require("base64url");
 const authUser = require("../../jwt");
 const auth = require("../../middleware/auth");
 const { USER_NOT_FOUND } = require("../../config/errors");
+const { CloudinaryStorage } = require("multer-storage-cloudinary");
+const cloudinary = require("cloudinary").v2;
+const formidable = require("formidable");
+const storage = new CloudinaryStorage({
+  cloudinary: cloudinary,
+  folder: "spomenar",
+  allowedFormats: ["jpg", "png"],
+  transformation: [{ width: 500, height: 500, crop: "limit" }],
+});
+
 // @route GET /api/users
 // @desc Fetches all users in DB
 // @access Public
-
 router.get("/", auth, (req, res) => {
   User.find({
     _id: {
@@ -57,12 +66,19 @@ router.get("/u/:username", (req, res) => {
 // @route POST /api/users
 // @desc Register new user
 // @access Public
-router.post("/", registerCheck, (req, res) => {
-  const { name, email, password, username } = req.body;
-  User.findOne({
-    $or: [{ username }, { email }],
-  })
-    .then((user) => {
+router.post("/", (req, res) => {
+  const form = formidable({ multiples: true });
+  console.log("body");
+  form.parse(req, (err, fields, files) => {
+    if (err) return res.status(400).json({ msg: "Form parse error" });
+    const registerError = registerCheck(fields);
+    if (registerError) return res.status(400).json({ msg: registerError });
+    console.log(fields);
+    const { name, email, password, username } = fields;
+
+    User.findOne({
+      $or: [{ username }, { email }],
+    }).then((user) => {
       if (user) {
         return res.status(400).json({ msg: `Credentials already in use.` });
       }
@@ -76,32 +92,27 @@ router.post("/", registerCheck, (req, res) => {
         if (err) throw err;
         bcrypt.hash(newUser.password, salt, (err, hash) => {
           newUser.password = hash;
-          newUser.save().then((user) => {
-            bcrypt.genSalt(10, (err, salt) => {
-              if (err) throw err;
-              bcrypt.hash(String(user._id), salt, (err, hash) => {
-                if (err) throw err;
-                const link =
-                  req.protocol +
-                  "://" +
-                  req.hostname +
-                  ":3000/verify/" +
-                  user.username +
-                  "/" +
-                  base64url(hash);
-                sendVerificationLink(user, link);
-                authUser(user, (authData) => {
-                  res.json({
-                    ...authData,
-                  });
+          if (files.image) {
+            cloudinary.uploader.upload(
+              files.image.path,
+              (err, uploadResult) => {
+                if (err) throw new Error("Image upload error");
+                newUser.imageUrl = uploadResult.secure_url;
+                newUser.imageId = uploadResult.public_id;
+                newUser.save().then((user) => {
+                  hashAndSendVerificationLink(user, req, res);
                 });
-              });
+              }
+            );
+          } else {
+            newUser.save().then((user) => {
+              hashAndSendVerificationLink(user, req, res);
             });
-          });
+          }
         });
       });
-    })
-    .catch((err) => res.status(400).json({ msg: err.message }));
+    });
+  });
 });
 
 // @route GET api/users/verify/:username/:id
@@ -249,4 +260,28 @@ router.delete("/:id", (req, res) => {
     })
     .catch((err) => res.status(400).json({ msg: err.message }));
 });
+
+function hashAndSendVerificationLink(user, req, res) {
+  bcrypt.genSalt(10, (err, salt) => {
+    if (err) throw err;
+    bcrypt.hash(String(user._id), salt, (err, hash) => {
+      if (err) throw err;
+      const link =
+        req.protocol +
+        "://" +
+        req.hostname +
+        ":3000/verify/" +
+        user.username +
+        "/" +
+        base64url(hash);
+      sendVerificationLink(user, link);
+      console.log("authing\n " + user);
+      authUser(user, (authData) => {
+        res.json({
+          ...authData,
+        });
+      });
+    });
+  });
+}
 module.exports = router;

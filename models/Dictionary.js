@@ -21,6 +21,14 @@ const DictionarySchema = new Schema({
     type: Date,
     default: Date.now,
   },
+  imageUrl: {
+    type: String,
+    default: null,
+  },
+  imageId: {
+    type: String,
+    default: null,
+  },
   access: {
     type: Object,
     default: {

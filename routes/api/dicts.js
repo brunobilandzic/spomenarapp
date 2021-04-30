@@ -1,9 +1,20 @@
 const Dictionary = require("../../models/Dictionary");
 const User = require("../../models/User");
+const Image = require("../../models/Image");
 const express = require("express");
 const router = express.Router();
 const auth = require("../../middleware/auth");
 const { USER_NOT_FOUND } = require("../../config/errors");
+const { CloudinaryStorage } = require("multer-storage-cloudinary");
+const cloudinary = require("cloudinary").v2;
+const formidable = require("formidable");
+const storage = new CloudinaryStorage({
+  cloudinary: cloudinary,
+  folder: "spomenar",
+  allowedFormats: ["jpg", "png"],
+  transformation: [{ width: 500, height: 500, crop: "limit" }],
+});
+
 // @route GET /api/dicts
 // @desc Fetches all dictionaries in DB
 // @access Public
@@ -48,26 +59,47 @@ router.get("/u/:author", (req, res) => {
     });
 });
 
-router.post("/", (req, res) => {
-  console.log(req.body);
-  const { author, author_username, title, description } = req.body;
-  User.findById(author)
-    .then((user) => {
-      if (!user) throw { message: USER_NOT_FOUND };
-      const newDict = new Dictionary({
-        author: user._id,
-        author_username: user.username,
-        title,
-        description,
+// @route POST /api/dicts
+// @desc Create a new dictionary
+// @access Private
+
+router.post("/", auth, (req, res) => {
+  const form = formidable({ multiples: true });
+  form.parse(req, (err, fields, files) => {
+    const { author, title, description } = fields;
+    if (err) res.status(400).json({ msg: "Form parse error" });
+    User.findById(author)
+      .then((user) => {
+        if (!user) throw new Error(USER_NOT_FOUND);
+        const newDict = new Dictionary({
+          author: user._id,
+          author_username: user.username,
+          title,
+          description,
+        });
+        if (files.image) {
+          const imageUploadUrl = files.image.path;
+          console.log(files.image, imageUploadUrl);
+          cloudinary.uploader.upload(imageUploadUrl, (err, uploadResult) => {
+            if (err) throw new Error("Image upload error");
+            newDict.imageUrl = uploadResult.secure_url;
+            newDict.imageId = uploadResult.public_id;
+            return newDict
+              .save()
+              .then((dict) => res.send(dict))
+              .catch((err) => res.status(400).json({ msg: err.message }));
+          });
+        } else {
+          return newDict
+            .save()
+            .then((dict) => res.send(dict))
+            .catch((err) => res.status(400).json({ msg: err.message }));
+        }
+      })
+      .catch((err) => {
+        res.status(400).json({ msg: err.message });
       });
-      newDict
-        .save()
-        .then((dict) => {
-          res.send(dict);
-        })
-        .catch((err) => res.status(400).json({ msg: err.message }));
-    })
-    .catch((err) => res.status(400).json({ msg: err.message }));
+  });
 });
 
 // @route DELETE /api/dicts

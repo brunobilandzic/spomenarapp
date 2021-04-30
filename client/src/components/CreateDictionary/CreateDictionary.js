@@ -1,12 +1,12 @@
 import React, { useState } from "react";
-import { Button, Input, Label, ButtonGroup } from "reactstrap";
+import { Button, Input, Label, ButtonGroup, Form } from "reactstrap";
 import QuestionModal from "./AddQuestion/QuestionModal";
 import InformationModal from "../Modals/InformationModal";
 import { connect } from "react-redux";
 import propTypes from "prop-types";
 import { v4 as uuid } from "uuid";
 import axios from "axios";
-import AddAccess from "./Access/AddAccess";
+
 function CreateDictionary(props) {
   const [questions, setQuestions] = useState([]);
   const [modal, setModal] = useState({
@@ -16,6 +16,7 @@ function CreateDictionary(props) {
   const [meta, setMeta] = useState({
     title: "",
     description: "",
+    image: null,
   });
   const [access, setAccess] = useState(false);
   const [error, setError] = useState("");
@@ -98,13 +99,25 @@ function CreateDictionary(props) {
     ) {
       return setError("Please enter all fields.");
     }
+    const config = {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    };
+    if (props.token) {
+      config.headers["x-auth-token"] = props.token;
+    }
+    const body = {
+      author: props.user.id,
+      author_username: props.user.username,
+      title: meta.title,
+      description: meta.description,
+    };
+    const formData = new FormData();
+    Object.keys(body).forEach((key) => formData.append(key, body[key]));
+    formData.append("image", meta.image);
     axios
-      .post("/api/dicts", {
-        author: props.user.id,
-        author_username: props.user.username,
-        title: meta.title,
-        description: meta.description,
-      })
+      .post("/api/dicts", formData, config)
       .then((res) => {
         setDictId(res.data._id);
         axios
@@ -122,9 +135,15 @@ function CreateDictionary(props) {
       })
       .catch((err) => {
         toggleFail();
+        console.log(err.response.data);
       });
   };
-
+  const onChangeImage = (e) => {
+    setMeta((m) => ({
+      ...m,
+      image: e.target.files[0],
+    }));
+  };
   return (
     <div className="create-dictionary">
       <InformationModal
@@ -162,8 +181,15 @@ function CreateDictionary(props) {
             placeholder="Dictionary description..."
             rows={3}
           />
+          <Label>Image (optional)</Label>
+          <div>Make your dictionary more appealing</div>
+          <input
+            onChange={onChangeImage}
+            accept=".jpg,.png"
+            type="file"
+            name="image"
+          />
         </div>
-        <AddAccess access={access} setAccess={setAccess} />
       </div>
       <ol>{questions.map(renderQuestion)}</ol>
 
@@ -198,6 +224,7 @@ CreateDictionary.propTypes = {
 
 const mapStateToProps = (state) => ({
   user: state.auth.user,
+  token: state.auth.token,
 });
 
 export default connect(mapStateToProps, {})(CreateDictionary);

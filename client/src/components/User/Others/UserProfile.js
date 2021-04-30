@@ -41,6 +41,16 @@ function UserProfile(props) {
   return (
     <div>
       <div className="user-profile-head">
+        <img
+          className="user-profile-img user-profile-img-lg"
+          src={
+            userProfile
+              ? userProfile.imageUrl
+                ? userProfile.imageUrl
+                : "https://taggmagazine.com/wp-content/uploads/2018/06/shadow-profile.jpg"
+              : null
+          }
+        />
         <h4>@{username}</h4>
       </div>
       <FollowButton followId={userProfile && userProfile._id} />

@@ -44,6 +44,7 @@ export const register = ({
   name,
   email,
   passwordRepeat,
+  image,
 }) => (dispatch) => {
   if (password != passwordRepeat) {
     return returnErrors({
@@ -53,13 +54,16 @@ export const register = ({
   }
   const config = {
     headers: {
-      "Content-type": "application/json",
+      "Content-type": "multipart/form-data",
     },
   };
 
-  const body = JSON.stringify({ username, password, name, email });
+  const body = { username, password, name, email };
+  const formData = new FormData();
+  Object.keys(body).forEach((key) => formData.append(key, body[key]));
+  formData.append("image", image);
   axios
-    .post("/api/users", body, config)
+    .post("/api/users", formData, config)
     .then((res) => {
       dispatch({
         type: REGISTER_SUCCESS,
@@ -106,6 +110,7 @@ export const verifyEmail = (username, userId) => (dispatch) => {
   axios
     .get(`/api/users/verify/${username}/${userId}`)
     .then((res) => {
+      console.log(res.data);
       dispatch({
         type: EMAIL_VERIFICATION_SUCCESS,
         payload: res.data,

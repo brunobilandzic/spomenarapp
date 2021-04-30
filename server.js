@@ -1,8 +1,14 @@
 const express = require("express");
 const config = require("./config");
 const mongoose = require("mongoose");
+const cloudinary = require("cloudinary");
 
-const { MONGO_URI, JWT_SECRET } = config;
+const {
+  MONGO_URI,
+  CLOUD_NAME,
+  CLOUDINARY_API_KEY,
+  CLOUDINARY_API_SECRET,
+} = config;
 
 mongoose
   .connect(MONGO_URI, {
@@ -17,6 +23,12 @@ mongoose
   .catch((err) => {
     console.log(err);
   });
+
+cloudinary.config({
+  cloud_name: CLOUD_NAME,
+  api_key: CLOUDINARY_API_KEY,
+  api_secret: CLOUDINARY_API_SECRET,
+});
 
 const app = express();
 app.use(express.json());
