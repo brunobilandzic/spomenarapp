@@ -42,7 +42,7 @@ function UserProfile(props) {
     <div>
       <div className="user-profile-head">
         <img
-          className="user-profile-img user-profile-img-lg"
+          className="user-profile-img round-box round-box-lg user-profile-img-lg"
           src={
             userProfile
               ? userProfile.imageUrl

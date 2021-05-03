@@ -1,4 +1,5 @@
 const User = require("../../models/User");
+const Answer = require("../../models/Answer");
 const express = require("express");
 const bcrypt = require("bcrypt");
 const registerCheck = require("../../middleware/register");
@@ -35,20 +36,6 @@ router.get("/", auth, (req, res) => {
     });
 });
 
-// @route GET /api/users/:id
-// @desc Fetches username
-// @access Public
-
-router.get("/:id", (req, res) => {
-  User.findById(req.params.id)
-    .then((user) => {
-      user
-        ? res.send({ username: user.username })
-        : res.status(400).json({ msg: "User does not exist" });
-    })
-    .catch((err) => res.status(401).json({ msg: err.message }));
-});
-
 // @route GET /api/users/u/:username
 // @desc Fetches user by username
 // @access Public
@@ -68,7 +55,6 @@ router.get("/u/:username", (req, res) => {
 // @access Public
 router.post("/", (req, res) => {
   const form = formidable({ multiples: true });
-  console.log("body");
   form.parse(req, (err, fields, files) => {
     if (err) return res.status(400).json({ msg: "Form parse error" });
     const registerError = registerCheck(fields);
@@ -206,7 +192,11 @@ router.get("/f/:direction/:username", (req, res) => {
         },
       }).then((users) => {
         res.json({
-          users: users.map((u) => ({ username: u.username, id: u._id })),
+          users: users.map((u) => ({
+            username: u.username,
+            id: u._id,
+            imageUrl: u.imageUrl,
+          })),
         });
       });
     })
@@ -225,6 +215,84 @@ router.get("/bool/follow/:followId", auth, (req, res) => {
       ? res.json({ answer: "FOLLOWS" })
       : res.json({ answer: "FOLLOWS_NOT" });
   });
+});
+
+// @route PATCH /api/users/profileimage
+// @desc Change user profile image
+// @access Private
+
+router.patch("/profileimage", auth, (req, res) => {
+  console.log("in");
+  User.findById(req.user.id)
+    .then((user) => {
+      console.log(user);
+      const form = new formidable();
+      form.parse(req, (err, fields, files) => {
+        cloudinary.uploader.upload(files.newImage.path, (err, uploadResult) => {
+          if (err) return res.status(400).json({ msg: err.message });
+          const toDeleteId = user.imageId;
+          user.imageUrl = uploadResult.secure_url;
+          user.imageId = uploadResult.public_id;
+          cloudinary.uploader.destroy(toDeleteId, (err, destroyResult) => {
+            user.save().then((userData) => {
+              authUser(userData, (authData) => {
+                res.json({ ...authData });
+              });
+            });
+          });
+        });
+      });
+    })
+    .catch((err) => res.status(400).json({ msg: err.messge }));
+});
+
+// @route DELETE /api/users/profileimage
+// @desc Change user profile image
+// @access Private
+
+router.delete("/profileimage", auth, (req, res) => {
+  User.findById(req.user.id)
+    .then((user) => {
+      console.log(user);
+
+      const toDeleteId = user.imageId;
+      user.imageUrl = null;
+      user.imageId = null;
+      cloudinary.uploader.destroy(toDeleteId, (err, destroyResult) => {
+        if (err) return res.status(400).json({ msg: err.message });
+        user.save().then((userData) => {
+          authUser(userData, (authData) => {
+            res.json({ ...authData });
+          });
+        });
+      });
+    })
+    .catch((err) => res.status(400).json({ msg: err.messge }));
+});
+// @route GET /api/users/images/question/:questionId
+// @desc Get username - imageUrl key value pairs for a question
+// @access Public
+router.get("/images/question/:questionId", (req, res) => {
+  Answer.find({
+    question: req.params.questionId,
+  })
+    .then((answers) => {
+      User.find({
+        username: {
+          $in: [...answers.map((a) => a.author_username)],
+        },
+      }).then((users) => {
+        console.log("In");
+        console.log(users);
+        let toSend = {};
+        if (!users) throw new Error("No users found");
+        users.forEach((u) => (toSend[u.username] = u.imageUrl));
+        res.json({
+          usernameImages: { ...toSend },
+        });
+      });
+    })
+    .catch((err) => res.status(400).json({ msg: err.messge }));
 });
 
 // @route DELETE /api/users
@@ -261,6 +329,19 @@ router.delete("/:id", (req, res) => {
     .catch((err) => res.status(400).json({ msg: err.message }));
 });
 
+// @route GET /api/users/:id
+// @desc Fetches username
+// @access Public
+
+router.get("/:id", (req, res) => {
+  User.findById(req.params.id)
+    .then((user) => {
+      user
+        ? res.send({ username: user.username })
+        : res.status(400).json({ msg: "User does not exist" });
+    })
+    .catch((err) => res.status(401).json({ msg: err.message }));
+});
 function hashAndSendVerificationLink(user, req, res) {
   bcrypt.genSalt(10, (err, salt) => {
     if (err) throw err;

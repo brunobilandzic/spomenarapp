@@ -10,6 +10,7 @@ import {
   LINK_VERIFICATION_SUCCESS,
   EMAIL_VERIFICATION_SUCCESS,
   EMAIL_VERIFICATION_FAILURE,
+  IMAGE_CHANGE_SUCCESS,
 } from "../actions/types";
 
 const initialState = {
@@ -30,6 +31,7 @@ export default function authReducer(state = initialState, action) {
     case PASS_RESET_SUCCESS:
     case LINK_VERIFICATION_SUCCESS:
     case EMAIL_VERIFICATION_SUCCESS:
+    case IMAGE_CHANGE_SUCCESS:
       localStorage.setItem("token", action.payload.token);
       return {
         ...action.payload,

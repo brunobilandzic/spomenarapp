@@ -108,7 +108,12 @@ function RegisterModal(props) {
             </FormGroup>
             <FormGroup>
               <Label for="image">Profile picture:</Label>
-              <Input type="file" name="image" onChange={onChangeImage} />
+              <Input
+                type="file"
+                name="image"
+                accept=".jpg,.png"
+                onChange={onChangeImage}
+              />
             </FormGroup>
             <FormGroup>
               <Label for="password">Password:</Label>

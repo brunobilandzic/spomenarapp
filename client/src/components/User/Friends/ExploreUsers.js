@@ -7,7 +7,6 @@ import propTypes from "prop-types";
 import FollowButton from "../../Buttons/FollowButton";
 function ExploreUsers(props) {
   useEffect(() => {
-    console.log("d");
     props.getUsers();
   }, []);
   return (
@@ -17,6 +16,7 @@ function ExploreUsers(props) {
         {props.explore.map((u) => (
           <div key={uuid()}>
             <Link to={"/" + u.username} className="app-navigation-link">
+              <img src={u.imageUrl} className="round-box-sm round-box" />
               {u.username}
             </Link>
             &nbsp;

@@ -66,12 +66,9 @@ function QuestionsWrap(props) {
   }
 
   function renderQuestions() {
-    console.log(index);
     if (questions === null) {
       return "...Loading";
     }
-    const q = questions.filter((q, i) => i == index)[0];
-    console.log(q);
     return questions.map((q, i) => (
       <Question index={index} {...q} key={q._id} />
     ));
@@ -106,7 +103,6 @@ function QuestionsWrap(props) {
             <Button
               className={classNames("nav-btn", { disabled: index == 0 })}
               onClick={handlePrevious}
-              active="false"
             >
               {" "}
               &lt;{" "}

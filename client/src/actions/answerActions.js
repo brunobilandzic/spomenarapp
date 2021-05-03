@@ -20,7 +20,7 @@ export const addQuestions = (dictId) => (dispatch) => {
         type: ADD_QUESTIONS,
         payload: response.data.map((q, i) => ({
           ...q,
-          answer: null,
+          answer: "",
           active: i == 0 ? true : false,
         })),
       });

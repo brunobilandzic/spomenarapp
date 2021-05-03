@@ -62,6 +62,15 @@ export default function Question(props) {
                     key={uuid()}
                     to={"/" + a.author_username}
                   >
+                    <img
+                      className="round-box-sm round-box"
+                      src={
+                        props.usernameImages &&
+                        props.usernameImages[a.author_username]
+                          ? props.usernameImages[a.author_username]
+                          : "https://taggmagazine.com/wp-content/uploads/2018/06/shadow-profile.jpg"
+                      }
+                    />
                     {a.author_username}
                   </Link>
                   <div>

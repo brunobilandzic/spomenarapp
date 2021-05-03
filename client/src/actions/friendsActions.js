@@ -4,6 +4,9 @@ import {
   CLEAR_FOLLOW,
   CLEAR_EXPLORE,
   GET_EXPLORE,
+  FETCH_IMAGES,
+  CLEAR_IMAGES,
+  FETCH_IMAGES_FAILURE,
 } from "../actions/types";
 import axios from "axios";
 import { tokenConfig } from "./authActions";
@@ -65,7 +68,28 @@ export const getUsers = () => (dispatch, getState) => {
       });
     });
 };
-
+export const fetchImagesByQuestion = (questionId) => (dispatch) => {
+  axios
+    .get("/api/users/images/question/" + questionId)
+    .then((response) => {
+      dispatch({
+        type: FETCH_IMAGES,
+        payload: response.data.usernameImages,
+      });
+    })
+    .catch((err) => {
+      dispatch(
+        returnErrors(
+          err.response.data,
+          err.response.status,
+          "FETCH_IMAGES_FAILURE"
+        )
+      );
+      dispatch({
+        type: FETCH_IMAGES_FAILURE,
+      });
+    });
+};
 export const follow = (followId) => (dispatch, getState) => {
   const body = { followId };
   axios

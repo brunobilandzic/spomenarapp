@@ -10,6 +10,14 @@ export default function Followers(props) {
         {props.followers.map((f) => (
           <div key={uuid()}>
             <Link to={"/" + f.username} className="app-navigation-link">
+              <img
+                src={
+                  f.imageUrl
+                    ? f.imageUrl
+                    : "https://taggmagazine.com/wp-content/uploads/2018/06/shadow-profile.jpg"
+                }
+                className="round-box-sm round-box"
+              />
               {f.username}
             </Link>
             &nbsp;

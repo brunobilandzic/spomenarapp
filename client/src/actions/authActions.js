@@ -17,6 +17,8 @@ import {
   LINK_VERIFICATION_FAILURE,
   EMAIL_VERIFICATION_SUCCESS,
   EMAIL_VERIFICATION_FAILURE,
+  IMAGE_CHANGE_SUCCESS,
+  IMAGE_CHANGE_FAILURE,
 } from "../actions/types";
 import { returnErrors } from "../actions/errorActions";
 
@@ -240,6 +242,72 @@ export const submitNewPassword = (newPassword) => (dispatch, getState) => {
           err.response.data,
           err.response.status,
           "PASS_RESET_FAILURE"
+        )
+      );
+    });
+};
+
+export const changeProfileImage = (imageObject) => (dispatch, getState) => {
+  const formData = new FormData();
+  const config = {
+    headers: {
+      "Content-type": "multipart/form-data",
+    },
+  };
+  const token = getState().auth.token;
+  if (token) {
+    config.headers["x-auth-token"] = token;
+  }
+  formData.append("newImage", imageObject);
+  axios
+    .patch("/api/users/profileimage", formData, config)
+    .then((response) => {
+      dispatch({
+        type: IMAGE_CHANGE_SUCCESS,
+        payload: response.data,
+      });
+    })
+    .catch((err) => {
+      dispatch({
+        type: IMAGE_CHANGE_FAILURE,
+      });
+      dispatch(
+        returnErrors(
+          err.response.data,
+          err.response.status,
+          "IMAGE_CHANGE_FAILURE"
+        )
+      );
+    });
+};
+
+export const deleteProfileImage = () => (dispatch, getState) => {
+  const config = {
+    headers: {},
+  };
+  const token = getState().auth.token;
+
+  if (token) {
+    config.headers["x-auth-token"] = token;
+  }
+  console.log(config);
+  axios
+    .delete("/api/users/profileimage", config)
+    .then((response) => {
+      dispatch({
+        type: IMAGE_CHANGE_SUCCESS,
+        payload: response.data,
+      });
+    })
+    .catch((err) => {
+      dispatch({
+        type: IMAGE_CHANGE_FAILURE,
+      });
+      dispatch(
+        returnErrors(
+          err.response.data,
+          err.response.status,
+          "IMAGE_CHANGE_FAILURE"
         )
       );
     });

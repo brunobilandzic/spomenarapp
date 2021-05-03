@@ -23,6 +23,7 @@ import Friends from "./components/User/Friends/Friends";
 import UserProfile from "./components/User/Others/UserProfile";
 import ExploreUsers from "./components/User/Friends/ExploreUsers";
 import ProtectedRoute from "./routes/ProtectedRoute";
+import ProfileImageChange from "./components/User/Settings/ProfileImage/ProfileImageChange";
 function App() {
   useEffect(() => {
     store.dispatch(loadUser());
@@ -55,6 +56,10 @@ function App() {
             <ProtectedRoute path="/settings" component={Settings} />
             <ProtectedRoute path="/explore" component={ExploreUsers} />
             <ProtectedRoute path="/new" component={CreateDictionary} />
+            <ProtectedRoute
+              path="/changeprofileimage"
+              component={ProfileImageChange}
+            />
             <ProtectedRoute
               path="/user/dictionaries"
               component={DictionariesWrap}

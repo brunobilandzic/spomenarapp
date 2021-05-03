@@ -38,15 +38,16 @@ router.post("/", (req, res) => {
 router.get("/user", auth, (req, res) => {
   User.findById(req.user.id)
     .select("-password")
-    .then((userData) =>
+    .then((userData) => {
       res.json({
         username: userData.username,
         id: userData._id,
         verified: userData.verified,
         name: userData.name,
         email: userData.email,
-      })
-    )
+        imageUrl: userData.imageUrl,
+      });
+    })
     .catch((err) => res.status(400).json({ msg: "AUTH_ERROR" }));
 });
 

@@ -4,9 +4,16 @@ export default function Settings() {
   return (
     <div>
       <h1>Settings</h1>
-      <Link className="app-navigation-link" to="/changepassword">
-        Change Password
-      </Link>
+      <div>
+        <Link className="app-navigation-link" to="/changepassword">
+          Change Password
+        </Link>
+      </div>
+      <div>
+        <Link className="app-navigation-link" to="/changeprofileimage">
+          Change Profile Image
+        </Link>
+      </div>
     </div>
   );
 }

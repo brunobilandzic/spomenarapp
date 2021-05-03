@@ -29,12 +29,17 @@
   justify-content: space-around;
 }
 
-.user-profile-img {
+.round-box {
   border-radius: 100%;
 }
-.user-profile-img-lg {
+.round-box-lg {
   width: 100px;
   height: 100px;
+}
+.round-box-sm {
+  border-radius: 100%;
+  width: 20px;
+  height: 20px;
 }
 
 .follow-header {
