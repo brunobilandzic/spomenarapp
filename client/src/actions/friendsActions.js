@@ -90,6 +90,31 @@ export const fetchImagesByQuestion = (questionId) => (dispatch) => {
       });
     });
 };
+export const fetchImagesByUsernames = (authorIds) => (dispatch) => {
+  const body = { authorIds };
+  console.log(body);
+  axios
+    .post("/api/users/images/dictionary/", body, null)
+    .then((response) => {
+      console.log(response.data);
+      dispatch({
+        type: FETCH_IMAGES,
+        payload: response.data.usernameImages,
+      });
+    })
+    .catch((err) => {
+      dispatch(
+        returnErrors(
+          err.response.data,
+          err.response.status,
+          "FETCH_IMAGES_FAILURE"
+        )
+      );
+      dispatch({
+        type: FETCH_IMAGES_FAILURE,
+      });
+    });
+};
 export const follow = (followId) => (dispatch, getState) => {
   const body = { followId };
   axios

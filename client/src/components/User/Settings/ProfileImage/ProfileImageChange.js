@@ -6,6 +6,7 @@ import {
   changeProfileImage,
   deleteProfileImage,
 } from "../../../../actions/authActions";
+import { INCOGNITO_PROFILE_IMAGE } from "../../../../style/images";
 
 function ProfileImageChange(props) {
   const [newImageObject, setNewImageObject] = useState(null);
@@ -34,11 +35,7 @@ function ProfileImageChange(props) {
       <div>
         <img
           className="round-box round-box-lg"
-          src={
-            imageUrl
-              ? imageUrl
-              : "https://taggmagazine.com/wp-content/uploads/2018/06/shadow-profile.jpg"
-          }
+          src={imageUrl ? imageUrl : INCOGNITO_PROFILE_IMAGE}
         />
       </div>
       <div>

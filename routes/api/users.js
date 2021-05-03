@@ -270,7 +270,7 @@ router.delete("/profileimage", auth, (req, res) => {
     .catch((err) => res.status(400).json({ msg: err.messge }));
 });
 // @route GET /api/users/images/question/:questionId
-// @desc Get username - imageUrl key value pairs for a question
+// @desc Get username - imageUrl key value pairs for a question answerers
 // @access Public
 router.get("/images/question/:questionId", (req, res) => {
   Answer.find({
@@ -282,14 +282,33 @@ router.get("/images/question/:questionId", (req, res) => {
           $in: [...answers.map((a) => a.author_username)],
         },
       }).then((users) => {
-        console.log("In");
-        console.log(users);
         let toSend = {};
         if (!users) throw new Error("No users found");
         users.forEach((u) => (toSend[u.username] = u.imageUrl));
         res.json({
           usernameImages: { ...toSend },
         });
+      });
+    })
+    .catch((err) => res.status(400).json({ msg: err.messge }));
+});
+
+// @route GET /api/users/images/dictionary
+// @desc Get username - imageUrl key value pairs for a dictionar authors
+// @access Public
+router.post("/images/dictionary/", (req, res) => {
+  User.find({
+    _id: {
+      $in: [...req.body.authorIds],
+    },
+  })
+    .then((users) => {
+      let toSend = {};
+      console.log(users);
+      if (!users) throw new Error("No users found");
+      users.forEach((u) => (toSend[u.username] = u.imageUrl));
+      res.json({
+        usernameImages: { ...toSend },
       });
     })
     .catch((err) => res.status(400).json({ msg: err.messge }));

@@ -8,7 +8,7 @@ import {
   getFollowing,
   clearFollow,
 } from "../../../actions/friendsActions";
-
+import { INCOGNITO_PROFILE_IMAGE } from "../../../style/images";
 import { loadUserDictionaries } from "../../../actions/dictionaryActions";
 import Following from "../Friends/Following";
 import Followers from "../Friends/Followers";
@@ -47,7 +47,7 @@ function UserProfile(props) {
             userProfile
               ? userProfile.imageUrl
                 ? userProfile.imageUrl
-                : "https://taggmagazine.com/wp-content/uploads/2018/06/shadow-profile.jpg"
+                : INCOGNITO_PROFILE_IMAGE
               : null
           }
         />

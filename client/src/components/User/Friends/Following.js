@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { v4 as uuid } from "uuid";
+import { INCOGNITO_PROFILE_IMAGE } from "../../../style/images";
 import FollowButton from "../../Buttons/FollowButton";
 export default function Following(props) {
   return (
@@ -11,11 +12,7 @@ export default function Following(props) {
           <div key={uuid()}>
             <Link to={"/" + f.username} className="app-navigation-link">
               <img
-                src={
-                  f.imageUrl
-                    ? f.imageUrl
-                    : "https://taggmagazine.com/wp-content/uploads/2018/06/shadow-profile.jpg"
-                }
+                src={f.imageUrl ? f.imageUrl : INCOGNITO_PROFILE_IMAGE}
                 className="round-box-sm round-box"
               />
               {f.username}

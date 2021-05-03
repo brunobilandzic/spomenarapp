@@ -7,6 +7,7 @@ import {
 } from "../../CreateDictionary/AddQuestion/QuestionTypes";
 import axios from "axios";
 import Statistics from "./Statistics/Statistics";
+import { INCOGNITO_PROFILE_IMAGE } from "../../../style/images";
 
 export default function Question(props) {
   const { question, type, choices, _id } = props;
@@ -68,7 +69,7 @@ export default function Question(props) {
                         props.usernameImages &&
                         props.usernameImages[a.author_username]
                           ? props.usernameImages[a.author_username]
-                          : "https://taggmagazine.com/wp-content/uploads/2018/06/shadow-profile.jpg"
+                          : INCOGNITO_PROFILE_IMAGE
                       }
                     />
                     {a.author_username}
