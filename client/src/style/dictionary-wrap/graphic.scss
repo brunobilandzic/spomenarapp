@@ -1,0 +1,14 @@
+@import "../base/colors";
+
+.dict-item-date {
+  opacity: 0.5;
+  font-style: italic;
+  font-size: small;
+}
+.dict-item {
+  box-shadow: 0px 2px lightgray;
+}
+
+.dict-item-footer {
+  background-color: inherit;
+}

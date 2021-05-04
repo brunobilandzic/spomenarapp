@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Button, Input, Label, ButtonGroup, Form } from "reactstrap";
+import { Button, Input, Label } from "reactstrap";
 import QuestionModal from "./AddQuestion/QuestionModal";
 import InformationModal from "../Modals/InformationModal";
 import { connect } from "react-redux";
@@ -18,7 +18,6 @@ function CreateDictionary(props) {
     description: "",
     image: null,
   });
-  const [access, setAccess] = useState(false);
   const [error, setError] = useState("");
   const [dictId, setDictId] = useState("");
   const toggleSuccess = () => {
@@ -54,42 +53,7 @@ function CreateDictionary(props) {
       [e.target.name]: e.target.value,
     }));
   };
-  function renderQuestion(question, index) {
-    return (
-      <li key={uuid()} className="">
-        <div className="question-preview">
-          <div>
-            <div className="">TYPE:&nbsp;{question.type}</div>
-            <div className="">{question.question}</div>
-            {question.choices.length != 0 && (
-              <div>
-                <div>Choices:</div>
-                <ul>
-                  {question.choices.map((c) => (
-                    <li key={uuid()}>
-                      <div>{c.letter}</div>
-                      <div>{c.choice}</div>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-          </div>
 
-          <div>
-            <Button
-              color="danger"
-              onClick={() => {
-                deleteQuestion(index);
-              }}
-            >
-              X
-            </Button>
-          </div>
-        </div>
-      </li>
-    );
-  }
   const submitDictionary = () => {
     if (!props.user) return toggleFail();
     if (
@@ -144,6 +108,42 @@ function CreateDictionary(props) {
       image: e.target.files[0],
     }));
   };
+  function renderQuestion(question, index) {
+    return (
+      <li key={uuid()} className="question-list-item">
+        <div className="question-preview">
+          <div>
+            <div className="">TYPE:&nbsp;{question.type}</div>
+            <div className="">{question.question}</div>
+            {question.choices.length != 0 && (
+              <div>
+                <div>Choices:</div>
+                <ul>
+                  {question.choices.map((c) => (
+                    <li key={uuid()}>
+                      <div>{c.letter}</div>
+                      <div>{c.choice}</div>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </div>
+
+          <div>
+            <Button
+              color="danger"
+              onClick={() => {
+                deleteQuestion(index);
+              }}
+            >
+              X
+            </Button>
+          </div>
+        </div>
+      </li>
+    );
+  }
   return (
     <div className="create-dictionary">
       <InformationModal
@@ -179,7 +179,7 @@ function CreateDictionary(props) {
             className="form-control"
             onChange={onChange}
             placeholder="Dictionary description..."
-            rows={3}
+            rows={2}
           />
           <Label>Image (optional)</Label>
           <div>Make your dictionary more appealing</div>
@@ -191,7 +191,7 @@ function CreateDictionary(props) {
           />
         </div>
       </div>
-      <ol>{questions.map(renderQuestion)}</ol>
+      <ol className="question-list-wrap">{questions.map(renderQuestion)}</ol>
 
       <QuestionModal
         addQuestion={(q) => {

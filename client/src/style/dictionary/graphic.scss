@@ -1,0 +1,10 @@
+.answer-read-btn {
+  background-color: inherit !important;
+  border: none;
+}
+
+.answer-read-btn.active {
+  background-color: inherit !important;
+  box-shadow: none !important;
+  border-bottom: 2px solid gray;
+}

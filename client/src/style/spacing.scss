@@ -1,3 +1,7 @@
+.navbar {
+  margin-bottom: 2rem;
+}
+
 .input-submit {
   display: flex;
   align-items: center;
@@ -19,11 +23,6 @@
   margin: 1rem auto;
 }
 
-.dictionary-item.big {
-  font-size: 2rem;
-  color: red;
-}
-
 .follow-container {
   display: flex;
   justify-content: space-around;
@@ -31,6 +30,7 @@
 
 .round-box {
   border-radius: 100%;
+  display: inline-block;
 }
 .round-box-lg {
   width: 100px;
@@ -40,6 +40,14 @@
   border-radius: 100%;
   width: 20px;
   height: 20px;
+}
+
+.username-image {
+  display: flex;
+  align-items: center;
+}
+.username-image .round-box {
+  margin-right: 0.3rem;
 }
 
 .follow-header {

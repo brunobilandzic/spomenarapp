@@ -1,0 +1,44 @@
+@media only screen and (min-width: 1024px) {
+  .dicts-wrap {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+  .dict-item {
+    width: 30%;
+    height: 550px;
+  }
+  .dict-item-image {
+    max-height: 300px;
+  }
+}
+
+@media only screen and (max-width: 1023px) {
+  .dict-item {
+    width: auto;
+  }
+}
+.dict-item-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border: 0;
+  padding-left: 0;
+  padding-right: 0;
+}
+.dict-item {
+  margin-bottom: 48px;
+  border-radius: 10px;
+  border-bottom: 0px;
+}
+
+.dict-item-card {
+  border-bottom: 0;
+
+  height: 100%;
+}
+
+.dict-description {
+  margin-bottom: 1rem;
+}

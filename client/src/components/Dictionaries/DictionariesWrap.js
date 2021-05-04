@@ -8,7 +8,8 @@ import { fetchImagesByUsernames } from "../../actions/friendsActions";
 import DictionaryItem from "./DictionaryItem";
 import { connect } from "react-redux";
 import propTypes from "prop-types";
-
+import "../../style/dictionary-wrap/spacing.scss";
+import "../../style/dictionary-wrap/graphic.scss";
 function DictionariesWrap(props) {
   const [dontRun] = useState(null);
   useEffect(() => {
@@ -43,7 +44,7 @@ function DictionariesWrap(props) {
     ));
   }
 
-  return <div className="dictionaries-wrap">{renderDictionaries()}</div>;
+  return <div className="dicts-wrap">{renderDictionaries()}</div>;
 }
 
 DictionariesWrap.propTypes = {

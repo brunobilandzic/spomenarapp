@@ -304,7 +304,6 @@ router.post("/images/dictionary/", (req, res) => {
   })
     .then((users) => {
       let toSend = {};
-      console.log(users);
       if (!users) throw new Error("No users found");
       users.forEach((u) => (toSend[u.username] = u.imageUrl));
       res.json({

@@ -1,14 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router";
 import axios from "axios";
-import DictionaryItem from "../Dictionaries/DictionaryItem";
-import DictionaryControl from "./DictionaryControl";
 import AnsweringQuestionsWrap from "./Answering/QuestionsWrap";
 import ReadingQuestionsWrap from "./Reading/QuestionsWrap";
 import { ButtonGroup, Button } from "reactstrap";
 import { connect } from "react-redux";
 import propTypes from "prop-types";
-import dictionaryReducer from "../../reducers/dictionaryReducer";
+import DictionaryItemBig from "./DictionaryItemBig";
 
 const READING = "READING";
 const ANSWERING = "ANSWERING";
@@ -38,17 +36,24 @@ function Dictionary(props) {
 
   return (
     <div className="dictionary-wrap">
-      {dictionary && <DictionaryItem dict={dictionary} big={true} />}
-      {control && <DictionaryControl dict={dictionary._id} />}
-      <ButtonGroup>
+      {dictionary && (
+        <DictionaryItemBig control={control} dict={dictionary} big={true} />
+      )}
+      <ButtonGroup className="answer-read-btn-group">
         <Button
-          className="mr-2"
+          color="light"
+          className="mr-2 answer-read-btn"
           active={mode == ANSWERING}
           onClick={() => setMode(ANSWERING)}
         >
           Answer
         </Button>
-        <Button active={mode == READING} onClick={() => setMode(READING)}>
+        <Button
+          color="light"
+          className="answer-read-btn"
+          active={mode == READING}
+          onClick={() => setMode(READING)}
+        >
           Read
         </Button>
       </ButtonGroup>

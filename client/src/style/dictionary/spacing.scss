@@ -1,0 +1,35 @@
+.dict-info-text {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+@media only screen and (min-width: 1000px) {
+  .dict-info {
+    display: flex;
+  }
+  .dict-info-image {
+    max-width: 300px;
+  }
+  .dict-info-text {
+    flex-grow: 1;
+  }
+}
+@media only screen and (max-width: 1000px) {
+  .dict-info-image {
+    width: 100%;
+  }
+  .navbar {
+    margin-bottom: 0.5rem;
+  }
+}
+
+.answer-read-btn-group {
+  width: 100%;
+  margin: 1.5rem 0;
+}
+
+.answer-read-btn {
+  width: 50%;
+  background-color: inherit;
+}

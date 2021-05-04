@@ -48,7 +48,7 @@ function AppNavbar(props) {
   );
   return (
     <div>
-      <Navbar expand="lg" color="dark" dark className="mb-5">
+      <Navbar expand="lg" color="dark" dark className="">
         <Container>
           <NavbarBrand href="/">Spomenar</NavbarBrand>
 

@@ -4,17 +4,18 @@ import React, { useEffect } from "react";
 import { Route, Switch } from "react-router-dom";
 import store from "./store";
 import { loadUser } from "./actions/authActions";
+import "bootstrap/dist/css/bootstrap.min.css";
+import "./App.css";
+import "./style/spacing.scss";
+import "./style/graphic.scss";
+import "./style/functional.scss";
 import AppNavbar from "./components/AppNavbar";
 import CreateDictionary from "./components/CreateDictionary/CreateDictionary";
 import DictionariesWrap from "./components/Dictionaries/DictionariesWrap";
 import Dictionary from "./components/Dictionary/Dictionary";
 import PasswordChange from "./components/User/Settings/Password/PasswordChange";
 import PasswordForgot from "./components/User/Settings/Password/PasswordForgot";
-import "bootstrap/dist/css/bootstrap.min.css";
-import "./App.css";
-import "./style/spacing.scss";
-import "./style/graphic.scss";
-import "./style/functional.scss";
+
 import EmailConfirm from "./components/Modals/EmailConfirm";
 import ResetPasswordCheck from "./components/User/Settings/Password/ResetPasswordCheck";
 import Profile from "./components/User/Profile";
@@ -38,7 +39,6 @@ function App() {
               <Dictionary />
             </Route>
             <Route exact path="/">
-              <h4 className="main-hedaer">All dictionaries</h4>
               <DictionariesWrap />
             </Route>
             <Route exact path="/verify/:username/:id">

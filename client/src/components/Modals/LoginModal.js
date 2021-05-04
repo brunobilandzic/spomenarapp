@@ -77,15 +77,25 @@ function LoginModal(props) {
                 value={info.password}
                 name="password"
               />
-              <Link to="/forgotpassword" onClick={toggleModal}>
-                Forgot Password
-              </Link>
             </FormGroup>
-            <div>{props.error.msg.msg}</div>
-            <Button className="mr-2" type="submit" color="success">
-              Login
-            </Button>
-            <Button onClick={toggleModal}>Cancel</Button>
+            <div className="mb-3">{props.error.msg.msg}</div>
+            <div className=" d-flex justify-content-between align-items-center">
+              <div className="login-btns modal-btns">
+                <Button className="mr-2" type="submit" color="success">
+                  Login
+                </Button>
+                <Button onClick={toggleModal}>Cancel</Button>
+              </div>
+              <div>
+                <Link
+                  to="/forgotpassword"
+                  className="app-navigation-link"
+                  onClick={toggleModal}
+                >
+                  Forgot Password
+                </Link>
+              </div>
+            </div>
           </Form>
         </ModalBody>
       </Modal>
