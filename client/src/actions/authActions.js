@@ -315,7 +315,6 @@ export const deleteProfileImage = () => (dispatch, getState) => {
 
 export const tokenConfig = (getState) => {
   const token = getState().auth.token;
-
   const config = {
     headers: {
       "Content-type": "application/json",

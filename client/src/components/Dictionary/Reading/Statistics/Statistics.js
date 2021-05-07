@@ -14,33 +14,42 @@ const colors = {
 export default function Statistic(props) {
   const [stats, setStats] = useState(null);
   useEffect(() => {
-    const values = props.choices.map((a) => a.letter);
+    let values;
+    if (props.type == MULTIPLE_CHOICE)
+      values = props.choices.map((c) => c.letter);
+    else values = Array.from(new Set(props.answers.map((a) => a.value)));
     const answers = props.answers.map((a) => a.value);
+    console.log(values);
     console.log(answers);
     let statsTemp = values.map((value) => ({
       value,
       count: answers.filter((a) => a == value).length,
     }));
     setStats([...statsTemp.sort((a, b) => b.count - a.count)]);
-    console.log(stats);
   }, [props._id]);
 
   const approvalStats = (
     <div>
       <Progress className="stat-bar approval-bar" multi>
         {stats &&
-          stats.map((stat) => (
-            <Progress
-              key={uuid()}
-              bar
-              color={colors[stat.value]}
-              value={stat.count}
-              max={props.answers.length}
-            >
-              {stat.value == "I_DONT_KNOW" ? "Dont Know" : stat.value}{" "}
-              {((stat.count / props.answers.length) * 100).toFixed(2) + " %"}
-            </Progress>
-          ))}
+          stats
+            .sort((a, b) => {
+              if (a.value == "Yes") return -1;
+              else if (a.value == "No") return 0;
+              else return 0;
+            })
+            .map((stat) => (
+              <Progress
+                key={uuid()}
+                bar
+                color={colors[stat.value]}
+                value={stat.count}
+                max={props.answers.length}
+              >
+                {stat.value == "I_DONT_KNOW" ? "Dont Know" : stat.value}{" "}
+                {((stat.count / props.answers.length) * 100).toFixed(2) + " %"}
+              </Progress>
+            ))}
       </Progress>
     </div>
   );
@@ -66,8 +75,8 @@ export default function Statistic(props) {
     </div>
   );
   return (
-    <div>
-      <div className="statistics-head">
+    <div className="statistics-wrap">
+      <div className="statistics-head text-center">
         <i class="far fa-chart-bar"></i>
       </div>
       {props.type == APPROVAL && approvalStats}

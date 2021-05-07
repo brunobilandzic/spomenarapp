@@ -3,7 +3,7 @@ const config = require("../config");
 
 module.exports = function authUser(user, next) {
   jwt.sign(
-    { username: user.username, id: user._id },
+    { username: user.username, id: user._id, verified: user.verified },
     config.JWT_SECRET,
     { expiresIn: 3600 },
     (err, token) => {

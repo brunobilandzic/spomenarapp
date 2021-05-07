@@ -360,6 +360,34 @@ router.get("/:id", (req, res) => {
     })
     .catch((err) => res.status(401).json({ msg: err.message }));
 });
+
+// @route GET /api/users/email/:id
+// @desc Fetches email
+// @access Public
+
+router.get("/email/:id", (req, res) => {
+  User.findById(req.params.id)
+    .then((user) => {
+      user
+        ? res.send({ email: user.email })
+        : res.status(400).json({ msg: "User does not exist" });
+    })
+    .catch((err) => res.status(401).json({ msg: err.message }));
+});
+
+// @route GET /api/users/resendverify/:id
+// @desc Resend verification link
+// @access Public
+
+router.get("/resendverify/:id", (req, res) => {
+  User.findById(req.params.id)
+    .then((user) => {
+      if (!user) return;
+      else return hashAndSendVerificationLink(user, req, res);
+    })
+    .catch((err) => res.status(401).json({ msg: err.message }));
+});
+
 function hashAndSendVerificationLink(user, req, res) {
   bcrypt.genSalt(10, (err, salt) => {
     if (err) throw err;
@@ -375,10 +403,13 @@ function hashAndSendVerificationLink(user, req, res) {
         base64url(hash);
       sendVerificationLink(user, link);
       console.log("authing\n " + user);
-      authUser(user, (authData) => {
-        res.json({
-          ...authData,
-        });
+      res.json({
+        username: user.username,
+        id: user._id,
+        verified: user.verified,
+        name: user.name,
+        email: user.email,
+        imageUrl: user.imageUrl,
       });
     });
   });

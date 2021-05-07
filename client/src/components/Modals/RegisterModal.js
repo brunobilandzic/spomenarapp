@@ -31,6 +31,13 @@ function RegisterModal(props) {
       return toggleModal();
     }
   }, [props.isAuthenticated]);
+
+  useEffect(() => {
+    if (props.registerSuccess && props.user) {
+      setModal(false);
+      window.location.href = "/goverify/" + props.user.id;
+    }
+  }, [props.registerSuccess]);
   function toggleModal() {
     setInfo({
       username: "",
@@ -150,14 +157,18 @@ function RegisterModal(props) {
 RegisterModal.propTypes = {
   clearErrors: propTypes.func.isRequired,
   returnErrors: propTypes.func.isRequired,
+  user: propTypes.object,
   error: propTypes.object.isRequired,
   register: propTypes.func.isRequired,
   isAuthenticated: propTypes.bool,
+  registerSuccess: propTypes.bool,
 };
 
 const mapStateToProps = (state) => ({
   error: state.error,
   isAuthenticated: state.auth.isAuthenticated,
+  registerSuccess: state.auth.registerSuccess,
+  user: state.auth.user,
 });
 
 export default connect(mapStateToProps, {

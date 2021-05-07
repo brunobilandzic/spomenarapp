@@ -17,6 +17,7 @@ const initialState = {
   token: localStorage.getItem("token"),
   user: null,
   isAuthenticated: null,
+  registerSuccess: false,
 };
 export default function authReducer(state = initialState, action) {
   switch (action.type) {
@@ -26,7 +27,6 @@ export default function authReducer(state = initialState, action) {
         user: { ...action.payload },
         isAuthenticated: true,
       };
-    case REGISTER_SUCCESS:
     case LOGIN_SUCCESS:
     case PASS_RESET_SUCCESS:
     case LINK_VERIFICATION_SUCCESS:
@@ -34,8 +34,15 @@ export default function authReducer(state = initialState, action) {
     case IMAGE_CHANGE_SUCCESS:
       localStorage.setItem("token", action.payload.token);
       return {
+        ...state,
         ...action.payload,
         isAuthenticated: true,
+      };
+    case REGISTER_SUCCESS:
+      return {
+        ...state,
+        registerSuccess: true,
+        user: { ...action.payload },
       };
     case REGISTER_FAIL:
     case LOGIN_FAIL:

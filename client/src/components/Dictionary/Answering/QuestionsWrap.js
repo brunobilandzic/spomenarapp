@@ -30,7 +30,7 @@ function QuestionsWrap(props) {
   }, [dictId]);
   useEffect(() => {
     if (questions.length) props.checkIfAnswered(questions[0]._id);
-  }, [questions, modal.answered]);
+  }, [questions.length]);
 
   function onSubmit(e) {
     e.preventDefault();

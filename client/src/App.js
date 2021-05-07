@@ -24,6 +24,7 @@ import UserProfile from "./components/User/Others/UserProfile";
 import ExploreUsers from "./components/User/Friends/ExploreUsers";
 import ProtectedRoute from "./routes/ProtectedRoute";
 import ProfileImageChange from "./components/User/Settings/ProfileImage/ProfileImageChange";
+import GoVerify from "./components/Modals/GoVerify";
 function App() {
   useEffect(() => {
     store.dispatch(loadUser());
@@ -45,6 +46,9 @@ function App() {
             </Route>
             <Route exact path="/forgotpassword">
               <PasswordForgot />
+            </Route>
+            <Route exact path="/goverify/:userId">
+              <GoVerify />
             </Route>
             <Route exact path="/resetpassword/:username/:hash">
               <ResetPasswordCheck />

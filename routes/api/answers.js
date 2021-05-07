@@ -1,5 +1,6 @@
 const Dictionary = require("../../models/Dictionary");
 const Answer = require("../../models/Answer");
+const Question = require("../../models/Question");
 const express = require("express");
 const router = express.Router();
 const auth = require("../../middleware/auth");
@@ -25,8 +26,80 @@ router.get("/quest/:questId", (req, res) => {
       return res.send(answers);
     })
     .catch((err) => {
-      return res.status(500).json({ msg: err.message });
+      return res.status(400).json({ msg: err.message });
     });
+});
+
+// @route GET /api/answers/dict/count/:dictionary
+// @desc Fetches answer count for one dictionary
+// @access Public
+router.get("/dict/count/:dictionary", (req, res) => {
+  const { dictionary } = req.params;
+  Question.findOne({ dictionary })
+    .then((question) => {
+      return Answer.countDocuments({ question: question._id });
+    })
+    .then((count) => res.send({ count }))
+    .catch((err) => res.status(400).json({ msg: err.message }));
+});
+
+// @route GET /api/answers/dict/count
+// @desc Fetches answer counts for given dictionaries
+// @access Public
+
+router.post("/dict/count", (req, res) => {
+  const dictionaries = req.body.dictionaries;
+  console.log(dictionaries);
+  const answerCounts = dictionaries.map((dictionary) => ({
+    dictionary,
+    count: 0,
+    isWritten: false,
+  }));
+  console.log(answerCounts);
+  Question.find({
+    dictionary: {
+      $in: [...dictionaries],
+    },
+  })
+    .then((questions) => {
+      if (!questions) throw new Error("No questions found.");
+      const uniqueQuestions = questions.filter((q) => {
+        let answerCountIndex = answerCounts
+          .map((d) => d.dictionary)
+          .indexOf(q.dictionary.toString());
+        if (answerCounts[answerCountIndex].isWritten) return false;
+        else {
+          answerCounts[answerCountIndex].isWritten = true;
+          return true;
+        }
+      });
+      let uniqueQuestionIds = uniqueQuestions.map((q) => ({
+        question: q._id,
+        dictionary: q.dictionary,
+      }));
+      console.log("questions", uniqueQuestionIds);
+      Answer.find({
+        question: {
+          $in: [...uniqueQuestionIds.map((q) => q.question)],
+        },
+      }).then((answers) => {
+        console.log("answers", answers);
+        answers.forEach((answer) => {
+          let uniqueQuestionIdsIndex = uniqueQuestionIds
+            .map((q) => q.question.toString())
+            .indexOf(answer.question.toString());
+          console.log(uniqueQuestionIdsIndex);
+          let dictionaryId =
+            uniqueQuestionIds[uniqueQuestionIdsIndex].dictionary;
+          let answerCountIndex = answerCounts
+            .map((d) => d.dictionary.toString())
+            .indexOf(dictionaryId.toString());
+          answerCounts[answerCountIndex].count++;
+        });
+        return res.send(answerCounts);
+      });
+    })
+    .catch((err) => res.status(400).json({ msg: err.message }));
 });
 // @route POST /api/answers/dict/:dictId
 // @desc Adds an array of answers to dictionary

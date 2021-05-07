@@ -15,10 +15,6 @@ const storage = new CloudinaryStorage({
   transformation: [{ width: 500, height: 500, crop: "limit" }],
 });
 
-// @route GET /api/dicts
-// @desc Fetches all dictionaries in DB
-// @access Public
-
 router.get("/", (req, res) => {
   Dictionary.find()
     .sort({ date: -1 })

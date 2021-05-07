@@ -1,15 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import {
-  Card,
-  CardImg,
-  CardText,
-  CardFooter,
-  CardBody,
-  CardTitle,
-  CardSubtitle,
-  Button,
-} from "reactstrap";
+import { Card, CardImg, CardFooter, CardBody, CardTitle } from "reactstrap";
 import parseDate from "../../helpers/date";
 import truncate from "../../helpers/truncate";
 import {
@@ -65,7 +56,12 @@ export default function DictionaryItem(props) {
                 <div>{dict.author_username}</div>
               </div>
             </Link>
-
+            <div className="answer-count-wrap d-flex">
+              <div className="answer-count-icon mr-2">
+                <i class="fas fa-user dark-blue"></i>
+              </div>
+              <div classNam="answer-count-count">{props.count}</div>
+            </div>
             <div className="dict-item-date">{parseDate(dict.date)}</div>
           </CardFooter>
         </CardBody>

@@ -80,3 +80,10 @@
 .stat-bar {
   height: 1.3rem;
 }
+
+@media only screen and (min-width: 1000px) {
+  .statistics-wrap {
+    width: 50%;
+    margin: auto;
+  }
+}

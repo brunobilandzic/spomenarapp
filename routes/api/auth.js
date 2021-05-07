@@ -21,6 +21,10 @@ router.post("/", (req, res) => {
     (userFound) => {
       if (!userFound)
         return res.status(400).json({ msg: `User ${user} not found.` });
+      if (!userFound.verified)
+        return res
+          .status(400)
+          .json({ msg: `Verify your email on ${userFound.email}` });
       bcrypt.compare(password, userFound.password).then((isMatch) => {
         if (isMatch) {
           authUser(userFound, (authData) => {

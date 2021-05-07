@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import parseDate from "../../helpers/date";
 import {
@@ -8,9 +8,24 @@ import {
 import "../../style/dictionary/spacing.scss";
 import "../../style/dictionary/graphic.scss";
 import DictionaryControl from "./DictionaryControl";
+import axios from "axios";
 
 export default function DictionaryItemBig(props) {
   const { dict } = props;
+  const [count, setCount] = useState(null);
+
+  useEffect(() => {
+    let isMounted = true;
+    axios
+      .get("/api/answers/dict/count/" + dict._id)
+      .then((res) => {
+        if (isMounted) setCount(res.data.count);
+      })
+      .catch((err) => console.log(err));
+    return () => {
+      isMounted = false;
+    };
+  });
 
   return (
     <div className="dict-info">
@@ -43,6 +58,12 @@ export default function DictionaryItemBig(props) {
                 <div>{dict.author_username}</div>
               </div>
             </Link>
+            <div className="answer-count-wrap d-flex">
+              <div className="answer-count-icon mr-2">
+                <i class="fas fa-user dark-blue"></i>
+              </div>
+              <div classNam="answer-count-count">{count}</div>
+            </div>
             <div className="dict-info-date">{parseDate(dict.date)}</div>
           </div>
           <div>{props.control && <DictionaryControl dict={dict.id} />}</div>

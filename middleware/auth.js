@@ -7,6 +7,8 @@ module.exports = function auth(req, res, next) {
   try {
     // verify token
     const decoded = jwt.verify(token, config.JWT_SECRET);
+    if (!decoded.verified)
+      return res.stats(400).json({ msg: "Email not verified" });
     req.user = decoded;
     next();
   } catch (e) {

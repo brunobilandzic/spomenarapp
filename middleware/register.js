@@ -8,6 +8,7 @@ module.exports = function register(data) {
     "forgotpassword",
     "changepassword",
     "verify",
+    "goverify",
   ];
 
   const { username, password, name, email } = data;

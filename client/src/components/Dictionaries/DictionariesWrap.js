@@ -3,6 +3,8 @@ import {
   loadUserDictionaries,
   loadAllDictionaries,
   clearDictionaries,
+  fetchAnswersCount,
+  clearAnswersCount,
 } from "../../actions/dictionaryActions";
 import { fetchImagesByUsernames } from "../../actions/friendsActions";
 import DictionaryItem from "./DictionaryItem";
@@ -19,12 +21,14 @@ function DictionariesWrap(props) {
 
     return () => {
       props.clearDictionaries();
+      props.clearAnswersCount();
     };
   }, [dontRun]);
 
   useEffect(() => {
     if (!props.dictionaries || !props.dictionaries.length) return;
     props.fetchImagesByUsernames([...props.dictionaries.map((d) => d.author)]);
+    props.fetchAnswersCount([...props.dictionaries.map((d) => d._id)]);
   }, [props.dictionaries]);
   function renderDictionaries() {
     if (props.dictionaries === null) {
@@ -38,6 +42,7 @@ function DictionariesWrap(props) {
         imageUrl={
           props.usernameImages && props.usernameImages[dict.author_username]
         }
+        count={props.answersCounts && props.answersCounts[dict._id]}
         key={dict._id}
         dict={{ ...dict }}
       />
@@ -53,11 +58,14 @@ DictionariesWrap.propTypes = {
   clearDictionaries: propTypes.func.isRequired,
   dictionaries: propTypes.array,
   fetchImagesByUsernames: propTypes.func.isRequired,
+  answersCounts: propTypes.object,
+  clearAnswersCount: propTypes.func.isRequired,
 };
 
 const mapStateToProps = (state) => ({
   dictionaries: state.dictionaries.dictionaries,
   usernameImages: state.friends.usernameImages,
+  answersCounts: state.dictionaries.answersCounts,
 });
 
 export default connect(mapStateToProps, {
@@ -65,4 +73,6 @@ export default connect(mapStateToProps, {
   loadUserDictionaries,
   clearDictionaries,
   fetchImagesByUsernames,
+  fetchAnswersCount,
+  clearAnswersCount,
 })(DictionariesWrap);

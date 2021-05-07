@@ -2,6 +2,8 @@ import {
   LOAD_DICTIONARIES,
   CLEAR_DICTIONARIES,
   DELETE_DICTIONARY,
+  LOAD_ANSWERS_COUNTS,
+  CLEAR_ANSWERS_COUNT,
 } from "../actions/types";
 import axios from "axios";
 import { returnErrors } from "./errorActions";
@@ -73,6 +75,37 @@ export const deleteDictionary = (dictId) => (dispatch, getState) => {
         )
       );
     });
+};
+
+export const fetchAnswersCount = (dictionaries) => (dispatch) => {
+  const body = { dictionaries };
+  console.log(body);
+  axios
+    .post("/api/answers/dict/count", body, null)
+    .then((res) => {
+      let answerCounts = {};
+      res.data.forEach((answerCount) => {
+        answerCounts[answerCount.dictionary] = answerCount.count;
+      });
+      dispatch({
+        type: LOAD_ANSWERS_COUNTS,
+        payload: { ...answerCounts },
+      });
+    })
+    .catch((err) => {
+      dispatch(
+        returnErrors(
+          err.response.data,
+          err.response.status,
+          "DICTIONARY_LOAD_FAILURE"
+        )
+      );
+    });
+};
+export const clearAnswersCount = () => (dispatch) => {
+  dispatch({
+    type: CLEAR_ANSWERS_COUNT,
+  });
 };
 export const clearDictionaries = () => (dispatch) => {
   dispatch({
