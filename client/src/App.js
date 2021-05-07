@@ -8,7 +8,6 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
 import "./style/spacing.scss";
 import "./style/graphic.scss";
-import "./style/functional.scss";
 import AppNavbar from "./components/AppNavbar";
 import CreateDictionary from "./components/CreateDictionary/CreateDictionary";
 import DictionariesWrap from "./components/Dictionaries/DictionariesWrap";

@@ -12,9 +12,9 @@ function DictionaryControl(props) {
   }
   return (
     <div>
-      <Button onClick={handleClick} color="danger">
+      <div className="custom-btn" onClick={handleClick} color="danger">
         Delete
-      </Button>
+      </div>
     </div>
   );
 }

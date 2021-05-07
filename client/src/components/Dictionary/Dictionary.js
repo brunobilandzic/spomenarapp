@@ -58,7 +58,10 @@ function Dictionary(props) {
         </Button>
       </ButtonGroup>
       {mode == ANSWERING ? (
-        <AnsweringQuestionsWrap dictId={dictId} />
+        <AnsweringQuestionsWrap
+          dictId={dictId}
+          changeToRead={() => setMode(READING)}
+        />
       ) : (
         <ReadingQuestionsWrap dictId={dictId} />
       )}

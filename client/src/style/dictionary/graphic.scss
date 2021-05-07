@@ -1,3 +1,5 @@
+@import "../base/colors";
+
 .answer-read-btn {
   background-color: inherit !important;
   border: none;
@@ -7,4 +9,26 @@
   background-color: inherit !important;
   box-shadow: none !important;
   border-bottom: 2px solid gray;
+}
+
+.question-nav-btn:focus {
+  box-shadow: none;
+}
+
+.question-nav-btn,
+.answering-submit {
+  color: $nav-bar;
+  background-color: $light-nav-bar;
+}
+
+.question-nav-btn.disabled {
+  color: gray;
+}
+
+.question-nav-btn:hover {
+  background-color: $light-nav-bar-hover;
+}
+
+.answering-submit:hover {
+  color: $success;
 }

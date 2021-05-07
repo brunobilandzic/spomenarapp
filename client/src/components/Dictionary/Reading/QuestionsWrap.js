@@ -44,6 +44,7 @@ function QuestionsWrap(props) {
       <Question
         usernameImages={{ ...props.usernameImages }}
         index={index}
+        length={questions.length}
         {...q}
         key={q._id}
       />
@@ -57,24 +58,28 @@ function QuestionsWrap(props) {
         )}
       </div>
       <div>{renderQuestions()}</div>
-      <ButtonGroup>
-        <Button
-          className={classNames("nav-btn", { disabled: index == 0 })}
-          onClick={handlePrevious}
-        >
-          {" "}
-          &lt;{" "}
-        </Button>
-        <Button
-          className={classNames("nav-btn", {
-            disabled: questions && index == questions.length - 1,
-          })}
-          onClick={handleNext}
-        >
-          {" "}
-          &gt;{" "}
-        </Button>
-      </ButtonGroup>
+      <div className="question-navigation-wrap">
+        <div className="question-navigation">
+          <div
+            className={classNames("question-nav-btn", {
+              disabled: index == 0,
+            })}
+            onClick={handlePrevious}
+          >
+            <i class="fas fa-angle-left"></i>
+          </div>
+
+          <div
+            className={classNames("question-nav-btn", {
+              disabled: questions && index == questions.length - 1,
+            })}
+            onClick={handleNext}
+          >
+            {" "}
+            <i class="fas fa-angle-right"></i>{" "}
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

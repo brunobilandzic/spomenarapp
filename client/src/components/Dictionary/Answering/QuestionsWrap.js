@@ -30,11 +30,7 @@ function QuestionsWrap(props) {
   }, [dictId]);
   useEffect(() => {
     if (questions.length) props.checkIfAnswered(questions[0]._id);
-  }, [questions]);
-
-  useEffect(() => {
-    if (!questions.length) return;
-  });
+  }, [questions, modal.answered]);
 
   function onSubmit(e) {
     e.preventDefault();
@@ -44,7 +40,6 @@ function QuestionsWrap(props) {
       return setModal({ ...modal, emptyAnswers: true });
     }
     props.postAnswers(dictId);
-    toggleModal("answered");
   }
 
   function handlePrevious() {
@@ -62,7 +57,9 @@ function QuestionsWrap(props) {
       ...modal,
       [type]: !modal[type],
     });
-    if (type == "answered" && modal.answered) window.location.pathname = "/";
+    if (type == "answered" && modal.answered) {
+      props.changeToRead();
+    }
   }
 
   function renderQuestions() {
@@ -70,7 +67,7 @@ function QuestionsWrap(props) {
       return "...Loading";
     }
     return questions.map((q, i) => (
-      <Question index={index} {...q} key={q._id} />
+      <Question index={index} length={questions.length} {...q} key={q._id} />
     ));
   }
 
@@ -83,14 +80,6 @@ function QuestionsWrap(props) {
       ) : (
         <div>
           <InformationModal
-            modal={modal.answered}
-            toggle={() => {
-              toggleModal("answered");
-            }}
-            modalHeader={"Answered"}
-            modalBody={"You have successfully answered the dictionary."}
-          />
-          <InformationModal
             modal={modal.emptyAnswers}
             toggle={() => {
               toggleModal("emptyAnswers");
@@ -99,29 +88,41 @@ function QuestionsWrap(props) {
             modalBody={"You haven't answered all questions."}
           />
           <div>{renderQuestions()}</div>
-          <ButtonGroup>
-            <Button
-              className={classNames("nav-btn", { disabled: index == 0 })}
-              onClick={handlePrevious}
-            >
-              {" "}
-              &lt;{" "}
-            </Button>
-            <Button
-              className={classNames("nav-btn", {
-                disabled: questions && index == questions.length - 1,
-              })}
-              onClick={handleNext}
-            >
-              {" "}
-              &gt;{" "}
-            </Button>
-          </ButtonGroup>
-          {questions && index == questions.length - 1 && (
-            <Button onClick={onSubmit} type="submit">
-              Submit
-            </Button>
-          )}
+          <div className="question-buttons-wrap answering">
+            <div className="question-navigation-wrap">
+              <div className="question-navigation">
+                <div
+                  className={classNames("question-nav-btn", {
+                    disabled: index == 0,
+                  })}
+                  onClick={handlePrevious}
+                >
+                  <i class="fas fa-angle-left"></i>
+                </div>
+
+                <div
+                  className={classNames("question-nav-btn", {
+                    disabled: questions && index == questions.length - 1,
+                  })}
+                  onClick={handleNext}
+                >
+                  {" "}
+                  <i class="fas fa-angle-right"></i>{" "}
+                </div>
+              </div>
+            </div>
+            <div className="answering-submit-wrap">
+              {questions && index == questions.length - 1 && (
+                <div
+                  className="answering-submit custom-btn"
+                  onClick={onSubmit}
+                  type="submit"
+                >
+                  Submit
+                </div>
+              )}
+            </div>
+          </div>
         </div>
       )}
     </div>
@@ -137,7 +138,7 @@ QuestionsWrap.propTypes = {
   isAuthenticated: propTypes.bool,
 };
 
-const mapStateToProps = (state) => ({
+const mapStateToProps = (state, ownProps) => ({
   questions: state.answering.questions,
   isAnswered: state.answering.isAnswered,
   isAuthenticated: state.auth.isAuthenticated,

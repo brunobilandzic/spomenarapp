@@ -24,7 +24,6 @@ export const addQuestions = (dictId) => (dispatch) => {
           active: i == 0 ? true : false,
         })),
       });
-      // If user has answered the dictionary he had to answer the FIRST question
     })
     .catch((err) => console.log(err));
 };
@@ -72,7 +71,9 @@ export const postAnswers = (dictId) => (dispatch, getState) => {
       answers,
     })
     .then((res) => {
-      console.log(res.data);
+      dispatch({
+        type: FORBID_ANSWERING,
+      });
     })
     .catch((err) => console.log(err));
 };

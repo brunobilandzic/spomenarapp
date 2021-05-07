@@ -14,23 +14,20 @@ const colors = {
 export default function Statistic(props) {
   const [stats, setStats] = useState(null);
   useEffect(() => {
+    const values = props.choices.map((a) => a.letter);
     const answers = props.answers.map((a) => a.value);
-    const values = Array.from(new Set(answers));
     console.log(answers);
-    console.log(values);
     let statsTemp = values.map((value) => ({
       value,
       count: answers.filter((a) => a == value).length,
     }));
-    console.log(statsTemp);
-    setStats([...statsTemp]);
+    setStats([...statsTemp.sort((a, b) => b.count - a.count)]);
     console.log(stats);
-    console.log(props.answers.length);
   }, [props._id]);
 
   const approvalStats = (
     <div>
-      <Progress multi>
+      <Progress className="stat-bar approval-bar" multi>
         {stats &&
           stats.map((stat) => (
             <Progress
@@ -52,11 +49,15 @@ export default function Statistic(props) {
       {stats &&
         props.choices.length &&
         stats.map((stat) => (
-          <div key={uuid()}>
+          <div className="text-center" key={uuid()}>
             <div>
               {props.choices.filter((c) => c.letter == stat.value)[0].choice}
             </div>
-            <Progress bar value={stat.count} max={props.answers.length}>
+            <Progress
+              className="stat-bar mult-choice-bar"
+              value={stat.count}
+              max={props.answers.length}
+            >
               {((stat.count / props.answers.length) * 100).toFixed(2) + " %"}
             </Progress>
             <br></br>
@@ -66,7 +67,9 @@ export default function Statistic(props) {
   );
   return (
     <div>
-      <div className="statistics-head">Stats:</div>
+      <div className="statistics-head">
+        <i class="far fa-chart-bar"></i>
+      </div>
       {props.type == APPROVAL && approvalStats}
       {props.type == MULTIPLE_CHOICE && multipleChoiceStats}
     </div>

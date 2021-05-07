@@ -9,3 +9,15 @@
   color: $light-blue;
   text-decoration: none;
 }
+
+.custom-btn {
+  color: $nav-bar;
+  background-color: $light-nav-bar;
+}
+.custom-btn:hover {
+  cursor: pointer;
+}
+
+.mult-choice-bar div {
+  background-color: $dark-blue;
+}

@@ -42,9 +42,16 @@ export default function Question(props) {
       {props.index == props.order && (
         <div>
           <div>
-            <div className="question reading-question">{question}</div>
+            <div className="question-label-wrap reading">
+              <div className="question-count">
+                <small>
+                  {props.order + 1}/{props.length}
+                </small>
+              </div>
+              {question}
+            </div>
             {type === MULTIPLE_CHOICE && (
-              <div className="choices reading-choices">
+              <div className="choices answer-wrap reading-choices">
                 {choices.map((c) => (
                   <div key={uuid()}>
                     {c.letter}) {c.choice}
@@ -53,13 +60,12 @@ export default function Question(props) {
               </div>
             )}
           </div>
-          <div>
+          <div className="answers-section-wrap">
             {answers != undefined &&
-              choices != undefined &&
               answers.map((a) => (
-                <div key={uuid()}>
+                <div className="answer-item" key={uuid()}>
                   <Link
-                    className="app-navigation-link"
+                    className="app-navigation-link username-image username-image-sm"
                     key={uuid()}
                     to={"/" + a.author_username}
                   >
@@ -74,8 +80,8 @@ export default function Question(props) {
                     />
                     {a.author_username}
                   </Link>
-                  <div>
-                    {choices.length ? (
+                  <div className="answer-value">
+                    {choices != undefined && choices.length ? (
                       <div>
                         {choices.filter((c) => c.letter == a.value)[0].choice}
                       </div>
@@ -87,14 +93,16 @@ export default function Question(props) {
                   </div>
                 </div>
               ))}
-            {(type == MULTIPLE_CHOICE || type == APPROVAL) && answers && (
-              <Statistics
-                question={_id}
-                choices={choices}
-                answers={answers}
-                type={type}
-              ></Statistics>
-            )}
+            {(type == MULTIPLE_CHOICE || type == APPROVAL) &&
+              answers &&
+              answers.length >= 1 && (
+                <Statistics
+                  question={_id}
+                  choices={choices}
+                  answers={answers}
+                  type={type}
+                ></Statistics>
+              )}
           </div>
         </div>
       )}

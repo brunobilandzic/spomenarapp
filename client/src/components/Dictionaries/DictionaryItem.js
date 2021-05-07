@@ -22,14 +22,16 @@ export default function DictionaryItem(props) {
   return (
     <div className="dict-item">
       <Card className="dict-item-card">
-        <Link to={`/dictionary/${dict._id}`} className="app-navigation-link">
-          <CardImg
-            className="dict-item-image"
-            top
-            width="100%"
-            src={dict.imageUrl ? dict.imageUrl : GENERIC_DICTIONARY_IMAGE}
-          />
-        </Link>
+        <div className="dict-item-image-wrapper">
+          <Link to={`/dictionary/${dict._id}`} className="app-navigation-link">
+            <CardImg
+              className="dict-item-image"
+              top
+              width="100%"
+              src={dict.imageUrl ? dict.imageUrl : GENERIC_DICTIONARY_IMAGE}
+            />
+          </Link>
+        </div>
         <CardBody className="d-flex flex-column justify-content-between">
           <div>
             <div className="dict-item-head">
