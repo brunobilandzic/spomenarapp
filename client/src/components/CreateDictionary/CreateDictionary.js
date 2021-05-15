@@ -6,6 +6,7 @@ import { connect } from "react-redux";
 import propTypes from "prop-types";
 import { v4 as uuid } from "uuid";
 import axios from "axios";
+import { MULTIPLE_CHOICE } from "./AddQuestion/QuestionTypes";
 
 function CreateDictionary(props) {
   const [questions, setQuestions] = useState([]);
@@ -103,6 +104,7 @@ function CreateDictionary(props) {
       });
   };
   const onChangeImage = (e) => {
+    console.log(e.target.files[0]);
     setMeta((m) => ({
       ...m,
       image: e.target.files[0],
@@ -110,38 +112,37 @@ function CreateDictionary(props) {
   };
   function renderQuestion(question, index) {
     return (
-      <li key={uuid()} className="question-list-item">
-        <div className="question-preview">
-          <div>
-            <div className="">TYPE:&nbsp;{question.type}</div>
-            <div className="">{question.question}</div>
-            {question.choices.length != 0 && (
-              <div>
-                <div>Choices:</div>
-                <ul>
-                  {question.choices.map((c) => (
-                    <li key={uuid()}>
-                      <div>{c.letter}</div>
-                      <div>{c.choice}</div>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
+      <div key={uuid()} className="question-list-item-wrap mb-2">
+        <div className="d-flex justify-content-between align-items-center">
+          <div className="value mr-2">
+            {index + 1 + ") " + question.question}
           </div>
-
-          <div>
-            <Button
-              color="danger"
+          <div className="value-type d-flex align-items-center ">
+            <div className="type">
+              <small className="type">{question.type}</small>
+            </div>
+            <div
+              className="custom-btn-2"
               onClick={() => {
                 deleteQuestion(index);
               }}
             >
-              X
-            </Button>
+              <i class="fas fa-trash"></i>
+            </div>
           </div>
         </div>
-      </li>
+        <div>
+          {question.choices.length != 0 && (
+            <div className="choices-wrap ml-3">
+              {question.choices.map((c) => (
+                <div key={uuid()}>
+                  {c.letter})&nbsp;<span>{c.choice}</span>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
     );
   }
   return (
@@ -168,6 +169,7 @@ function CreateDictionary(props) {
             type="text"
             name="title"
             value={meta.title}
+            className="meta-input"
             onChange={onChange}
             placeholder="Dictionary title..."
           />
@@ -176,24 +178,29 @@ function CreateDictionary(props) {
             type="text"
             name="description"
             value={meta.description}
-            className="form-control"
+            className="form-control meta-input"
             onChange={onChange}
             placeholder="Dictionary description..."
             rows={2}
           />
-          <Label>Image (optional)</Label>
-          <div>Make your dictionary more appealing</div>
-          <input
-            onChange={onChangeImage}
-            accept=".jpg,.png"
-            type="file"
-            name="image"
-          />
+          <div className="img-upload dict-img-upload">
+            <Label>
+              Image <i>(optional)</i>
+            </Label>
+            <div>Make your dictionary more appealing</div>
+            <input
+              onChange={onChangeImage}
+              accept=".jpg,.png"
+              type="file"
+              name="image"
+            />
+          </div>
         </div>
       </div>
-      <ol className="question-list-wrap">{questions.map(renderQuestion)}</ol>
+      <div className="qeustions-preview">{questions.map(renderQuestion)}</div>
 
       <QuestionModal
+        count={questions.length}
         addQuestion={(q) => {
           addQuestion(q);
         }}
@@ -203,15 +210,15 @@ function CreateDictionary(props) {
           <b>{error}</b>
         </p>
         <Button onClick={submitDictionary} color="success">
-          Finish
+          Finish Dictionary
         </Button>
         <Button
           onClick={() => {
             window.location.pathname = "/";
           }}
-          color=""
+          color="danger"
         >
-          Cancel
+          Discard
         </Button>
       </div>
     </div>

@@ -1,5 +1,7 @@
 @import "base/colors";
-
+body {
+  font-family: "Roboto", Times, serif;
+}
 .app-navigation-link {
   color: $dark-blue;
   text-decoration: none;
@@ -9,20 +11,54 @@
   color: $light-blue;
   text-decoration: none;
 }
-
+.custom-btn,
+.custom-btn-2 {
+  cursor: pointer;
+}
 .custom-btn {
   color: $nav-bar;
   background-color: $light-nav-bar;
+  border: 1px solid $persian-green;
 }
 .custom-btn:hover {
-  cursor: pointer;
   background-color: $light-nav-bar-hover;
+  color: $persian-green;
+}
+
+.custom-btn-2 {
+  color: $danger;
 }
 
 .mult-choice-bar div {
   background-color: $dark-blue;
 }
+.mult-choice-bar {
+  background-color: $light-nav-bar;
+}
 
 .dark-blue {
   color: $dark-blue;
+}
+
+.image-modal-header {
+  background-color: $nav-bar;
+  border-bottom: none;
+}
+.image-modal-header span {
+  color: $light-nav-bar;
+}
+
+.image-modal-wrap:hover {
+  cursor: pointer;
+}
+
+.btn-group-btn {
+  background-color: inherit !important;
+  border: none;
+}
+
+.btn-group-btn.active {
+  background-color: inherit !important;
+  box-shadow: none !important;
+  border-bottom: 2px solid gray;
 }

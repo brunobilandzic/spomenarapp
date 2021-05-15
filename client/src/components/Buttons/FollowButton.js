@@ -5,6 +5,7 @@ import axios from "axios";
 import { ClipLoader } from "react-spinners";
 import { Button } from "reactstrap";
 import { follow, unfollow } from "../../actions/friendsActions";
+import classNames from "classnames";
 function FollowButton(props) {
   const followId = props.followId;
   const [state, setState] = useState("SAME");
@@ -18,7 +19,6 @@ function FollowButton(props) {
         "x-auth-token": props.token,
       },
     };
-    const body = { followId };
     axios
       .get("/api/users/bool/follow/" + followId, config)
       .then((res) => {
@@ -59,7 +59,14 @@ function FollowButton(props) {
   };
   return (
     <Fragment>
-      {state != "SAME" && <Button onClick={handleClick}>{text()}</Button>}
+      {state != "SAME" && (
+        <div
+          className={classNames("custom-btn", { [state]: true })}
+          onClick={handleClick}
+        >
+          {text()}
+        </div>
+      )}
     </Fragment>
   );
 }

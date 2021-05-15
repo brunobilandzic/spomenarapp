@@ -41,20 +41,21 @@ export default function Question(props) {
     <div>
       {props.index == props.order && (
         <div>
-          <div>
+          <div className="question-preview-area d-flex align-items-center">
             <div className="question-label-wrap reading">
               <div className="question-count">
                 <small>
                   {props.order + 1}/{props.length}
                 </small>
               </div>
-              {question}
+              <div className="question-value">{question}</div>
             </div>
             {type === MULTIPLE_CHOICE && (
               <div className="choices answer-wrap reading-choices">
                 {choices.map((c) => (
-                  <div key={uuid()}>
-                    {c.letter}) {c.choice}
+                  <div className="read-choice-preview" key={uuid()}>
+                    <span className="choice-letter mr-1">{c.letter}) </span>
+                    <span className="choice-value">{c.choice}</span>
                   </div>
                 ))}
               </div>
@@ -63,33 +64,46 @@ export default function Question(props) {
           <div className="answers-section-wrap">
             {answers != undefined &&
               answers.map((a) => (
-                <div className="answer-item" key={uuid()}>
-                  <Link
-                    className="app-navigation-link username-image username-image-sm"
-                    key={uuid()}
-                    to={"/" + a.author_username}
-                  >
-                    <img
-                      className="round-box-sm round-box"
-                      src={
-                        props.usernameImages &&
-                        props.usernameImages[a.author_username]
-                          ? props.usernameImages[a.author_username]
-                          : INCOGNITO_PROFILE_IMAGE
-                      }
-                    />
-                    {a.author_username}
-                  </Link>
-                  <div className="answer-value">
-                    {choices != undefined && choices.length ? (
-                      <div>
-                        {choices.filter((c) => c.letter == a.value)[0].choice}
-                      </div>
-                    ) : (
-                      <div>
-                        {a.value != "I_DONT_KNOW" ? a.value : "Dont Know"}
-                      </div>
-                    )}
+                <div
+                  className="answer-item d-flex align-items-center"
+                  key={uuid()}
+                >
+                  <div className="answer-image-wrap">
+                    <Link
+                      className="app-navigation-link username-image username-image-sm"
+                      to={"/" + a.author_username}
+                    >
+                      <img
+                        className="round-box-com round-box"
+                        src={
+                          props.usernameImages &&
+                          props.usernameImages[a.author_username]
+                            ? props.usernameImages[a.author_username]
+                            : INCOGNITO_PROFILE_IMAGE
+                        }
+                      />
+                    </Link>
+                  </div>
+                  <div className="username-answer-wrap">
+                    <div className="answer-username-value">
+                      <Link
+                        className="app-navigation-link"
+                        to={"/" + a.author_username}
+                      >
+                        {a.author_username}
+                      </Link>
+                    </div>
+                    <div className="answer-value">
+                      {choices != undefined && choices.length ? (
+                        <div>
+                          {choices.filter((c) => c.letter == a.value)[0].choice}
+                        </div>
+                      ) : (
+                        <div>
+                          {a.value != "I_DONT_KNOW" ? a.value : "Dont Know"}
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
               ))}

@@ -1,0 +1,47 @@
+.profile-options {
+  display: flex;
+  position: relative;
+}
+.profile-options .option {
+  margin-bottom: 0.8rem;
+  padding: 0.5rem;
+  border-radius: 0.25rem;
+}
+.user-profile-head {
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+@media only screen and (min-width: 1000px) {
+  .profile-options {
+    justify-content: space-between;
+  }
+  .profile-options .option {
+    width: 200px;
+  }
+  .option-icon {
+  }
+}
+
+@media only screen and (max-width: 1000px) {
+  .profile-options {
+    flex-direction: column;
+  }
+
+  .option-icon {
+  }
+}
+
+.follow-container {
+}
+
+.user-profile-nav {
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 2rem;
+}
+.user-profile-nav-item {
+  width: 50%;
+  text-align: center;
+}

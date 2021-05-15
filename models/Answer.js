@@ -18,6 +18,10 @@ const AnswerSchema = new Schema({
     type: String,
     required: true,
   },
+  date_created: {
+    type: String,
+    default: new Date().getTime(),
+  },
 });
 
 module.exports = Answer = mongoose.model("answer", AnswerSchema);

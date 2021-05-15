@@ -1,0 +1,16 @@
+@import "../base/colors";
+
+.profile-options .option {
+  box-shadow: -2px 2px 0 0 $light-nav-bar, 1px -1px $light-nav-bar;
+  font-weight: bold;
+}
+
+@media only screen and (min-width: 1000px) {
+  .profile-options .option:hover {
+    background-color: $light-nav-bar;
+  }
+}
+
+.user-profile-username {
+  color: $nav-bar;
+}

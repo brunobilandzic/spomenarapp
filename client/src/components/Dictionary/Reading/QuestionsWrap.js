@@ -52,12 +52,12 @@ function QuestionsWrap(props) {
   }
   return (
     <div>
+      <div className="render-questions-wrap reading">{renderQuestions()}</div>
       <div>
         {!props.answerCount && (
-          <div className="no-answers">No answers yet.</div>
+          <div className="no-answers text-center">No answers yet.</div>
         )}
       </div>
-      <div>{renderQuestions()}</div>
       <div className="question-navigation-wrap">
         <div className="question-navigation">
           <div

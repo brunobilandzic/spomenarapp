@@ -64,7 +64,7 @@ export default function DictionaryItemBig(props) {
               </div>
               <div classNam="answer-count-count">{count}</div>
             </div>
-            <div className="dict-info-date">{parseDate(dict.date)}</div>
+            <div className="dict-item-date">{parseDate(dict.date)}</div>
           </div>
           <div>{props.control && <DictionaryControl dict={dict.id} />}</div>
         </div>

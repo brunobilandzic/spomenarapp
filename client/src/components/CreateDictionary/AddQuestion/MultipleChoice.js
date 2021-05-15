@@ -5,49 +5,52 @@ import { connect } from "react-redux";
 import propTypes from "prop-types";
 
 export default function MultipleChoice(props) {
+  const choicePlaceholder = () => {
+    let placeholder = "Enter choice";
+    if (props.choices.length) placeholder = "Enter another choice";
+    return placeholder;
+  };
+
   const renderChoice = (choice, i) => {
     return (
-      <div key={uuid()} className="mb-2">
-        <Button
+      <div
+        key={uuid()}
+        className="mb-2 d-flex align-items-center justify-content-between"
+      >
+        <div className="ml-2 choice-preview">
+          <span>{choice.letter})&nbsp;</span>
+          <span>{choice.choice}</span>
+        </div>
+        <div
+          className="custom-btn-2"
           onClick={() => {
             props.deleteChoice(i);
           }}
-          color="danger"
-          className="list-delete-btn"
         >
-          X
-        </Button>
-        <span className="ml-2">{i + 1}&nbsp;</span>
-        <span>{choice.letter}</span>
-        <span>{choice.choice}</span>
+          <i class="fas fa-trash"></i>
+        </div>
       </div>
     );
   };
 
   return (
     <Fragment>
-      <p>
-        <b>Choices</b>
-      </p>
-      <hr></hr>
-      {props.choices.map(renderChoice)}
-      <hr></hr>
-      <div className="input-submit">
+      <div>Choices</div>
+      <div className="choices-preview-wrap mt-2 mb-2">
+        {props.choices.map(renderChoice)}
+      </div>
+      <div className="input-choice">
         <Input
           autoComplete="off"
+          className="newchoice"
           type="text"
           name="newchoice"
           value={props.choice}
           onChange={props.onChange}
-          placeholder="Add choice..."
+          placeholder={choicePlaceholder()}
         />
-        <Button
-          className="input-submit-submit"
-          color="success"
-          onClick={props.onSubmit}
-        >
-          +
-        </Button>
+
+        <i class="fas fa-plus submit-choice-btn " onClick={props.onSubmit}></i>
       </div>
     </Fragment>
   );

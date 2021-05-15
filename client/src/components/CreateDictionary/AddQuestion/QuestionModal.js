@@ -107,43 +107,17 @@ export default function QuestionModal(props) {
   return (
     <div className="">
       <Button onClick={toggle} color="dark">
-        Add Question
+        {props.count == 0 ? "Add Questions" : "Add another question"}
       </Button>
 
       <Modal isOpen={modal} toggle={toggle}>
-        <ModalHeader toggle={toggle}>Add another question</ModalHeader>
+        <ModalHeader
+          className="modal-header-custom"
+          toggle={toggle}
+        ></ModalHeader>
         <ModalBody>
-          <p>
-            <b>Question Type:</b>
-          </p>
-          <ButtonGroup className="d-flex justify-content-around">
-            <Button
-              className="mr-2"
-              color="primary"
-              onClick={() => setType(OPEN)}
-              active={question.type === OPEN}
-            >
-              Open
-            </Button>
-            <Button
-              className="mr-2"
-              color="primary"
-              onClick={() => setType(MULTIPLE_CHOICE)}
-              active={question.type === MULTIPLE_CHOICE}
-            >
-              Multiple Choice
-            </Button>
-            <Button
-              color="primary"
-              onClick={() => setType(APPROVAL)}
-              active={question.type === APPROVAL}
-            >
-              Approval
-            </Button>
-          </ButtonGroup>
           <Form onSubmit={onSubmit}>
             <FormGroup>
-              <Label for="question">Question:</Label>
               <textarea
                 className="form-control"
                 rows={2}
@@ -152,8 +126,34 @@ export default function QuestionModal(props) {
                 onChange={onChangeQuestion}
                 autoComplete="off"
                 name="question"
+                placeholder="Enter the question text..."
               />
             </FormGroup>
+            <ButtonGroup className="question-type-btn-group d-flex justify-content-around">
+              <Button
+                className="mr-2"
+                color="light"
+                onClick={() => setType(OPEN)}
+                active={question.type === OPEN}
+              >
+                Open
+              </Button>
+              <Button
+                className="mr-2"
+                color="light"
+                onClick={() => setType(MULTIPLE_CHOICE)}
+                active={question.type === MULTIPLE_CHOICE}
+              >
+                Multiple Choice
+              </Button>
+              <Button
+                color="light"
+                onClick={() => setType(APPROVAL)}
+                active={question.type === APPROVAL}
+              >
+                Approval
+              </Button>
+            </ButtonGroup>
             {question.type === MULTIPLE_CHOICE && (
               <MultipleChoice
                 choice={choice}
@@ -166,7 +166,7 @@ export default function QuestionModal(props) {
             {error}
             <div className="modal-navigation">
               <Button type="submit" color="success" onClick={onSubmit}>
-                Add
+                Done
               </Button>
               <Button onClick={toggle}>Cancel</Button>
             </div>

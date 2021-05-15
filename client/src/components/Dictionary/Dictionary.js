@@ -42,7 +42,7 @@ function Dictionary(props) {
       <ButtonGroup className="answer-read-btn-group">
         <Button
           color="light"
-          className="mr-2 answer-read-btn"
+          className="mr-2 btn-group-btn"
           active={mode == ANSWERING}
           onClick={() => setMode(ANSWERING)}
         >
@@ -50,7 +50,7 @@ function Dictionary(props) {
         </Button>
         <Button
           color="light"
-          className="answer-read-btn"
+          className="btn-group-btn"
           active={mode == READING}
           onClick={() => setMode(READING)}
         >

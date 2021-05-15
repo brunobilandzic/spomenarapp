@@ -1,16 +1,5 @@
 @import "../base/colors";
 
-.answer-read-btn {
-  background-color: inherit !important;
-  border: none;
-}
-
-.answer-read-btn.active {
-  background-color: inherit !important;
-  box-shadow: none !important;
-  border-bottom: 2px solid gray;
-}
-
 .question-nav-btn:focus {
   box-shadow: none;
 }
@@ -31,4 +20,41 @@
 
 .answering-submit:hover {
   color: $success;
+}
+
+.answer-username-value .app-navigation-link {
+  color: $persian-green;
+  font-weight: 500;
+}
+
+.answer-item {
+  background-color: $light-nav-bar;
+  box-shadow: 0 0 2px 0px $persian-green;
+  border-radius: 10px;
+}
+
+.reading-choices {
+  background-color: $light-nav-bar;
+  border-radius: 0.5rem;
+  box-shadow: 0 0 2px 0px $persian-green;
+}
+
+.question-value {
+  padding: 1rem 0;
+}
+
+.question-count {
+  padding-bottom: 0.3rem;
+  width: max-content;
+  margin: auto;
+  border-bottom: 3px solid;
+}
+
+.submit-choice-btn {
+  color: $nav-bar;
+  opacity: 0.5;
+}
+.submit-choice-btn:hover {
+  cursor: pointer;
+  opacity: 0.7;
 }

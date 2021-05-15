@@ -14,9 +14,17 @@ import Following from "../Friends/Following";
 import Followers from "../Friends/Followers";
 import DictionariesWrap from "../../Dictionaries/DictionariesWrap";
 import FollowButton from "../../Buttons/FollowButton";
+import ProfileImagePreview from "../../Modals/ProfileImagePreview";
+import { ButtonGroup, Button } from "reactstrap";
+
+const DICTIONARIES = "DICTIONARIES";
+const FRIENDS = "FRIENDS";
+
 function UserProfile(props) {
   const { username } = useParams();
   const [userProfile, setUserProfile] = useState(null);
+  const [view, setView] = useState(DICTIONARIES);
+
   useEffect(() => {
     console.log("getting user");
     let isMounted = true;
@@ -40,34 +48,51 @@ function UserProfile(props) {
   }, [userProfile]);
   return (
     <div>
-      <div className="user-profile-head">
-        <img
-          className="user-profile-img round-box round-box-lg user-profile-img-lg"
-          src={
-            userProfile
-              ? userProfile.imageUrl
-                ? userProfile.imageUrl
-                : INCOGNITO_PROFILE_IMAGE
-              : null
-          }
-        />
-        <h4>@{username}</h4>
-      </div>
-      <FollowButton followId={userProfile && userProfile._id} />
-      <div>
-        <div>
-          <Followers followers={props.followers} />
-        </div>
-        <div>
-          <Following following={props.following} />
-        </div>
-      </div>
-      <div>
-        <h4 className="user-dicts-hedaer">Dictionaries</h4>
+      <div className="user-profile-head d-flex">
         {userProfile && (
-          <DictionariesWrap author={true} userId={userProfile._id} />
+          <ProfileImagePreview other={true} imageUrl={userProfile.imageUrl} />
         )}
+        <h4 className="user-profile-username">
+          <b>@{username}</b>
+        </h4>
+
+        <FollowButton followId={userProfile && userProfile._id} />
       </div>
+      <ButtonGroup className="user-profile-nav">
+        <Button
+          color="light"
+          onClick={() => setView(DICTIONARIES)}
+          active={view == DICTIONARIES}
+          className="user-profile-nav-item btn-group-btn"
+        >
+          Dictionaries
+        </Button>
+        <Button
+          color="light"
+          onClick={() => setView(FRIENDS)}
+          active={view == FRIENDS}
+          className="user-profile-nav-item btn-group-btn"
+        >
+          Friends
+        </Button>
+      </ButtonGroup>
+      {view == DICTIONARIES && (
+        <div>
+          {userProfile && (
+            <DictionariesWrap author={true} userId={userProfile._id} />
+          )}
+        </div>
+      )}
+      {view == FRIENDS && (
+        <div className="follow-container">
+          <div className="follow-box">
+            <Followers followers={props.followers} />
+          </div>
+          <div className="follow-box">
+            <Following following={props.following} />
+          </div>
+        </div>
+      )}
     </div>
   );
 }

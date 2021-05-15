@@ -71,7 +71,9 @@ function Question(props) {
                 {props.order + 1}/{props.length}
               </small>
             </div>
-            <div className="question-label answering">{question}</div>
+            <div className="question-label answering question-value">
+              {question}
+            </div>
           </div>
           {type == MULTIPLE_CHOICE && multipleChoiceAnswer}
           {type == OPEN && openAnswer}

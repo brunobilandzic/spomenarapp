@@ -9,11 +9,14 @@ export default function Following(props) {
       <div className="follow-header">Following</div>
       <div className="follow-list">
         {props.following.map((f) => (
-          <div key={uuid()}>
-            <Link to={"/" + f.username} className="app-navigation-link">
+          <div className="follow-list-item" key={uuid()}>
+            <Link
+              to={"/" + f.username}
+              className="app-navigation-link d-flex align-items-center"
+            >
               <img
                 src={f.imageUrl ? f.imageUrl : INCOGNITO_PROFILE_IMAGE}
-                className="round-box-sm round-box"
+                className="round-box-com round-box mr-2"
               />
               {f.username}
             </Link>
