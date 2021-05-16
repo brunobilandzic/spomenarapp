@@ -19,8 +19,8 @@ const AnswerSchema = new Schema({
     required: true,
   },
   date_created: {
-    type: String,
-    default: new Date().getTime(),
+    type: Date,
+    default: Date.now,
   },
 });
 

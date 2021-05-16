@@ -8,6 +8,7 @@ import {
 import axios from "axios";
 import Statistics from "./Statistics/Statistics";
 import { INCOGNITO_PROFILE_IMAGE } from "../../../style/images";
+import parseDate from "../../../helpers/date";
 
 export default function Question(props) {
   const { question, type, choices, _id } = props;
@@ -65,45 +66,53 @@ export default function Question(props) {
             {answers != undefined &&
               answers.map((a) => (
                 <div
-                  className="answer-item d-flex align-items-center"
+                  className="answer-item d-flex align-items-center justify-content-between"
                   key={uuid()}
                 >
-                  <div className="answer-image-wrap">
-                    <Link
-                      className="app-navigation-link username-image username-image-sm"
-                      to={"/" + a.author_username}
-                    >
-                      <img
-                        className="round-box-com round-box"
-                        src={
-                          props.usernameImages &&
-                          props.usernameImages[a.author_username]
-                            ? props.usernameImages[a.author_username]
-                            : INCOGNITO_PROFILE_IMAGE
-                        }
-                      />
-                    </Link>
-                  </div>
-                  <div className="username-answer-wrap">
-                    <div className="answer-username-value">
+                  <div className=" d-flex align-items-center">
+                    <div className="answer-image-wrap">
                       <Link
-                        className="app-navigation-link"
+                        className="app-navigation-link username-image username-image-sm"
                         to={"/" + a.author_username}
                       >
-                        {a.author_username}
+                        <img
+                          className="round-box-com round-box"
+                          src={
+                            props.usernameImages &&
+                            props.usernameImages[a.author_username]
+                              ? props.usernameImages[a.author_username]
+                              : INCOGNITO_PROFILE_IMAGE
+                          }
+                        />
                       </Link>
                     </div>
-                    <div className="answer-value">
-                      {choices != undefined && choices.length ? (
-                        <div>
-                          {choices.filter((c) => c.letter == a.value)[0].choice}
-                        </div>
-                      ) : (
-                        <div>
-                          {a.value != "I_DONT_KNOW" ? a.value : "Dont Know"}
-                        </div>
-                      )}
+                    <div className="username-answer-wrap">
+                      <div className="answer-username-value">
+                        <Link
+                          className="app-navigation-link"
+                          to={"/" + a.author_username}
+                        >
+                          {a.author_username}
+                        </Link>
+                      </div>
+                      <div className="answer-value">
+                        {choices != undefined && choices.length ? (
+                          <div>
+                            {
+                              choices.filter((c) => c.letter == a.value)[0]
+                                .choice
+                            }
+                          </div>
+                        ) : (
+                          <div>
+                            {a.value != "I_DONT_KNOW" ? a.value : "Dont Know"}
+                          </div>
+                        )}
+                      </div>
                     </div>
+                  </div>
+                  <div className="answer-date align-self-start dict-item-date">
+                    {parseDate(a.date_created.toString())}
                   </div>
                 </div>
               ))}

@@ -13,6 +13,9 @@
 .modal-navigation {
   margin-top: 1rem;
 }
+.modal-navigation.create {
+  margin-bottom: 2rem;
+}
 .modal-navigation > button {
   margin-right: 0.5rem;
 }
@@ -39,8 +42,12 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin-bottom: 1rem;
 }
-
+.follow-list-item .custom-btn {
+  width: 88px;
+  text-align: center;
+}
 .round-box {
   border-radius: 100%;
   display: inline-block;
@@ -99,8 +106,6 @@
   background-color: inherit;
 }
 
-.choices-wrap {
-}
 a {
   word-wrap: break-word;
 }

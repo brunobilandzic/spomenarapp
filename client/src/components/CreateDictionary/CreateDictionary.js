@@ -6,7 +6,8 @@ import { connect } from "react-redux";
 import propTypes from "prop-types";
 import { v4 as uuid } from "uuid";
 import axios from "axios";
-import { MULTIPLE_CHOICE } from "./AddQuestion/QuestionTypes";
+import "../../style/dictionary/spacing.scss";
+import "../../style/dictionary/graphic.scss";
 
 function CreateDictionary(props) {
   const [questions, setQuestions] = useState([]);
@@ -64,6 +65,9 @@ function CreateDictionary(props) {
     ) {
       return setError("Please enter all fields.");
     }
+    if (meta.title.length > 100)
+      return setError("Title must contain less than 100 characters.");
+
     const config = {
       headers: {
         "Content-Type": "multipart/form-data",
@@ -113,16 +117,16 @@ function CreateDictionary(props) {
   function renderQuestion(question, index) {
     return (
       <div key={uuid()} className="question-list-item-wrap mb-2">
-        <div className="d-flex justify-content-between align-items-center">
+        <div className="d-flex justify-content-between align-items-center question-highlight">
           <div className="value mr-2">
             {index + 1 + ") " + question.question}
           </div>
-          <div className="value-type d-flex align-items-center ">
+          <div className="delete-type d-flex align-items-center ">
             <div className="type">
               <small className="type">{question.type}</small>
             </div>
             <div
-              className="custom-btn-2"
+              className="custom-btn-2 delete-question-btn"
               onClick={() => {
                 deleteQuestion(index);
               }}
@@ -133,7 +137,7 @@ function CreateDictionary(props) {
         </div>
         <div>
           {question.choices.length != 0 && (
-            <div className="choices-wrap ml-3">
+            <div className="create-choices-wrap">
               {question.choices.map((c) => (
                 <div key={uuid()}>
                   {c.letter})&nbsp;<span>{c.choice}</span>
@@ -172,6 +176,7 @@ function CreateDictionary(props) {
             className="meta-input"
             onChange={onChange}
             placeholder="Dictionary title..."
+            autoComplete="off"
           />
           <Label>Description</Label>
           <textarea
@@ -182,6 +187,7 @@ function CreateDictionary(props) {
             onChange={onChange}
             placeholder="Dictionary description..."
             rows={2}
+            autoComplete="off"
           />
           <div className="img-upload dict-img-upload">
             <Label>
@@ -205,7 +211,7 @@ function CreateDictionary(props) {
           addQuestion(q);
         }}
       />
-      <div className="modal-navigation">
+      <div className="modal-navigation create">
         <p style={{ color: "red" }}>
           <b>{error}</b>
         </p>
@@ -214,7 +220,12 @@ function CreateDictionary(props) {
         </Button>
         <Button
           onClick={() => {
-            window.location.pathname = "/";
+            if (
+              window.confirm(
+                "Do you want to abort creation of this dictionary?"
+              )
+            )
+              window.location.pathname = "/";
           }}
           color="danger"
         >

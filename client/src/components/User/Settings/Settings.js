@@ -3,15 +3,18 @@ import { Link } from "react-router-dom";
 export default function Settings() {
   return (
     <div>
-      <h1>Settings</h1>
-      <div>
-        <Link className="app-navigation-link" to="/changepassword">
-          Change Password
+      <div className="profile-options settings-options">
+        <Link className="app-navigation-link option" to="/changepassword">
+          <div className="option-icon">
+            <i class="fas fa-key"></i>
+          </div>
+          <div className="option-text">Change Password</div>
         </Link>
-      </div>
-      <div>
-        <Link className="app-navigation-link" to="/changeprofileimage">
-          Change Profile Image
+        <Link className="app-navigation-link option" to="/changeprofileimage">
+          <div className="option-icon">
+            <i class="fas fa-camera-retro"></i>
+          </div>
+          <div className="option-text">Change Profile Image</div>
         </Link>
       </div>
     </div>

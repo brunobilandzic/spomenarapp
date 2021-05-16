@@ -89,6 +89,9 @@ export default function QuestionModal(props) {
   };
   const onSubmit = (e) => {
     e.preventDefault();
+    if (question.type == MULTIPLE_CHOICE && choice != "") {
+      return setError("Submit your last choice on the plus symbol first.");
+    }
     const toSend = { ...question };
     if (toSend.question.length == 0) {
       return setError("Please enter question.");

@@ -10,7 +10,6 @@ export default function parseDate(date) {
     padZeros(dateObj.getHours()) +
     ":" +
     padZeros(dateObj.getMinutes());
-  console.log(dateObj.toLocaleString());
   return parsed;
 }
 

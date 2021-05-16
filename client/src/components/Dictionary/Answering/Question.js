@@ -37,7 +37,13 @@ function Question(props) {
             name={_id}
             value={c.letter}
           />
-          <Label htmlFor={c.letter}>{c.choice}</Label>
+          <Label
+            className="mult-choice-answer-label"
+            onClick={() => props.addAnswer(_id, c.letter)}
+            htmlFor={c.letter}
+          >
+            {c.choice}
+          </Label>
         </div>
       ))}
     </div>

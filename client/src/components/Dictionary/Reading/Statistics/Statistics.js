@@ -77,7 +77,7 @@ export default function Statistic(props) {
   return (
     <div className="statistics-wrap">
       <div className="statistics-head text-center">
-        <i class="far fa-chart-bar"></i>
+        <i class="far fa-chart-bar stat-icon"></i>
       </div>
       {props.type == APPROVAL && approvalStats}
       {props.type == MULTIPLE_CHOICE && multipleChoiceStats}

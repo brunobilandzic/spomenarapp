@@ -1,6 +1,7 @@
 .profile-options {
   display: flex;
   position: relative;
+  flex-direction: column;
 }
 .profile-options .option {
   margin-bottom: 0.8rem;
@@ -14,26 +15,9 @@
 }
 
 @media only screen and (min-width: 1000px) {
-  .profile-options {
-    justify-content: space-between;
-  }
   .profile-options .option {
-    width: 200px;
+    width: 300px;
   }
-  .option-icon {
-  }
-}
-
-@media only screen and (max-width: 1000px) {
-  .profile-options {
-    flex-direction: column;
-  }
-
-  .option-icon {
-  }
-}
-
-.follow-container {
 }
 
 .user-profile-nav {

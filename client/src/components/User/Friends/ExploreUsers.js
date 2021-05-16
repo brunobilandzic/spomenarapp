@@ -15,11 +15,14 @@ function ExploreUsers(props) {
       <div className="follow-header">Explore</div>
       <div className="follow-list">
         {props.explore.map((u) => (
-          <div key={uuid()}>
-            <Link to={"/" + u.username} className="app-navigation-link">
+          <div className="follow-list-item" key={uuid()}>
+            <Link
+              to={"/" + u.username}
+              className="app-navigation-link d-flex align-items-center"
+            >
               <img
                 src={u.imageUrl ? u.imageUrl : INCOGNITO_PROFILE_IMAGE}
-                className="round-box-sm round-box"
+                className="round-box-com round-box mr-2"
               />
               {u.username}
             </Link>

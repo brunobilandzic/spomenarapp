@@ -38,7 +38,7 @@ function ProfileImageChange(props) {
           src={imageUrl ? imageUrl : INCOGNITO_PROFILE_IMAGE}
         />
       </div>
-      <div>
+      <div className="mt-2 mb-2">
         <Label for="image">Choose your new image</Label>
         <Input
           type="file"
@@ -48,12 +48,20 @@ function ProfileImageChange(props) {
         />
       </div>
       <div>{error}</div>
-      <div>
-        <Button type="submit" onClick={onSubmit}>
+      <div className="d-flex">
+        <Button
+          color="success"
+          className="mr-2"
+          type="submit"
+          onClick={onSubmit}
+        >
           Submit
         </Button>
+
+        <Button color="danger" onClick={onDelete}>
+          Delete Profile Image
+        </Button>
       </div>
-      <Button onClick={onDelete}>Delete Profile Image</Button>
     </div>
   );
 }

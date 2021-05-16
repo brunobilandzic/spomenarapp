@@ -18,25 +18,28 @@
   background-color: $light-nav-bar-hover;
 }
 
-.answering-submit:hover {
-  color: $success;
+.stat-bar {
+  background-color: $light-nav-bar;
 }
-
+.statistics-head {
+  color: $dark-blue;
+}
 .answer-username-value .app-navigation-link {
-  color: $persian-green;
-  font-weight: 500;
+  color: $dark-blue;
+  font-weight: 600;
 }
 
 .answer-item {
   background-color: $light-nav-bar;
-  box-shadow: 0 0 2px 0px $persian-green;
+  box-shadow: 0 0 2px 0px $nav-bar;
   border-radius: 10px;
 }
 
-.reading-choices {
+.reading-choices,
+.create-choices-wrap {
   background-color: $light-nav-bar;
   border-radius: 0.5rem;
-  box-shadow: 0 0 2px 0px $persian-green;
+  box-shadow: 0 0 2px 0px $nav-bar;
 }
 
 .question-value {
@@ -57,4 +60,9 @@
 .submit-choice-btn:hover {
   cursor: pointer;
   opacity: 0.7;
+}
+
+.question-highlight {
+  background-color: $light-gray;
+  box-shadow: 0 0 2px 0px $nav-bar;
 }

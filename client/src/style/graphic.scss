@@ -18,11 +18,10 @@ body {
 .custom-btn {
   color: $nav-bar;
   background-color: $light-nav-bar;
-  border: 1px solid $persian-green;
+  border: 1px solid $nav-bar;
 }
 .custom-btn:hover {
   background-color: $light-nav-bar-hover;
-  color: $persian-green;
 }
 
 .custom-btn-2 {

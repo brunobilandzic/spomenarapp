@@ -32,7 +32,7 @@ function PasswordChange(props) {
             onChange={onChange}
             value={passwords.oldPassword}
           />
-          <div>{props.error.msg.msg}</div>
+          <div style={{ height: "2rem" }}>{props.error.msg.msg}</div>
           <Button onClick={submitOldPassword}>Submit</Button>
         </div>
       ) : (

@@ -85,8 +85,9 @@
 .answer-image-wrap {
   padding: 1rem;
 }
-.reading-choices {
-  padding: 1rem 3rem;
+.reading-choices,
+.create-choices-wrap {
+  padding: 1rem 2rem;
 }
 .question-label-wrap {
   text-align: center;
@@ -95,16 +96,17 @@
   flex-direction: column;
   align-items: center;
 }
-.reading-choices .read-choice-preview {
-}
-.choice-letter {
-}
 
 .dict-img-upload {
   padding: 1rem 0;
 }
 .stat-bar {
   height: 1.3rem;
+}
+.stat-icon {
+  margin: 2rem auto 0.5rem;
+  font-size: 1.25rem;
+  font-weight: bolder;
 }
 .no-answers {
   margin: 2rem auto;
@@ -145,4 +147,21 @@
 
 .question-preview {
   margin-bottom: 1rem;
+}
+
+.create-choices-wrap {
+  margin: 1rem 0;
+}
+
+.question-highlight {
+  padding: 0.35rem 0 0.35rem 0.35rem;
+  border-radius: 0.25rem;
+}
+
+.mult-choice-answer-label {
+  cursor: pointer;
+}
+
+.answer-date {
+  margin: 0.5rem;
 }
