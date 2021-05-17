@@ -1,17 +1,21 @@
-const User = require("../../models/User");
-const Answer = require("../../models/Answer");
 const express = require("express");
 const bcrypt = require("bcrypt");
-const registerCheck = require("../../middleware/register");
-const sendVerificationLink = require("../../email/verification");
 const router = express.Router();
 const base64url = require("base64url");
-const authUser = require("../../jwt");
-const auth = require("../../middleware/auth");
-const { USER_NOT_FOUND } = require("../../config/errors");
 const { CloudinaryStorage } = require("multer-storage-cloudinary");
 const cloudinary = require("cloudinary").v2;
 const formidable = require("formidable");
+
+const User = require("../../models/User");
+const Answer = require("../../models/Answer");
+const registerCheck = require("../../middleware/register");
+const sendVerificationLink = require("../../email/verification");
+const authUser = require("../../jwt");
+const auth = require("../../middleware/auth");
+const admin = require("../../middleware/admin");
+const { USER_NOT_FOUND } = require("../../config/errors");
+const Dictionary = require("../../models/Dictionary");
+
 const storage = new CloudinaryStorage({
   cloudinary: cloudinary,
   folder: "spomenar",
@@ -59,8 +63,7 @@ router.post("/", (req, res) => {
     if (err) return res.status(400).json({ msg: "Form parse error" });
     const registerError = registerCheck(fields);
     if (registerError) return res.status(400).json({ msg: registerError });
-    console.log(fields);
-    const { name, email, password, username } = fields;
+    const { email, password, username } = fields;
 
     User.findOne({
       $or: [{ username }, { email }],
@@ -69,7 +72,6 @@ router.post("/", (req, res) => {
         return res.status(400).json({ msg: `Credentials already in use.` });
       }
       const newUser = new User({
-        name,
         email,
         password,
         username,
@@ -106,7 +108,6 @@ router.post("/", (req, res) => {
 // @access Public
 router.get("/verify/:username/:id", (req, res) => {
   const { username, id } = req.params;
-  console.log(username, id);
   User.findOne({ username }).then((user) => {
     if (!user) return res.status(400).json({ msg: `User not found.` });
     bcrypt.compare(String(user._id), base64url.decode(id), (err, isMatch) => {
@@ -222,10 +223,8 @@ router.get("/bool/follow/:followId", auth, (req, res) => {
 // @access Private
 
 router.patch("/profileimage", auth, (req, res) => {
-  console.log("in");
   User.findById(req.user.id)
     .then((user) => {
-      console.log(user);
       const form = new formidable();
       form.parse(req, (err, fields, files) => {
         cloudinary.uploader.upload(files.newImage.path, (err, uploadResult) => {
@@ -253,8 +252,6 @@ router.patch("/profileimage", auth, (req, res) => {
 router.delete("/profileimage", auth, (req, res) => {
   User.findById(req.user.id)
     .then((user) => {
-      console.log(user);
-
       const toDeleteId = user.imageId;
       user.imageUrl = null;
       user.imageId = null;
@@ -321,28 +318,29 @@ router.delete("/", (req, res) => {
     .then((result) => res.send(`Deleted ${result.deletedCount} users`))
     .catch((err) => res.status(400).json({ msg: err.message }));
 });
-// @route DELETE /api/users/:id
+// @route DELETE /api/users/self
 // @desc Delete User By Id
 // @access Public
-router.delete("/:id", (req, res) => {
-  User.findById(req.params.id)
-    .then((user) => {
-      user
-        .delete()
-        .then((val) => {
-          User.updateMany(
-            {},
-            {
-              $pull: {
-                followers: val._id,
-                following: val._id,
-              },
-            }
-          ).then((users) => res.json({ success: true }));
-        })
-        .catch((err) => {
-          res.status(401).json({ msg: err.message });
-        });
+
+// It is pretty nested because
+
+router.delete("/self", auth, (req, res) => {
+  const user = req.user.id;
+  console.log(user);
+  User.findById(user)
+    .then((doc) => {
+      return doc.delete();
+    })
+    .then((_) => {
+      return Dictionary.deleteMany({ author: user });
+    })
+    .then((_) => {
+      console.log(_.deletedCount);
+      return Answer.deleteMany({ author: user });
+    })
+    .then((_) => {
+      console.log(_.deletedCount);
+      return res.json({ success: true });
     })
     .catch((err) => res.status(400).json({ msg: err.message }));
 });
@@ -358,7 +356,7 @@ router.get("/:id", (req, res) => {
         ? res.send({ username: user.username })
         : res.status(400).json({ msg: "User does not exist" });
     })
-    .catch((err) => res.status(401).json({ msg: err.message }));
+    .catch((err) => res.status(400).json({ msg: err.message }));
 });
 
 // @route GET /api/users/email/:id
@@ -402,7 +400,6 @@ function hashAndSendVerificationLink(user, req, res) {
         "/" +
         base64url(hash);
       sendVerificationLink(user, link);
-      console.log("authing\n " + user);
       res.json({
         username: user.username,
         id: user._id,

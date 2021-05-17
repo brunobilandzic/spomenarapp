@@ -92,11 +92,9 @@ export const fetchImagesByQuestion = (questionId) => (dispatch) => {
 };
 export const fetchImagesByUsernames = (authorIds) => (dispatch) => {
   const body = { authorIds };
-  console.log(body);
   axios
     .post("/api/users/images/dictionary/", body, null)
     .then((response) => {
-      console.log(response.data);
       dispatch({
         type: FETCH_IMAGES,
         payload: response.data.usernameImages,

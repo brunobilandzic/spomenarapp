@@ -8,8 +8,8 @@ module.exports = function sendPasswordResetLink(to, link) {
       rejectUnauthorized: false,
     },
     auth: {
-      user: config.EMAIL, // generated ethereal user
-      pass: config.EMAIL_PASS, // generated ethereal password
+      user: config.EMAIL,
+      pass: config.EMAIL_PASS,
     },
   });
   let message = {
@@ -23,7 +23,7 @@ module.exports = function sendPasswordResetLink(to, link) {
     `,
   };
   transporter.sendMail(message, (err, info) => {
-    if (err) throw err;
-    console.log(info);
+    if (err) console.log(err);
+    else console.log(info);
   });
 };

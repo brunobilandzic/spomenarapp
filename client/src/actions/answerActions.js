@@ -64,12 +64,16 @@ export const postAnswers = (dictId) => (dispatch, getState) => {
     value: q.answer,
   }));
   axios
-    .post("/api/answers/dict/" + dictId, {
-      dictionary: dictId,
-      author,
-      author_username,
-      answers,
-    })
+    .post(
+      "/api/answers/dict/" + dictId,
+      {
+        dictionary: dictId,
+        author,
+        author_username,
+        answers,
+      },
+      tokenConfig(getState)
+    )
     .then((res) => {
       dispatch({
         type: FORBID_ANSWERING,

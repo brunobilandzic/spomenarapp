@@ -37,6 +37,11 @@ function GoVerify(props) {
         We've sent you an email on <b>{email}</b>.<br></br>
         In order to be able to log in into the app, please click on the link
         we've sent in your inbox.
+        <br />
+        <br />
+        <i>
+          If you dont see the email in your inbox, please check spam folder.
+        </i>
       </p>
       <hr></hr>
       <div>

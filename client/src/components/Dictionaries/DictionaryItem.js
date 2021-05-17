@@ -58,9 +58,9 @@ export default function DictionaryItem(props) {
             </Link>
             <div className="answer-count-wrap d-flex">
               <div className="answer-count-icon mr-2">
-                <i class="fas fa-user dark-blue"></i>
+                <i className="fas fa-user dark-blue"></i>
               </div>
-              <div classNam="answer-count-count">{props.count}</div>
+              <div className="answer-count-count">{props.count}</div>
             </div>
             <div className="dict-item-date">{parseDate(dict.date)}</div>
           </CardFooter>

@@ -32,31 +32,33 @@ export const loadAllDictionaries = () => (dispatch) => {
     });
 };
 
-export const loadUserDictionaries = (userId = null) => (dispatch, getState) => {
-  clearDictionaries();
-  console.log("getting dicts for " + userId);
-  const path = userId ? userId : getState().auth.user.id;
-  axios
-    .get("/api/dicts/u/" + path)
-    .then((res) => {
-      dispatch({
-        type: LOAD_DICTIONARIES,
-        payload: res.data,
+export const loadUserDictionaries =
+  (userId = null) =>
+  (dispatch, getState) => {
+    clearDictionaries();
+    console.log("getting dicts for " + userId);
+    const path = userId ? userId : getState().auth.user.id;
+    axios
+      .get("/api/dicts/u/" + path)
+      .then((res) => {
+        dispatch({
+          type: LOAD_DICTIONARIES,
+          payload: res.data,
+        });
+      })
+      .catch((err) => {
+        dispatch({
+          type: CLEAR_DICTIONARIES,
+        });
+        dispatch(
+          returnErrors(
+            err.response.data,
+            err.response.status,
+            "DICTIONARY_LOAD_FAILURE"
+          )
+        );
       });
-    })
-    .catch((err) => {
-      dispatch({
-        type: CLEAR_DICTIONARIES,
-      });
-      dispatch(
-        returnErrors(
-          err.response.data,
-          err.response.status,
-          "DICTIONARY_LOAD_FAILURE"
-        )
-      );
-    });
-};
+  };
 export const deleteDictionary = (dictId) => (dispatch, getState) => {
   axios
     .delete("/api/dicts/" + dictId, tokenConfig(getState))
@@ -79,7 +81,6 @@ export const deleteDictionary = (dictId) => (dispatch, getState) => {
 
 export const fetchAnswersCount = (dictionaries) => (dispatch) => {
   const body = { dictionaries };
-  console.log(body);
   axios
     .post("/api/answers/dict/count", body, null)
     .then((res) => {

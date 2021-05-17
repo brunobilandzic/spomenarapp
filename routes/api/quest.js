@@ -2,7 +2,8 @@ const Dictionary = require("../../models/Dictionary");
 const Question = require("../../models/Question");
 const express = require("express");
 const router = express.Router();
-
+const auth = require("../../middleware/auth");
+const admin = require("../../middleware/admin");
 // @route GET /api/quests/dict/:dictId
 // @desc Fetches all questions for dictionary
 // @access Public
@@ -19,8 +20,8 @@ router.get("/dict/:dictId", (req, res) => {
 });
 // @route POST /api/quests/
 // @desc Adds an array of questions to dictionary
-// @access Public
-router.post("/", (req, res) => {
+// @access Private
+router.post("/", auth, (req, res) => {
   const { dictionary, questions } = req.body;
   Dictionary.findById(dictionary)
     .then((dict) => {
@@ -33,7 +34,6 @@ router.post("/", (req, res) => {
         (err, quests) => {
           if (err) res.send(err);
           else {
-            console.log(quests);
             res.send(quests);
           }
         }
@@ -44,10 +44,10 @@ router.post("/", (req, res) => {
 
 // @route DELETE /api/quests
 // @desc Delete All Questions (DEV use)
-// @access Public
-router.delete("/", (req, res) => {
+// @access Admin
+router.delete("/", admin, (req, res) => {
   Question.deleteMany()
-    .then((result) => res.send(`Deleted ${result.deletedCount} questions.`))
+    .then((result) => res.send({ deletedCount: result.deletedCount }))
     .catch((err) => res.status(400).json({ msg: err.message }));
 });
 module.exports = router;

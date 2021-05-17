@@ -66,7 +66,7 @@ function QuestionsWrap(props) {
             })}
             onClick={handlePrevious}
           >
-            <i class="fas fa-angle-left"></i>
+            <i className="fas fa-angle-left"></i>
           </div>
 
           <div
@@ -76,7 +76,7 @@ function QuestionsWrap(props) {
             onClick={handleNext}
           >
             {" "}
-            <i class="fas fa-angle-right"></i>{" "}
+            <i className="fas fa-angle-right"></i>{" "}
           </div>
         </div>
       </div>

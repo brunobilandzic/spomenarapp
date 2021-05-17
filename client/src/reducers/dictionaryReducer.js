@@ -8,7 +8,7 @@ import {
 
 const initialState = {
   dictionaries: [],
-  answersCounts: [],
+  answersCounts: {},
 };
 
 export default function dictionaryReducer(state = initialState, action) {
@@ -37,7 +37,7 @@ export default function dictionaryReducer(state = initialState, action) {
     case CLEAR_ANSWERS_COUNT:
       return {
         ...state,
-        answersCounts: [],
+        answersCounts: {},
       };
     default:
       return {

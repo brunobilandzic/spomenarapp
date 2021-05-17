@@ -19,6 +19,10 @@ import {
   EMAIL_VERIFICATION_FAILURE,
   IMAGE_CHANGE_SUCCESS,
   IMAGE_CHANGE_FAILURE,
+  UPDATE_HASH,
+  GRANT_PROFILE_DELETION,
+  DENY_PROFILE_DELETION,
+  PROFILE_DELETION_SUCCESS,
 } from "../actions/types";
 import { returnErrors } from "../actions/errorActions";
 
@@ -40,73 +44,70 @@ export const loadUser = () => (dispatch, getState) => {
       );
     });
 };
-export const register = ({
-  username,
-  password,
-  name,
-  email,
-  passwordRepeat,
-  image,
-}) => (dispatch) => {
-  if (password != passwordRepeat) {
-    return returnErrors({
-      msg: "Passwords have to match",
-      status: -1,
-    });
-  }
-  const config = {
-    headers: {
-      "Content-type": "multipart/form-data",
-    },
+export const register =
+  ({ username, password, email, passwordRepeat, image }) =>
+  (dispatch) => {
+    if (password != passwordRepeat) {
+      return returnErrors({
+        msg: "Passwords have to match",
+        status: -1,
+      });
+    }
+    const config = {
+      headers: {
+        "Content-type": "multipart/form-data",
+      },
+    };
+
+    const body = { username, password, email };
+    const formData = new FormData();
+    Object.keys(body).forEach((key) => formData.append(key, body[key]));
+    formData.append("image", image);
+    axios
+      .post("/api/users", formData, config)
+      .then((res) => {
+        dispatch({
+          type: REGISTER_SUCCESS,
+          payload: res.data,
+        });
+      })
+      .catch((err) => {
+        dispatch(
+          returnErrors(err.response.data, err.response.status, "REGISTER_FAIL")
+        );
+        dispatch({
+          type: REGISTER_FAIL,
+        });
+      });
   };
 
-  const body = { username, password, name, email };
-  const formData = new FormData();
-  Object.keys(body).forEach((key) => formData.append(key, body[key]));
-  formData.append("image", image);
-  axios
-    .post("/api/users", formData, config)
-    .then((res) => {
-      dispatch({
-        type: REGISTER_SUCCESS,
-        payload: res.data,
+export const login =
+  ({ user, password }) =>
+  (dispatch) => {
+    // user can mean email or username
+    const config = {
+      headers: {
+        "Content-type": "application/json",
+      },
+    };
+    const body = { user, password };
+    axios
+      .post("/api/auth", body, config)
+      .then((res) => {
+        dispatch({
+          type: LOGIN_SUCCESS,
+          payload: res.data,
+        });
+      })
+      .catch((err) => {
+        dispatch({
+          type: LOGIN_FAIL,
+        });
+        dispatch(
+          returnErrors(err.response.data, err.response.status, "LOGIN_FAIL")
+        );
       });
-    })
-    .catch((err) => {
-      dispatch(
-        returnErrors(err.response.data, err.response.status, "REGISTER_FAIL")
-      );
-      dispatch({
-        type: REGISTER_FAIL,
-      });
-    });
-};
-
-export const login = ({ user, password }) => (dispatch) => {
-  // user can mean email or username
-  const config = {
-    headers: {
-      "Content-type": "application/json",
-    },
   };
-  const body = { user, password };
-  axios
-    .post("/api/auth", body, config)
-    .then((res) => {
-      dispatch({
-        type: LOGIN_SUCCESS,
-        payload: res.data,
-      });
-    })
-    .catch((err) => {
-      dispatch({
-        type: LOGIN_FAIL,
-      });
-      dispatch(
-        returnErrors(err.response.data, err.response.status, "LOGIN_FAIL")
-      );
-    });
-};
 
 export const verifyEmail = (username, userId) => (dispatch) => {
   axios
@@ -145,13 +146,14 @@ export const passResetAuthRequest = (password) => (dispatch, getState) => {
       "Content-type": "application/json",
     },
   };
-  const user = getState().auth.user ? getState().auth.user.username : null;
-  const body = { user, password };
+  const username = getState().auth.user ? getState().auth.user.username : null;
+  const body = { username, password };
   axios
-    .post("/api/auth", body, config)
+    .post("/api/auth/passwordcheck", body, config)
     .then((res) => {
       dispatch({
         type: GRANT_PASS_RESET,
+        payload: res.data,
       });
     })
     .catch((err) => {
@@ -224,7 +226,8 @@ export const submitNewPassword = (newPassword) => (dispatch, getState) => {
     },
   };
   const username = getState().auth.user ? getState().auth.user.username : null;
-  const body = { username, newPassword };
+  const hash = getState().passwordReset.hash;
+  const body = { username, newPassword, hash };
   axios
     .post("/api/auth/pwd/newpwd", body, config)
     .then((res) => {
@@ -311,6 +314,52 @@ export const deleteProfileImage = () => (dispatch, getState) => {
         )
       );
     });
+};
+
+export const grantDeletion = (password) => (dispatch, getState) => {
+  const user = getState().auth.user ? getState().auth.user.username : null;
+  const body = { user, password };
+  axios
+    .post("/api/auth", body)
+    .then((res) => {
+      dispatch({
+        type: GRANT_PROFILE_DELETION,
+      });
+    })
+    .catch((err) => {
+      dispatch({
+        type: DENY_PROFILE_DELETION,
+      });
+      dispatch(
+        returnErrors(err.response.data, err.response.status, "LOGIN_FAIL")
+      );
+    });
+};
+
+export const deleteProfile = () => (dispatch, getState) => {
+  axios
+    .delete("/api/users/self", tokenConfig(getState))
+    .then((_) => {
+      console.log("dispatxhins");
+      dispatch({
+        type: PROFILE_DELETION_SUCCESS,
+      });
+    })
+    .catch((err) => {
+      dispatch(
+        returnErrors(
+          err.response.data,
+          err.response.status,
+          "PROFILE_DELETION_FAILURE"
+        )
+      );
+    });
+};
+export const updateHash = (hash) => (dispatch) => {
+  dispatch({
+    type: UPDATE_HASH,
+    payload: hash,
+  });
 };
 
 export const tokenConfig = (getState) => {

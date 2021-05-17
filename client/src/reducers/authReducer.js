@@ -11,6 +11,7 @@ import {
   EMAIL_VERIFICATION_SUCCESS,
   EMAIL_VERIFICATION_FAILURE,
   IMAGE_CHANGE_SUCCESS,
+  PROFILE_DELETION_SUCCESS,
 } from "../actions/types";
 
 const initialState = {
@@ -49,6 +50,7 @@ export default function authReducer(state = initialState, action) {
     case AUTH_ERROR:
     case LOGOUT_SUCCESS:
     case EMAIL_VERIFICATION_FAILURE:
+    case PROFILE_DELETION_SUCCESS:
       localStorage.removeItem("token");
       return {
         token: null,

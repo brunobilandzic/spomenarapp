@@ -4,6 +4,7 @@ const Image = require("../../models/Image");
 const express = require("express");
 const router = express.Router();
 const auth = require("../../middleware/auth");
+const admin = require("../../middleware/admin");
 const { USER_NOT_FOUND } = require("../../config/errors");
 const { CloudinaryStorage } = require("multer-storage-cloudinary");
 const cloudinary = require("cloudinary").v2;
@@ -14,6 +15,10 @@ const storage = new CloudinaryStorage({
   allowedFormats: ["jpg", "png"],
   transformation: [{ width: 500, height: 500, crop: "limit" }],
 });
+
+// @route GET /api/dicts
+// @desc Fetches all dictionaries sorted by date newest
+// @access Public
 
 router.get("/", (req, res) => {
   Dictionary.find()
@@ -75,7 +80,6 @@ router.post("/", auth, (req, res) => {
         });
         if (files.image) {
           const imageUploadUrl = files.image.path;
-          console.log(files.image, imageUploadUrl);
           cloudinary.uploader.upload(imageUploadUrl, (err, uploadResult) => {
             if (err) throw new Error("Image upload error");
             newDict.imageUrl = uploadResult.secure_url;
@@ -88,7 +92,7 @@ router.post("/", auth, (req, res) => {
         } else {
           return newDict
             .save()
-            .then((dict) => res.send(dict))
+            .then((dict) => res.json(dict))
             .catch((err) => res.status(400).json({ msg: err.message }));
         }
       })
@@ -100,10 +104,10 @@ router.post("/", auth, (req, res) => {
 
 // @route DELETE /api/dicts
 // @desc Delete All Dictionaries
-// @access Public
-router.delete("/", (req, res) => {
+// @access Admin
+router.delete("/", admin, (req, res) => {
   Dictionary.deleteMany()
-    .then((result) => res.send(`Deleted ${result.deletedCount} dictionaries.`))
+    .then((result) => res.json({ deletedCount: result.deletedCount }))
     .catch((err) => res.status(400).json({ msg: err.message }));
 });
 // @route DELETE /api/dicts/:id
@@ -112,6 +116,8 @@ router.delete("/", (req, res) => {
 router.delete("/:id", auth, (req, res) => {
   Dictionary.findById(req.params.id)
     .then((dict) => {
+      if (req.user.id != dict.author)
+        return res.status(400).json({ msg: "Client not dict owner." });
       return dict.delete();
     })
     .then((dict) => res.json({ dictId: dict.id }))

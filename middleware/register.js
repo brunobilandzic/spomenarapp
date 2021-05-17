@@ -9,11 +9,12 @@ module.exports = function register(data) {
     "changepassword",
     "verify",
     "goverify",
+    "delete",
+    "changeprofileimage",
   ];
 
-  const { username, password, name, email } = data;
-  if (!name || !email || !password || !username)
-    return "Please enter all fields.";
+  const { username, password, email } = data;
+  if (!email || !password || !username) return "Please enter all fields.";
   const usernameRegEx = new RegExp("^[a-z0-9]+$");
   if (!usernameRegEx.test(username)) {
     return "Username has to contain letters a-z and numbers 0-9.";

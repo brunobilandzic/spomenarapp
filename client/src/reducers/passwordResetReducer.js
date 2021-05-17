@@ -7,17 +7,24 @@ import {
   LINK_VERIFICATION_SUCCESS,
   EMAIL_SENT_FAILURE,
   LINK_VERIFICATION_FAILURE,
+  UPDATE_HASH,
+  GRANT_PROFILE_DELETION,
+  DENY_PROFILE_DELETION,
+  PROFILE_DELETION_SUCCESS,
 } from "../actions/types";
 
 const initialState = {
   passResetAuth: false,
   passResetSuccess: false,
+  hash: null,
   passwordForgot: {
     emailSent: false,
     linkVerified: false,
     username: "",
     email: "",
   },
+  grantProfileDeletion: false,
+  profileDeleted: false,
 };
 
 export default function (state = initialState, action) {
@@ -26,11 +33,13 @@ export default function (state = initialState, action) {
       return {
         ...state,
         passResetAuth: true,
+        hash: action.payload,
       };
     case DENY_PASS_RESET:
     case PASS_RESET_FAILURE:
       return {
         ...state,
+        hash: null,
         passResetAuth: false,
         passResetSuccess: false,
       };
@@ -39,6 +48,7 @@ export default function (state = initialState, action) {
         ...state,
         passResetSuccess: true,
         passResetAuth: false,
+        hash: null,
       };
     case EMAIL_SENT_SUCCESS:
       return {
@@ -65,6 +75,27 @@ export default function (state = initialState, action) {
         passwordForgot: {
           ...initialState.passwordForgot,
         },
+      };
+    case UPDATE_HASH: {
+      return {
+        ...state,
+        hash: action.payload,
+      };
+    }
+    case GRANT_PROFILE_DELETION:
+      return {
+        ...state,
+        grantProfileDeletion: true,
+      };
+    case DENY_PROFILE_DELETION:
+      return {
+        ...state,
+        grantProfileDeletion: false,
+      };
+    case PROFILE_DELETION_SUCCESS:
+      return {
+        ...state,
+        profileDeleted: true,
       };
     default:
       return {

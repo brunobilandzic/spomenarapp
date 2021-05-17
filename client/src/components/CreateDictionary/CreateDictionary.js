@@ -89,16 +89,19 @@ function CreateDictionary(props) {
       .post("/api/dicts", formData, config)
       .then((res) => {
         setDictId(res.data._id);
+        const questionsData = {
+          dictionary: res.data._id,
+          questions: [...questions.map((q, order) => ({ ...q, order }))],
+        };
+        config.headers["Content-Type"] = "application/json";
         axios
-          .post("/api/quests", {
-            dictionary: res.data._id,
-            questions: [...questions.map((q, order) => ({ ...q, order }))],
-          })
-          .then((quests) => {
+          .post("/api/quests", questionsData, config)
+          .then((_) => {
             clearDictionary();
             toggleSuccess();
           })
           .catch((err) => {
+            console.log(err);
             toggleFail();
           });
       })
@@ -131,7 +134,7 @@ function CreateDictionary(props) {
                 deleteQuestion(index);
               }}
             >
-              <i class="fas fa-trash"></i>
+              <i className="fas fa-trash"></i>
             </div>
           </div>
         </div>

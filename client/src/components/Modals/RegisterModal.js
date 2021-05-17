@@ -44,7 +44,6 @@ function RegisterModal(props) {
       password: "",
       passwordRepeat: "",
       email: "",
-      name: "",
     });
     props.clearErrors();
     setModal(!modal);
@@ -93,16 +92,7 @@ function RegisterModal(props) {
                 name="email"
               />
             </FormGroup>
-            <FormGroup>
-              <Label for="name">Name:</Label>
-              <Input
-                type="text"
-                placeholder="Enter your full name"
-                onChange={onChange}
-                value={info.name}
-                name="name"
-              />
-            </FormGroup>
+
             <FormGroup>
               <Label for="username">Username:</Label>
               <Input
