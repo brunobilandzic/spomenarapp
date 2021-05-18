@@ -2,13 +2,9 @@ const express = require("express");
 const config = require("./config");
 const mongoose = require("mongoose");
 const cloudinary = require("cloudinary");
-
-const {
-  MONGO_URI,
-  CLOUD_NAME,
-  CLOUDINARY_API_KEY,
-  CLOUDINARY_API_SECRET,
-} = config;
+const path = require("path");
+const { MONGO_URI, CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET } =
+  config;
 
 mongoose
   .connect(MONGO_URI, {
@@ -32,14 +28,18 @@ cloudinary.config({
 
 const app = express();
 app.use(express.json());
-app.get("/test", (req, res) => {
-  return res.send(req.get("host"));
-});
+app.use(express.static(path.resolve(__dirname, "../client/build")));
+
 app.use("/api/dicts", require("./routes/api/dicts"));
 app.use("/api/users", require("./routes/api/users"));
 app.use("/api/auth", require("./routes/api/auth"));
 app.use("/api/quests", require("./routes/api/quest"));
 app.use("/api/answers", require("./routes/api/answers"));
+
+app.get("*", (req, res) => {
+  res.sendFile(path.resolve(__dirname, "../client/build", "index.html"));
+});
+
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
