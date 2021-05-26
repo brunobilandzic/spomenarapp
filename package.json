@@ -6,7 +6,7 @@
   "scripts": {
     "client-install": "cd client && npm install",
     "start": "node server.js",
-    "build": "cd client && npm install && npm run build",
+    "build": "cd client && npm install && npm rebuild node-sass && npm run build",
     "server": "nodemon server.js",
     "client": "npm start --prefix client",
     "dev": "concurrently \"npm run server\" \"npm run client\""

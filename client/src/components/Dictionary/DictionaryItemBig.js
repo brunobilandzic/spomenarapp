@@ -66,7 +66,7 @@ export default function DictionaryItemBig(props) {
             </div>
             <div className="dict-item-date">{parseDate(dict.date)}</div>
           </div>
-          <div>{props.control && <DictionaryControl dict={dict.id} />}</div>
+          <div>{props.control && <DictionaryControl dict={dict._id} />}</div>
         </div>
       </div>
     </div>

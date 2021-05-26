@@ -395,7 +395,7 @@ function hashAndSendVerificationLink(user, req, res) {
         req.protocol +
         "://" +
         req.hostname +
-        ":3000/verify/" +
+        "/verify/" +
         user.username +
         "/" +
         base64url(hash);

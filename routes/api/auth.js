@@ -71,7 +71,7 @@ router.post("/pwd", (req, res) => {
           req.protocol +
           "://" +
           req.hostname +
-          ":3000/resetpassword/" +
+          "/resetpassword/" +
           user.username +
           "/" +
           base64url(hash);
