@@ -28,17 +28,12 @@ cloudinary.config({
 
 const app = express();
 app.use(express.json());
-app.use(express.static("client/build"));
 
 app.use("/api/dicts", require("./routes/api/dicts"));
 app.use("/api/users", require("./routes/api/users"));
 app.use("/api/auth", require("./routes/api/auth"));
 app.use("/api/quests", require("./routes/api/quest"));
 app.use("/api/answers", require("./routes/api/answers"));
-
-app.get("*", (req, res) => {
-  res.sendFile(path.resolve(__dirname, "client", "build", "index.html"));
-});
 
 const PORT = process.env.PORT || 5000;
 
