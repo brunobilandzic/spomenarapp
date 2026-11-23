@@ -14,6 +14,8 @@ it.runIf(import.meta.env.STATIC_DEMO)("runs the public demo with bundled data an
 
   try {
     expect(screen.queryByText("Owner login")).not.toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "About this demo" })).toBeInTheDocument();
+    expect(screen.getByText(/implements registration, login, email verification and password reset/)).toBeInTheDocument();
     const sample = await screen.findByRole("link", { name: "Spomenar za ekipu" });
     const dictionaryId = sample.getAttribute("href").split("/").at(-1);
     const { data: questions } = await axios.get(`/api/quests/dict/${dictionaryId}`);

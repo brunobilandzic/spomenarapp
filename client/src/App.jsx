@@ -40,6 +40,22 @@ function App() {
             </Route>
             <Route exact path="/">
               <DictionariesWrap />
+              {import.meta.env.STATIC_DEMO && (
+                <section className="col-md-8 mx-auto mt-4 mb-5 pt-3 border-top text-left" aria-labelledby="about-demo">
+                  <h2 id="about-demo" className="h5">About this demo</h2>
+                  <p>
+                    Spomenar is a digital memory book where friends can make
+                    questionnaires and share answers. This static preview opens
+                    without an account so you can try it right away. Your
+                    practice spomenars and answers stay in this browser.
+                  </p>
+                  <p className="mb-0">
+                    The full-stack version uses React, an Express API and
+                    MongoDB Atlas. It implements registration, login, email
+                    verification and password reset.
+                  </p>
+                </section>
+              )}
             </Route>
             {import.meta.env.DEMO_MODE && (
               <Route exact path="/try-create">
