@@ -2,23 +2,25 @@ const express = require("express");
 const config = require("./config");
 const mongoose = require("mongoose");
 const cloudinary = require("cloudinary");
-const path = require("path");
 const { MONGO_URI, CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET } =
   config;
 
-mongoose
-  .connect(MONGO_URI, {
-    useNewUrlParser: true,
-    useCreateIndex: true,
-    useUnifiedTopology: true,
-    useFindAndModify: false,
-  })
-  .then(() => {
-    console.log("MongoDB connected...");
-  })
-  .catch((err) => {
-    console.log(err);
-  });
+if (MONGO_URI) {
+  mongoose
+    .connect(MONGO_URI)
+    .then(() => {
+      console.log("MongoDB connected...");
+    })
+    .catch((err) => {
+      console.error(
+        `MongoDB connection failed (${err.name}). Check MONGO_URI and database access.`
+      );
+    });
+} else {
+  console.warn(
+    "MONGO_URI is missing. Database-backed routes require a MongoDB connection."
+  );
+}
 
 cloudinary.config({
   cloud_name: CLOUD_NAME,

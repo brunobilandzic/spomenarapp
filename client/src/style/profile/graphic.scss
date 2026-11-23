@@ -1,4 +1,4 @@
-@import "../base/colors";
+@use "../base/colors" as *;
 
 .profile-options .option {
   box-shadow: -2px 2px 0 0 $light-nav-bar, 1px -1px $light-nav-bar;

@@ -329,7 +329,7 @@ router.delete("/self", auth, (req, res) => {
   console.log(user);
   User.findById(user)
     .then((doc) => {
-      return doc.delete();
+      return doc.deleteOne();
     })
     .then((_) => {
       return Dictionary.deleteMany({ author: user });

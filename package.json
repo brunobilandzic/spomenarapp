@@ -4,28 +4,31 @@
   "description": "Spomenar app",
   "main": "server.js",
   "scripts": {
-    "client-install": "cd client && npm install",
+    "client-install": "npm --prefix client ci",
     "start": "node server.js",
-    "build": "cd client && npm install && npm rebuild node-sass && npm run build",
-    "server": "nodemon server.js",
+    "build": "npm --prefix client run build",
+    "server": "nodemon --ignore client/ server.js",
     "client": "npm start --prefix client",
-    "dev": "concurrently \"npm run server\" \"npm run client\""
+    "dev": "concurrently --kill-others --names api,web \"npm run server\" \"npm run client\""
   },
   "author": "Bruno Bilandzic",
   "license": "ISC",
   "dependencies": {
     "base64url": "^3.0.1",
-    "bcrypt": "^5.0.1",
+    "bcrypt": "^6.0.0",
     "body-parser": "^1.19.0",
     "cloudinary": "^1.25.1",
-    "concurrently": "^6.0.0",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "formidable": "^1.2.2",
     "jsonwebtoken": "^8.5.1",
-    "mongoose": "^5.11.19",
+    "mongoose": "^8.24.11",
     "multer-storage-cloudinary": "^4.0.0",
     "nodemailer": "^6.5.0",
     "uuid": "^8.3.2"
+  },
+  "devDependencies": {
+    "concurrently": "^10.0.7",
+    "nodemon": "^3.1.14"
   }
 }

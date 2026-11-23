@@ -1,4 +1,4 @@
-@import "../base/colors";
+@use "../base/colors" as *;
 
 .question-nav-btn:focus {
   box-shadow: none;

@@ -115,12 +115,12 @@ router.delete("/", admin, (req, res) => {
 // @access Public
 router.delete("/:id", auth, (req, res) => {
   Dictionary.findById(req.params.id)
-    .then((dict) => {
+    .then(async (dict) => {
       if (req.user.id != dict.author)
         return res.status(400).json({ msg: "Client not dict owner." });
-      return dict.delete();
+      await dict.deleteOne();
+      return res.json({ dictId: dict.id });
     })
-    .then((dict) => res.json({ dictId: dict.id }))
     .catch((err) => res.status(400).json({ msg: err.message }));
 });
 module.exports = router;
