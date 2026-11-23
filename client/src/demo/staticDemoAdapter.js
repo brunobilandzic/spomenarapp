@@ -13,6 +13,11 @@ const examples = [
     question: "Koja ti je najdraža uspomena s ekipom?",
     type: OPEN,
     value: "Izlet na more koji smo dogovorili isti dan.",
+    additionalAnswers: [
+      ["Mia", "Biciklirali smo do jezera i ostali tamo do zalaska sunca."],
+      ["Luka", "Prvi zajednički koncert, kad nas je na povratku uhvatio pljusak."],
+      ["Ema", "Večer društvenih igara koja se protegla do tri ujutro."],
+    ],
   },
   {
     question: "Kako izgleda tvoj idealan vikend?",
@@ -23,16 +28,22 @@ const examples = [
       { letter: "c", choice: "Kava koja se pretvori u cjelodnevno druženje" },
     ],
     value: "c",
+    additionalAnswers: [["Mia", "a"], ["Luka", "b"]],
   },
   {
     question: "Bi li se prijavio/la na kviz s ekipom?",
     type: APPROVAL,
     value: "Yes",
+    additionalAnswers: [["Luka", "I_DONT_KNOW"], ["Ema", "No"]],
   },
   {
     question: "Koju bi pjesmu stavio/la na playlistu za ovaj spomenar?",
     type: OPEN,
     value: "Haustor – Moja prva ljubav.",
+    additionalAnswers: [
+      ["Mia", "Dino Dvornik – Ti si mi u mislima."],
+      ["Ema", "Jinx – Tamo gdje je sve po mom."],
+    ],
   },
 ];
 
@@ -45,21 +56,32 @@ const questions = examples.map(({ question, type, choices = [] }, order) => ({
   order,
 }));
 
+const answersByQuestion = questions.map(({ _id, order }) => {
+  const { value, additionalAnswers } = examples[order];
+  return [[dictionary.author_username, value], ...additionalAnswers].map(
+    ([author, answer], index) => ({
+      _id: `demo-answer-${order + 1}-${index + 1}`,
+      question: _id,
+      value: answer,
+      author_username: author,
+      date_created: dictionary.date,
+    })
+  );
+});
+const respondentCount = new Set(
+  answersByQuestion.flat().map(({ author_username }) => author_username)
+).size;
+
 const reads = new Map([
   ["/api/dicts", [dictionary]],
   [`/api/dicts/${dictionary._id}`, dictionary],
   [`/api/quests/dict/${dictionary._id}`, questions],
-  [`/api/answers/dict/count/${dictionary._id}`, { count: 1 }],
+  [`/api/answers/dict/count/${dictionary._id}`, { count: respondentCount }],
 ]);
 questions.forEach(({ _id, order }) => {
-  reads.set(`/api/answers/count/${_id}`, { count: 1 });
-  reads.set(`/api/answers/quest/${_id}`, [{
-    _id: `demo-answer-${order + 1}`,
-    question: _id,
-    value: examples[order].value,
-    author_username: dictionary.author_username,
-    date_created: dictionary.date,
-  }]);
+  const answers = answersByQuestion[order];
+  reads.set(`/api/answers/count/${_id}`, { count: answers.length });
+  reads.set(`/api/answers/quest/${_id}`, answers);
 });
 
 // Resolve the public demo's existing data requests without a network transport.
@@ -70,7 +92,10 @@ export default async function staticDemoAdapter(config) {
     data = reads.get(url);
   } else if (method === "post" && url === "/api/answers/dict/count") {
     const { dictionaries } = JSON.parse(config.data);
-    data = dictionaries.map((id) => ({ dictionary: id, count: id === dictionary._id ? 1 : 0 }));
+    data = dictionaries.map((id) => ({
+      dictionary: id,
+      count: id === dictionary._id ? respondentCount : 0,
+    }));
   }
 
   if (data === undefined) {

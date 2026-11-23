@@ -14,8 +14,17 @@ it.runIf(import.meta.env.STATIC_DEMO)("runs the public demo with bundled data an
 
   try {
     expect(screen.queryByText("Owner login")).not.toBeInTheDocument();
-    fireEvent.click(await screen.findByRole("link", { name: "Spomenar za ekipu" }));
+    const sample = await screen.findByRole("link", { name: "Spomenar za ekipu" });
+    const dictionaryId = sample.getAttribute("href").split("/").at(-1);
+    const { data: questions } = await axios.get(`/api/quests/dict/${dictionaryId}`);
+    const counts = await Promise.all(questions.map(async ({ _id }) => {
+      const { data } = await axios.get(`/api/answers/quest/${_id}`);
+      return data.length;
+    }));
+    expect(counts).toEqual([4, 3, 3, 3]);
+    fireEvent.click(sample);
     expect(await screen.findByText("Izlet na more koji smo dogovorili isti dan.")).toBeInTheDocument();
+    expect(await screen.findByText("Biciklirali smo do jezera i ostali tamo do zalaska sunca.")).toBeInTheDocument();
     fireEvent.click(screen.getByRole("button", { name: "Next question" }));
     expect(await screen.findByText("Kako izgleda tvoj idealan vikend?")).toBeInTheDocument();
 
