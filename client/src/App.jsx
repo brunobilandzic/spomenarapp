@@ -49,10 +49,14 @@ function App() {
                     without an account so you can try it right away. Your
                     practice spomenars and answers stay in this browser.
                   </p>
-                  <p className="mb-0">
+                  <p>
                     The full-stack version uses React, an Express API and
                     MongoDB Atlas. It implements registration, login, email
                     verification and password reset.
+                  </p>
+                  <p className="small text-muted mb-0">
+                    OpenAI Codex assisted with preparing this public demo.
+                    The sample answers are fictional.
                   </p>
                 </section>
               )}
