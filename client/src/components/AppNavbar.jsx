@@ -58,13 +58,16 @@ function AppNavbar(props) {
               Try creating
             </Link>
           )}
-          <NavbarToggler onClick={toggle} />
-
-          <Collapse isOpen={isOpen} navbar>
-            <Nav className="ml-auto" navbar>
-              {props.isAuthenticated ? authNavbar : publicNavbar}
-            </Nav>
-          </Collapse>
+          {!import.meta.env.STATIC_DEMO && (
+            <>
+              <NavbarToggler onClick={toggle} />
+              <Collapse isOpen={isOpen} navbar>
+                <Nav className="ml-auto" navbar>
+                  {props.isAuthenticated ? authNavbar : publicNavbar}
+                </Nav>
+              </Collapse>
+            </>
+          )}
         </Container>
       </Navbar>
     </div>

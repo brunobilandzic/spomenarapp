@@ -87,7 +87,7 @@ function LoginModal(props) {
                 </Button>
                 <Button onClick={toggleModal}>Cancel</Button>
               </div>
-              <div>
+              {!import.meta.env.DEMO_MODE && (
                 <Link
                   to="/forgotpassword"
                   className="app-navigation-link"
@@ -95,7 +95,7 @@ function LoginModal(props) {
                 >
                   Forgot Password
                 </Link>
-              </div>
+              )}
             </div>
           </Form>
         </ModalBody>

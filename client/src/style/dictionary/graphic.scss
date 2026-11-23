@@ -10,7 +10,8 @@
   background-color: $light-nav-bar;
 }
 
-.question-nav-btn.disabled {
+.question-nav-btn.disabled,
+.question-nav-btn:disabled {
   color: gray;
 }
 

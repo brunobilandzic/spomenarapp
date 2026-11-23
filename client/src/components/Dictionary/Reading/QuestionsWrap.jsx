@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from "react";
 import Question from "./Question";
-import { Button, ButtonGroup } from "reactstrap";
 import { addQuestions, checkAnswerCount } from "../../../actions/answerActions";
 import { connect } from "react-redux";
 import propTypes from "prop-types";
-import classNames from "classnames";
 
 function QuestionsWrap(props) {
   const { dictId, questions } = props;
@@ -57,24 +55,25 @@ function QuestionsWrap(props) {
       </div>
       <div className="question-navigation-wrap">
         <div className="question-navigation">
-          <div
-            className={classNames("question-nav-btn", {
-              disabled: index == 0,
-            })}
+          <button
+            type="button"
+            className="question-nav-btn"
+            aria-label="Previous question"
+            disabled={index === 0}
             onClick={handlePrevious}
           >
-            <i className="fas fa-angle-left"></i>
-          </div>
+            <span aria-hidden="true">‹</span>
+          </button>
 
-          <div
-            className={classNames("question-nav-btn", {
-              disabled: questions && index == questions.length - 1,
-            })}
+          <button
+            type="button"
+            className="question-nav-btn"
+            aria-label="Next question"
+            disabled={!questions?.length || index === questions.length - 1}
             onClick={handleNext}
           >
-            {" "}
-            <i className="fas fa-angle-right"></i>{" "}
-          </div>
+            <span aria-hidden="true">›</span>
+          </button>
         </div>
       </div>
     </div>

@@ -1,7 +1,7 @@
 import { Container } from "reactstrap";
 import { Provider } from "react-redux";
 import React, { useEffect } from "react";
-import { Route, Switch } from "react-router-dom";
+import { Redirect, Route, Switch } from "react-router-dom";
 import store from "./store";
 import { loadUser } from "./actions/authActions";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -27,7 +27,7 @@ import GoVerify from "./components/Modals/GoVerify";
 import DeleteProfile from "./components/User/Settings/DeleteProfile";
 function App() {
   useEffect(() => {
-    store.dispatch(loadUser());
+    if (!import.meta.env.STATIC_DEMO) store.dispatch(loadUser());
   });
   return (
     <Provider store={store}>
@@ -41,17 +41,23 @@ function App() {
             <Route exact path="/">
               <DictionariesWrap />
             </Route>
+            {import.meta.env.DEMO_MODE && (
+              <Route exact path="/try-create">
+                <CreateDictionary practice />
+              </Route>
+            )}
+            {import.meta.env.STATIC_DEMO && <Redirect to="/" />}
             <Route exact path="/verify/:username/:id">
               <EmailConfirm />
             </Route>
             <Route exact path="/forgotpassword">
-              <PasswordForgot />
+              {import.meta.env.DEMO_MODE ? <Redirect to="/" /> : <PasswordForgot />}
             </Route>
             <Route exact path="/goverify/:userId">
-              <GoVerify />
+              {import.meta.env.DEMO_MODE ? <Redirect to="/" /> : <GoVerify />}
             </Route>
             <Route exact path="/resetpassword/:username/:hash">
-              <ResetPasswordCheck />
+              {import.meta.env.DEMO_MODE ? <Redirect to="/" /> : <ResetPasswordCheck />}
             </Route>
             <ProtectedRoute path="/changepassword" component={PasswordChange} />
             <ProtectedRoute path="/profile" component={Profile} />
@@ -59,11 +65,6 @@ function App() {
             <ProtectedRoute path="/settings" component={Settings} />
             <ProtectedRoute path="/explore" component={ExploreUsers} />
             <ProtectedRoute path="/new" component={CreateDictionary} />
-            {import.meta.env.DEMO_MODE && (
-              <Route exact path="/try-create">
-                <CreateDictionary practice />
-              </Route>
-            )}
             <ProtectedRoute path="/delete" component={DeleteProfile} />
             <ProtectedRoute
               path="/user/dictionaries"

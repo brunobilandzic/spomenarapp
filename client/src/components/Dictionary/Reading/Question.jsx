@@ -71,12 +71,13 @@ export default function Question(props) {
                   <div className=" d-flex align-items-center">
                     <div className="username-answer-wrap">
                       <div className="answer-username-value">
-                        <Link
-                          className="app-navigation-link"
-                          to={"/" + a.author_username}
-                        >
-                          {a.author_username}
-                        </Link>
+                        {import.meta.env.STATIC_DEMO ? (
+                          <span>{a.author_username}</span>
+                        ) : (
+                          <Link className="app-navigation-link" to={"/" + a.author_username}>
+                            {a.author_username}
+                          </Link>
+                        )}
                       </div>
                       <div className="answer-value">
                         {choices != undefined && choices.length ? (

@@ -168,7 +168,7 @@ export function CreateDictionary({ practice = false, token, user }) {
               aria-label={`Delete question ${index + 1}`}
               onClick={() => deleteQuestion(question.id)}
             >
-              <i className="fas fa-trash" aria-hidden="true"></i>
+              <span aria-hidden="true">×</span>
             </button>
           </div>
         </div>

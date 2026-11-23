@@ -7,7 +7,7 @@ const auth = require("../../middleware/auth");
 const sendPasswordResetLink = require("../../email/pass-reset");
 const router = express.Router();
 const admin = require("../../middleware/admin");
-const { APP_URL } = require("../../config");
+const { APP_URL, DEMO_MODE } = require("../../config");
 // @route POST /api/auth
 // @desc Authorization (Login)
 // @accsess Public
@@ -56,6 +56,9 @@ router.get("/user", auth, (req, res) => {
 // @desc Password reset request
 // @access Public
 router.post("/pwd", async (req, res) => {
+  if (DEMO_MODE) {
+    return res.status(403).json({ msg: "Password reset by email is disabled in demo mode." });
+  }
   const { userInfo } = req.body;
   try {
     const user = await User.findOne({
@@ -111,6 +114,9 @@ router.post("/passwordcheck", (req, res) => {
 // @desc Password reset email link resolve
 // @access Public
 router.get("/pwd/:username/:hash", (req, res) => {
+  if (DEMO_MODE) {
+    return res.status(403).json({ msg: "Password reset by email is disabled in demo mode." });
+  }
   const { username, hash } = req.params;
   User.findOne({
     username,

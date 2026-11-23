@@ -14,6 +14,7 @@ const ANSWERING = "ANSWERING";
 
 function Dictionary(props) {
   const [dictionary, setDictionary] = useState(null);
+  const [loadFailed, setLoadFailed] = useState(false);
   const [selectedMode, setMode] = useState(null);
   const [control, setControl] = useState(false);
   const { dictId } = useParams();
@@ -21,12 +22,16 @@ function Dictionary(props) {
   const mode = selectedMode ?? (guestDemo ? READING : ANSWERING);
   useEffect(() => {
     let isMounted = true;
+    setDictionary(null);
+    setLoadFailed(false);
     axios
       .get("/api/dicts/" + dictId)
       .then((response) => {
         if (isMounted) setDictionary(response.data);
       })
-      .catch((err) => console.log(err));
+      .catch(() => {
+        if (isMounted) setLoadFailed(true);
+      });
     return () => {
       isMounted = false;
     };
@@ -37,11 +42,12 @@ function Dictionary(props) {
     if (props.user.id == dictionary.author) setControl(true);
   }, [dictionary, props.user]);
 
+  if (loadFailed) return <p role="alert">Could not open this spomenar.</p>;
+  if (!dictionary) return <p role="status">Loading spomenar…</p>;
+
   return (
     <div className="dictionary-wrap">
-      {dictionary && (
-        <DictionaryItemBig control={control} dict={dictionary} big={true} />
-      )}
+      <DictionaryItemBig control={control} dict={dictionary} big={true} />
       <ButtonGroup className="answer-read-btn-group">
         <Button
           color="light"

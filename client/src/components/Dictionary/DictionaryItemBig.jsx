@@ -34,12 +34,13 @@ export default function DictionaryItemBig(props) {
         </div>
         <div className="dict-info-footer d-flex justify-content-between">
           <div className="dict-author-date">
-            <Link
-              className="app-navigation-link"
-              to={"/" + dict.author_username}
-            >
-              {dict.author_username}
-            </Link>
+            {import.meta.env.STATIC_DEMO ? (
+              <span>{dict.author_username}</span>
+            ) : (
+              <Link className="app-navigation-link" to={"/" + dict.author_username}>
+                {dict.author_username}
+              </Link>
+            )}
             <div className="answer-count-wrap d-flex">
               <div className="answer-count-icon mr-2">
                 <i className="fas fa-user dark-blue"></i>

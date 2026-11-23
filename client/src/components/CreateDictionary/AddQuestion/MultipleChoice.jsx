@@ -1,8 +1,5 @@
-import react, { Fragment } from "react";
+import { Fragment } from "react";
 import { Button, Input } from "reactstrap";
-import { v4 as uuid } from "uuid";
-import { connect } from "react-redux";
-import propTypes from "prop-types";
 
 export default function MultipleChoice(props) {
   const choicePlaceholder = () => {
@@ -14,21 +11,22 @@ export default function MultipleChoice(props) {
   const renderChoice = (choice, i) => {
     return (
       <div
-        key={uuid()}
+        key={choice.letter}
         className="mb-2 d-flex align-items-center justify-content-between"
       >
         <div className="ml-2 choice-preview">
           <span>{choice.letter})&nbsp;</span>
           <span>{choice.choice}</span>
         </div>
-        <div
+        <Button
+          type="button"
+          color="link"
           className="custom-btn-2"
-          onClick={() => {
-            props.deleteChoice(i);
-          }}
+          aria-label={`Remove choice ${choice.letter}`}
+          onClick={() => props.deleteChoice(i)}
         >
-          <i class="fas fa-trash"></i>
-        </div>
+          <span aria-hidden="true">×</span>
+        </Button>
       </div>
     );
   };
@@ -50,7 +48,9 @@ export default function MultipleChoice(props) {
           placeholder={choicePlaceholder()}
         />
 
-        <i class="fas fa-plus submit-choice-btn " onClick={props.onSubmit}></i>
+        <Button type="button" color="link" className="submit-choice-btn" aria-label="Add choice" onClick={props.onSubmit}>
+          <span aria-hidden="true">+</span>
+        </Button>
       </div>
     </Fragment>
   );

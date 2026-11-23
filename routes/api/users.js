@@ -262,6 +262,9 @@ router.get("/email/:id", (req, res) => {
 // @access Public
 
 router.get("/resendverify/:id", async (req, res) => {
+  if (DEMO_MODE) {
+    return res.status(403).json({ msg: "Verification emails are disabled in demo mode." });
+  }
   try {
     const user = await User.findById(req.params.id);
     if (!user) return res.status(404).json({ msg: "User does not exist." });
