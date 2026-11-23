@@ -11,12 +11,6 @@ export default function Settings() {
           </div>
           <div className="option-text">Change Password</div>
         </Link>
-        <Link className="app-navigation-link option" to="/changeprofileimage">
-          <div className="option-icon">
-            <i className="fas fa-camera-retro"></i>
-          </div>
-          <div className="option-text">Change Profile Image</div>
-        </Link>
         <Link className="app-navigation-link option" to="/delete">
           <div className="option-icon">
             <i className="fas fa-trash"></i>

@@ -1,5 +1,3 @@
-const formidable = require("formidable");
-
 module.exports = function register(data) {
   const forbiddenUsernames = [
     "profile",
@@ -10,11 +8,16 @@ module.exports = function register(data) {
     "verify",
     "goverify",
     "delete",
-    "changeprofileimage",
   ];
 
   const { username, password, email } = data;
-  if (!email || !password || !username) return "Please enter all fields.";
+  if (
+    ![email, password, username].every(
+      (value) => typeof value === "string" && value.length > 0
+    )
+  ) {
+    return "Please enter all fields.";
+  }
   const usernameRegEx = new RegExp("^[a-z0-9]+$");
   if (!usernameRegEx.test(username)) {
     return "Username has to contain letters a-z and numbers 0-9.";

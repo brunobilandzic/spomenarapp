@@ -6,7 +6,6 @@ import {
   fetchAnswersCount,
   clearAnswersCount,
 } from "../../actions/dictionaryActions";
-import { fetchImagesByUsernames } from "../../actions/friendsActions";
 import DictionaryItem from "./DictionaryItem";
 import { connect } from "react-redux";
 import propTypes from "prop-types";
@@ -27,7 +26,6 @@ function DictionariesWrap(props) {
 
   useEffect(() => {
     if (!props.dictionaries || !props.dictionaries.length) return;
-    props.fetchImagesByUsernames([...props.dictionaries.map((d) => d.author)]);
     props.fetchAnswersCount([...props.dictionaries.map((d) => d._id)]);
   }, [props.dictionaries]);
   function renderDictionaries() {
@@ -39,9 +37,6 @@ function DictionariesWrap(props) {
     }
     return props.dictionaries.map((dict) => (
       <DictionaryItem
-        imageUrl={
-          props.usernameImages && props.usernameImages[dict.author_username]
-        }
         count={props.answersCounts && props.answersCounts[dict._id]}
         key={dict._id}
         dict={{ ...dict }}
@@ -57,14 +52,12 @@ DictionariesWrap.propTypes = {
   loadUserDictionaries: propTypes.func.isRequired,
   clearDictionaries: propTypes.func.isRequired,
   dictionaries: propTypes.array,
-  fetchImagesByUsernames: propTypes.func.isRequired,
   answersCounts: propTypes.object,
   clearAnswersCount: propTypes.func.isRequired,
 };
 
 const mapStateToProps = (state) => ({
   dictionaries: state.dictionaries.dictionaries,
-  usernameImages: state.friends.usernameImages,
   answersCounts: state.dictionaries.answersCounts,
 });
 
@@ -72,7 +65,6 @@ export default connect(mapStateToProps, {
   loadAllDictionaries,
   loadUserDictionaries,
   clearDictionaries,
-  fetchImagesByUsernames,
   fetchAnswersCount,
   clearAnswersCount,
 })(DictionariesWrap);

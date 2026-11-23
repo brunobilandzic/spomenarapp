@@ -1,6 +1,5 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import ProfileImagePreview from "../Modals/ProfileImagePreview";
 import { connect } from "react-redux";
 import propTypes from "prop-types";
 import "../../style/profile/spacing.scss";
@@ -8,9 +7,7 @@ import "../../style/profile/graphic.scss";
 function Profile(props) {
   return (
     <div>
-      <div className="profile-head">
-        {props.user && <ProfileImagePreview imageUrl={props.user.imageUrl} />}
-      </div>
+      {props.user && <h4>@{props.user.username}</h4>}
       <div className="profile-options">
         <Link className="app-navigation-link option" to="/user/dictionaries">
           <div className="option-icon">

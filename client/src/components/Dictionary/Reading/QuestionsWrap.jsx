@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import Question from "./Question";
 import { Button, ButtonGroup } from "reactstrap";
 import { addQuestions, checkAnswerCount } from "../../../actions/answerActions";
-import { fetchImagesByQuestion } from "../../../actions/friendsActions";
 import { connect } from "react-redux";
 import propTypes from "prop-types";
 import classNames from "classnames";
@@ -23,7 +22,6 @@ function QuestionsWrap(props) {
   useEffect(() => {
     if (!questions.length) return;
     props.checkAnswerCount(questions[0]._id);
-    props.fetchImagesByQuestion(questions[0]._id);
   }, [questions]);
 
   function handlePrevious() {
@@ -42,7 +40,6 @@ function QuestionsWrap(props) {
     }
     return questions.map((q) => (
       <Question
-        usernameImages={{ ...props.usernameImages }}
         index={index}
         length={questions.length}
         {...q}
@@ -89,17 +86,14 @@ QuestionsWrap.propTypes = {
   addQuestions: propTypes.func.isRequired,
   checkAnswerCount: propTypes.func.isRequired,
   answerCount: propTypes.number.isRequired,
-  fetchImagesByQuestion: propTypes.func.isRequired,
 };
 
 const mapStateToProps = (state) => ({
   questions: state.answering.questions,
   answerCount: state.answering.answerCount,
-  usernameImages: state.friends.usernameImages,
 });
 
 export default connect(mapStateToProps, {
   addQuestions,
   checkAnswerCount,
-  fetchImagesByQuestion,
 })(QuestionsWrap);

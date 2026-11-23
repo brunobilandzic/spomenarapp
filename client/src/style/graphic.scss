@@ -39,18 +39,6 @@ body {
   color: $dark-blue;
 }
 
-.image-modal-header {
-  background-color: $nav-bar;
-  border-bottom: none;
-}
-.image-modal-header span {
-  color: $light-nav-bar;
-}
-
-.image-modal-wrap:hover {
-  cursor: pointer;
-}
-
 .btn-group-btn {
   background-color: inherit !important;
   border: none;

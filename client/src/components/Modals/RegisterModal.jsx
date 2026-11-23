@@ -23,7 +23,6 @@ function RegisterModal(props) {
     passwordRepeat: "",
     email: "",
     name: "",
-    image: null,
   });
   const [modal, setModal] = useState(false);
   useEffect(() => {
@@ -67,12 +66,6 @@ function RegisterModal(props) {
       props.clearErrors();
     }
   }
-  const onChangeImage = (e) => {
-    setInfo((i) => ({
-      ...i,
-      image: e.target.files[0],
-    }));
-  };
   return (
     <Fragment>
       <NavLink href="#" onClick={toggleModal}>
@@ -101,15 +94,6 @@ function RegisterModal(props) {
                 onChange={onChange}
                 value={info.username}
                 name="username"
-              />
-            </FormGroup>
-            <FormGroup>
-              <Label for="image">Profile picture:</Label>
-              <Input
-                type="file"
-                name="image"
-                accept=".jpg,.png"
-                onChange={onChangeImage}
               />
             </FormGroup>
             <FormGroup>

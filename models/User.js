@@ -21,14 +21,6 @@ const UserSchema = new Schema({
     type: Boolean,
     default: false,
   },
-  imageUrl: {
-    type: String,
-    default: null,
-  },
-  imageId: {
-    type: String,
-    default: null,
-  },
   following: {
     type: [Schema.Types.ObjectId],
     default: [],
@@ -36,6 +28,15 @@ const UserSchema = new Schema({
   followers: {
     type: [Schema.Types.ObjectId],
     default: [],
+  },
+}, {
+  toJSON: {
+    transform(_doc, data) {
+      // Older documents can still contain these fields.
+      delete data.imageUrl;
+      delete data.imageId;
+      return data;
+    },
   },
 });
 

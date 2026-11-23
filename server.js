@@ -1,9 +1,7 @@
 const express = require("express");
 const config = require("./config");
 const mongoose = require("mongoose");
-const cloudinary = require("cloudinary");
-const { MONGO_URI, CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET } =
-  config;
+const { MONGO_URI } = config;
 
 if (MONGO_URI) {
   mongoose
@@ -21,12 +19,6 @@ if (MONGO_URI) {
     "MONGO_URI is missing. Database-backed routes require a MongoDB connection."
   );
 }
-
-cloudinary.config({
-  cloud_name: CLOUD_NAME,
-  api_key: CLOUDINARY_API_KEY,
-  api_secret: CLOUDINARY_API_SECRET,
-});
 
 const app = express();
 app.use(express.json());

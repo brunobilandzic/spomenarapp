@@ -4,16 +4,12 @@ import {
   CLEAR_FOLLOW,
   GET_EXPLORE,
   CLEAR_EXPLORE,
-  FETCH_IMAGES,
-  FETCH_IMAGES_FAILURE,
-  CLEAR_IMAGES,
 } from "../actions/types";
 
 const initialState = {
   followers: [],
   following: [],
   explore: [],
-  usernameImages: {},
 };
 
 export default function friendsReducer(state = initialState, action) {
@@ -32,17 +28,6 @@ export default function friendsReducer(state = initialState, action) {
       return {
         ...state,
         explore: [...action.payload.users],
-      };
-    case FETCH_IMAGES:
-      return {
-        ...state,
-        usernameImages: { ...action.payload },
-      };
-    case FETCH_IMAGES_FAILURE:
-    case CLEAR_IMAGES:
-      return {
-        ...state,
-        usernameImages: [],
       };
     case CLEAR_FOLLOW:
       return {

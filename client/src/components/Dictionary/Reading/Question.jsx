@@ -7,7 +7,6 @@ import {
 } from "../../CreateDictionary/AddQuestion/QuestionTypes";
 import axios from "axios";
 import Statistics from "./Statistics/Statistics";
-import { INCOGNITO_PROFILE_IMAGE } from "../../../style/images";
 import parseDate from "../../../helpers/date";
 
 export default function Question(props) {
@@ -70,22 +69,6 @@ export default function Question(props) {
                   key={uuid()}
                 >
                   <div className=" d-flex align-items-center">
-                    <div className="answer-image-wrap">
-                      <Link
-                        className="app-navigation-link username-image username-image-sm"
-                        to={"/" + a.author_username}
-                      >
-                        <img
-                          className="round-box-com round-box"
-                          src={
-                            props.usernameImages &&
-                            props.usernameImages[a.author_username]
-                              ? props.usernameImages[a.author_username]
-                              : INCOGNITO_PROFILE_IMAGE
-                          }
-                        />
-                      </Link>
-                    </div>
                     <div className="username-answer-wrap">
                       <div className="answer-username-value">
                         <Link

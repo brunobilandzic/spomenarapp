@@ -5,25 +5,12 @@
 }
 
 @media only screen and (min-width: 1000px) {
-  .dict-info {
-    display: flex;
-  }
-  .dict-info-image {
-    max-width: 300px;
-  }
-  .dict-info-text {
-    flex-grow: 1;
-    padding-left: 3rem;
-  }
   .reading-choices {
     width: 50%;
     margin-left: auto;
   }
 }
 @media only screen and (max-width: 1000px) {
-  .dict-info-image {
-    width: 100%;
-  }
   .navbar {
     margin-bottom: 0.5rem;
   }
@@ -82,9 +69,6 @@
 .answer-item {
   margin: 1rem 0;
 }
-.answer-image-wrap {
-  padding: 1rem;
-}
 .reading-choices,
 .create-choices-wrap {
   padding: 1rem 2rem;
@@ -97,9 +81,6 @@
   align-items: center;
 }
 
-.dict-img-upload {
-  padding: 1rem 0;
-}
 .stat-bar {
   height: 1.3rem;
 }

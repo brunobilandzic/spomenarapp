@@ -1,20 +1,10 @@
 const Dictionary = require("../../models/Dictionary");
 const User = require("../../models/User");
-const Image = require("../../models/Image");
 const express = require("express");
 const router = express.Router();
 const auth = require("../../middleware/auth");
 const admin = require("../../middleware/admin");
 const { USER_NOT_FOUND } = require("../../config/errors");
-const { CloudinaryStorage } = require("multer-storage-cloudinary");
-const cloudinary = require("cloudinary").v2;
-const formidable = require("formidable");
-const storage = new CloudinaryStorage({
-  cloudinary: cloudinary,
-  folder: "spomenar",
-  allowedFormats: ["jpg", "png"],
-  transformation: [{ width: 500, height: 500, crop: "limit" }],
-});
 
 // @route GET /api/dicts
 // @desc Fetches all dictionaries sorted by date newest
@@ -64,42 +54,31 @@ router.get("/u/:author", (req, res) => {
 // @desc Create a new dictionary
 // @access Private
 
-router.post("/", auth, (req, res) => {
-  const form = formidable({ multiples: true });
-  form.parse(req, (err, fields, files) => {
-    const { author, title, description } = fields;
-    if (err) res.status(400).json({ msg: "Form parse error" });
-    User.findById(author)
-      .then((user) => {
-        if (!user) throw new Error(USER_NOT_FOUND);
-        const newDict = new Dictionary({
-          author: user._id,
-          author_username: user.username,
-          title,
-          description,
-        });
-        if (files.image) {
-          const imageUploadUrl = files.image.path;
-          cloudinary.uploader.upload(imageUploadUrl, (err, uploadResult) => {
-            if (err) throw new Error("Image upload error");
-            newDict.imageUrl = uploadResult.secure_url;
-            newDict.imageId = uploadResult.public_id;
-            return newDict
-              .save()
-              .then((dict) => res.send(dict))
-              .catch((err) => res.status(400).json({ msg: err.message }));
-          });
-        } else {
-          return newDict
-            .save()
-            .then((dict) => res.json(dict))
-            .catch((err) => res.status(400).json({ msg: err.message }));
-        }
-      })
-      .catch((err) => {
-        res.status(400).json({ msg: err.message });
-      });
-  });
+router.post("/", auth, async (req, res) => {
+  if (!req.is("application/json")) {
+    return res.status(415).json({ msg: "Expected a JSON request." });
+  }
+  const { author, title, description } = req.body;
+  if (
+    typeof author !== "string" ||
+    typeof title !== "string" ||
+    (description !== undefined && typeof description !== "string")
+  ) {
+    return res.status(400).json({ msg: "Invalid dictionary fields." });
+  }
+  try {
+    const user = await User.findById(author);
+    if (!user) throw new Error(USER_NOT_FOUND);
+    const dictionary = await Dictionary.create({
+      author: user._id,
+      author_username: user.username,
+      title,
+      description,
+    });
+    return res.json(dictionary);
+  } catch (error) {
+    return res.status(400).json({ msg: error.message });
+  }
 });
 
 // @route DELETE /api/dicts

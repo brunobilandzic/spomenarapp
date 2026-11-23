@@ -23,7 +23,6 @@ import Friends from "./components/User/Friends/Friends";
 import UserProfile from "./components/User/Others/UserProfile";
 import ExploreUsers from "./components/User/Friends/ExploreUsers";
 import ProtectedRoute from "./routes/ProtectedRoute";
-import ProfileImageChange from "./components/User/Settings/ProfileImage/ProfileImageChange";
 import GoVerify from "./components/Modals/GoVerify";
 import DeleteProfile from "./components/User/Settings/DeleteProfile";
 function App() {
@@ -61,10 +60,6 @@ function App() {
             <ProtectedRoute path="/explore" component={ExploreUsers} />
             <ProtectedRoute path="/new" component={CreateDictionary} />
             <ProtectedRoute path="/delete" component={DeleteProfile} />
-            <ProtectedRoute
-              path="/changeprofileimage"
-              component={ProfileImageChange}
-            />
             <ProtectedRoute
               path="/user/dictionaries"
               component={DictionariesWrap}

@@ -18,7 +18,6 @@ function CreateDictionary(props) {
   const [meta, setMeta] = useState({
     title: "",
     description: "",
-    image: null,
   });
   const [error, setError] = useState("");
   const [dictId, setDictId] = useState("");
@@ -70,7 +69,7 @@ function CreateDictionary(props) {
 
     const config = {
       headers: {
-        "Content-Type": "multipart/form-data",
+        "Content-Type": "application/json",
       },
     };
     if (props.token) {
@@ -82,18 +81,14 @@ function CreateDictionary(props) {
       title: meta.title,
       description: meta.description,
     };
-    const formData = new FormData();
-    Object.keys(body).forEach((key) => formData.append(key, body[key]));
-    formData.append("image", meta.image);
     axios
-      .post("/api/dicts", formData, config)
+      .post("/api/dicts", body, config)
       .then((res) => {
         setDictId(res.data._id);
         const questionsData = {
           dictionary: res.data._id,
           questions: [...questions.map((q, order) => ({ ...q, order }))],
         };
-        config.headers["Content-Type"] = "application/json";
         axios
           .post("/api/quests", questionsData, config)
           .then((_) => {
@@ -109,13 +104,6 @@ function CreateDictionary(props) {
         toggleFail();
         console.log(err.response.data);
       });
-  };
-  const onChangeImage = (e) => {
-    console.log(e.target.files[0]);
-    setMeta((m) => ({
-      ...m,
-      image: e.target.files[0],
-    }));
   };
   function renderQuestion(question, index) {
     return (
@@ -192,18 +180,6 @@ function CreateDictionary(props) {
             rows={2}
             autoComplete="off"
           />
-          <div className="img-upload dict-img-upload">
-            <Label>
-              Image <i>(optional)</i>
-            </Label>
-            <div>Make your dictionary more appealing</div>
-            <input
-              onChange={onChangeImage}
-              accept=".jpg,.png"
-              type="file"
-              name="image"
-            />
-          </div>
         </div>
       </div>
       <div className="qeustions-preview">{questions.map(renderQuestion)}</div>

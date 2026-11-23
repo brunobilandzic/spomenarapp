@@ -46,7 +46,6 @@ router.get("/user", auth, (req, res) => {
         verified: userData.verified,
         name: userData.name,
         email: userData.email,
-        imageUrl: userData.imageUrl,
       });
     })
     .catch((err) => res.status(400).json({ msg: "AUTH_ERROR" }));

@@ -2,10 +2,6 @@ const express = require("express");
 const bcrypt = require("bcrypt");
 const router = express.Router();
 const base64url = require("base64url");
-const { CloudinaryStorage } = require("multer-storage-cloudinary");
-const cloudinary = require("cloudinary").v2;
-const formidable = require("formidable");
-
 const User = require("../../models/User");
 const Answer = require("../../models/Answer");
 const registerCheck = require("../../middleware/register");
@@ -15,13 +11,6 @@ const auth = require("../../middleware/auth");
 const admin = require("../../middleware/admin");
 const { USER_NOT_FOUND } = require("../../config/errors");
 const Dictionary = require("../../models/Dictionary");
-
-const storage = new CloudinaryStorage({
-  cloudinary: cloudinary,
-  folder: "spomenar",
-  allowedFormats: ["jpg", "png"],
-  transformation: [{ width: 500, height: 500, crop: "limit" }],
-});
 
 // @route GET /api/users
 // @desc Fetches all users in DB
@@ -57,50 +46,32 @@ router.get("/u/:username", (req, res) => {
 // @route POST /api/users
 // @desc Register new user
 // @access Public
-router.post("/", (req, res) => {
-  const form = formidable({ multiples: true });
-  form.parse(req, (err, fields, files) => {
-    if (err) return res.status(400).json({ msg: "Form parse error" });
-    const registerError = registerCheck(fields);
-    if (registerError) return res.status(400).json({ msg: registerError });
-    const { email, password, username } = fields;
+router.post("/", async (req, res) => {
+  if (!req.is("application/json")) {
+    return res.status(415).json({ msg: "Expected a JSON request." });
+  }
+  const registerError = registerCheck(req.body);
+  if (registerError) return res.status(400).json({ msg: registerError });
+  const { email, password, username } = req.body;
 
-    User.findOne({
-      $or: [{ username }, { email }],
-    }).then((user) => {
-      if (user) {
-        return res.status(400).json({ msg: `Credentials already in use.` });
-      }
-      const newUser = new User({
-        email,
-        password,
-        username,
-      });
-      bcrypt.genSalt(10, (err, salt) => {
-        if (err) throw err;
-        bcrypt.hash(newUser.password, salt, (err, hash) => {
-          newUser.password = hash;
-          if (files.image) {
-            cloudinary.uploader.upload(
-              files.image.path,
-              (err, uploadResult) => {
-                if (err) throw new Error("Image upload error");
-                newUser.imageUrl = uploadResult.secure_url;
-                newUser.imageId = uploadResult.public_id;
-                newUser.save().then((user) => {
-                  hashAndSendVerificationLink(user, req, res);
-                });
-              }
-            );
-          } else {
-            newUser.save().then((user) => {
-              hashAndSendVerificationLink(user, req, res);
-            });
-          }
-        });
-      });
+  try {
+    const user = await User.findOne({ $or: [{ username }, { email }] });
+    if (user) {
+      return res.status(400).json({ msg: "Credentials already in use." });
+    }
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const newUser = await User.create({
+      email,
+      password: hashedPassword,
+      username,
     });
-  });
+    return hashAndSendVerificationLink(newUser, req, res);
+  } catch (error) {
+    if (error.code === 11000) {
+      return res.status(400).json({ msg: "Credentials already in use." });
+    }
+    return res.status(500).json({ msg: "Registration failed." });
+  }
 });
 
 // @route GET api/users/verify/:username/:id
@@ -196,7 +167,6 @@ router.get("/f/:direction/:username", (req, res) => {
           users: users.map((u) => ({
             username: u.username,
             id: u._id,
-            imageUrl: u.imageUrl,
           })),
         });
       });
@@ -218,109 +188,17 @@ router.get("/bool/follow/:followId", auth, (req, res) => {
   });
 });
 
-// @route PATCH /api/users/profileimage
-// @desc Change user profile image
-// @access Private
-
-router.patch("/profileimage", auth, (req, res) => {
-  User.findById(req.user.id)
-    .then((user) => {
-      const form = new formidable();
-      form.parse(req, (err, fields, files) => {
-        cloudinary.uploader.upload(files.newImage.path, (err, uploadResult) => {
-          if (err) return res.status(400).json({ msg: err.message });
-          const toDeleteId = user.imageId;
-          user.imageUrl = uploadResult.secure_url;
-          user.imageId = uploadResult.public_id;
-          cloudinary.uploader.destroy(toDeleteId, (err, destroyResult) => {
-            user.save().then((userData) => {
-              authUser(userData, (authData) => {
-                res.json({ ...authData });
-              });
-            });
-          });
-        });
-      });
-    })
-    .catch((err) => res.status(400).json({ msg: err.messge }));
-});
-
-// @route DELETE /api/users/profileimage
-// @desc Change user profile image
-// @access Private
-
-router.delete("/profileimage", auth, (req, res) => {
-  User.findById(req.user.id)
-    .then((user) => {
-      const toDeleteId = user.imageId;
-      user.imageUrl = null;
-      user.imageId = null;
-      cloudinary.uploader.destroy(toDeleteId, (err, destroyResult) => {
-        if (err) return res.status(400).json({ msg: err.message });
-        user.save().then((userData) => {
-          authUser(userData, (authData) => {
-            res.json({ ...authData });
-          });
-        });
-      });
-    })
-    .catch((err) => res.status(400).json({ msg: err.messge }));
-});
-// @route GET /api/users/images/question/:questionId
-// @desc Get username - imageUrl key value pairs for a question answerers
-// @access Public
-router.get("/images/question/:questionId", (req, res) => {
-  Answer.find({
-    question: req.params.questionId,
-  })
-    .then((answers) => {
-      User.find({
-        username: {
-          $in: [...answers.map((a) => a.author_username)],
-        },
-      }).then((users) => {
-        let toSend = {};
-        if (!users) throw new Error("No users found");
-        users.forEach((u) => (toSend[u.username] = u.imageUrl));
-        res.json({
-          usernameImages: { ...toSend },
-        });
-      });
-    })
-    .catch((err) => res.status(400).json({ msg: err.messge }));
-});
-
-// @route GET /api/users/images/dictionary
-// @desc Get username - imageUrl key value pairs for a dictionar authors
-// @access Public
-router.post("/images/dictionary/", (req, res) => {
-  User.find({
-    _id: {
-      $in: [...req.body.authorIds],
-    },
-  })
-    .then((users) => {
-      let toSend = {};
-      if (!users) throw new Error("No users found");
-      users.forEach((u) => (toSend[u.username] = u.imageUrl));
-      res.json({
-        usernameImages: { ...toSend },
-      });
-    })
-    .catch((err) => res.status(400).json({ msg: err.messge }));
-});
-
 // @route DELETE /api/users
 // @desc Delete All Users
-// @access Public
-router.delete("/", (req, res) => {
+// @access Admin
+router.delete("/", admin, (req, res) => {
   User.deleteMany()
     .then((result) => res.send(`Deleted ${result.deletedCount} users`))
     .catch((err) => res.status(400).json({ msg: err.message }));
 });
 // @route DELETE /api/users/self
 // @desc Delete User By Id
-// @access Public
+// @access Private
 
 // It is pretty nested because
 
@@ -406,7 +284,6 @@ function hashAndSendVerificationLink(user, req, res) {
         verified: user.verified,
         name: user.name,
         email: user.email,
-        imageUrl: user.imageUrl,
       });
     });
   });

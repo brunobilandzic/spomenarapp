@@ -17,7 +17,6 @@ module.exports = function authUser(user, next) {
           verified: userData.verified,
           name: userData.name,
           email: userData.email,
-          imageUrl: userData.imageUrl,
         },
       });
     }

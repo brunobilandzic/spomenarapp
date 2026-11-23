@@ -8,13 +8,11 @@ import {
   getFollowing,
   clearFollow,
 } from "../../../actions/friendsActions";
-import { INCOGNITO_PROFILE_IMAGE } from "../../../style/images";
 import { loadUserDictionaries } from "../../../actions/dictionaryActions";
 import Following from "../Friends/Following";
 import Followers from "../Friends/Followers";
 import DictionariesWrap from "../../Dictionaries/DictionariesWrap";
 import FollowButton from "../../Buttons/FollowButton";
-import ProfileImagePreview from "../../Modals/ProfileImagePreview";
 import { ButtonGroup, Button } from "reactstrap";
 
 const DICTIONARIES = "DICTIONARIES";
@@ -49,9 +47,6 @@ function UserProfile(props) {
   return (
     <div>
       <div className="user-profile-head d-flex">
-        {userProfile && (
-          <ProfileImagePreview other={true} imageUrl={userProfile.imageUrl} />
-        )}
         <h4 className="user-profile-username">
           <b>@{username}</b>
         </h4>

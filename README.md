@@ -33,6 +33,5 @@ Vite writes the static frontend to `client/build`. The application makes same-or
 | `MONGO_URI` | MongoDB connection string for database-backed routes |
 | `JWT_SECRET` | Signing and verifying authentication tokens |
 | `EMAIL`, `EMAIL_PASS` | Gmail SMTP credentials for verification and password reset emails |
-| `CLOUD_NAME`, `CLOUDINARY_API_KEY`, `CLOUDINARY_API_SECRET` | Cloudinary settings for image uploads and deletion |
 | `ADMIN_KEY` | Credential for routes guarded by the `admin-key` header |
 | `PORT` | Optional Express port, defaults to `5000` |

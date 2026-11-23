@@ -17,8 +17,6 @@ import {
   LINK_VERIFICATION_FAILURE,
   EMAIL_VERIFICATION_SUCCESS,
   EMAIL_VERIFICATION_FAILURE,
-  IMAGE_CHANGE_SUCCESS,
-  IMAGE_CHANGE_FAILURE,
   UPDATE_HASH,
   GRANT_PROFILE_DELETION,
   DENY_PROFILE_DELETION,
@@ -45,7 +43,7 @@ export const loadUser = () => (dispatch, getState) => {
     });
 };
 export const register =
-  ({ username, password, email, passwordRepeat, image }) =>
+  ({ username, password, email, passwordRepeat }) =>
   (dispatch) => {
     if (password != passwordRepeat) {
       return returnErrors({
@@ -53,18 +51,9 @@ export const register =
         status: -1,
       });
     }
-    const config = {
-      headers: {
-        "Content-type": "multipart/form-data",
-      },
-    };
-
     const body = { username, password, email };
-    const formData = new FormData();
-    Object.keys(body).forEach((key) => formData.append(key, body[key]));
-    formData.append("image", image);
     axios
-      .post("/api/users", formData, config)
+      .post("/api/users", body)
       .then((res) => {
         dispatch({
           type: REGISTER_SUCCESS,
@@ -245,72 +234,6 @@ export const submitNewPassword = (newPassword) => (dispatch, getState) => {
           err.response.data,
           err.response.status,
           "PASS_RESET_FAILURE"
-        )
-      );
-    });
-};
-
-export const changeProfileImage = (imageObject) => (dispatch, getState) => {
-  const formData = new FormData();
-  const config = {
-    headers: {
-      "Content-type": "multipart/form-data",
-    },
-  };
-  const token = getState().auth.token;
-  if (token) {
-    config.headers["x-auth-token"] = token;
-  }
-  formData.append("newImage", imageObject);
-  axios
-    .patch("/api/users/profileimage", formData, config)
-    .then((response) => {
-      dispatch({
-        type: IMAGE_CHANGE_SUCCESS,
-        payload: response.data,
-      });
-    })
-    .catch((err) => {
-      dispatch({
-        type: IMAGE_CHANGE_FAILURE,
-      });
-      dispatch(
-        returnErrors(
-          err.response.data,
-          err.response.status,
-          "IMAGE_CHANGE_FAILURE"
-        )
-      );
-    });
-};
-
-export const deleteProfileImage = () => (dispatch, getState) => {
-  const config = {
-    headers: {},
-  };
-  const token = getState().auth.token;
-
-  if (token) {
-    config.headers["x-auth-token"] = token;
-  }
-  console.log(config);
-  axios
-    .delete("/api/users/profileimage", config)
-    .then((response) => {
-      dispatch({
-        type: IMAGE_CHANGE_SUCCESS,
-        payload: response.data,
-      });
-    })
-    .catch((err) => {
-      dispatch({
-        type: IMAGE_CHANGE_FAILURE,
-      });
-      dispatch(
-        returnErrors(
-          err.response.data,
-          err.response.status,
-          "IMAGE_CHANGE_FAILURE"
         )
       );
     });

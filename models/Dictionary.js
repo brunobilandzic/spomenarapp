@@ -21,19 +21,20 @@ const DictionarySchema = new Schema({
     type: Date,
     default: Date.now,
   },
-  imageUrl: {
-    type: String,
-    default: null,
-  },
-  imageId: {
-    type: String,
-    default: null,
-  },
   access: {
     type: Object,
     default: {
       isPrivate: false,
       accessedBy: [],
+    },
+  },
+}, {
+  toJSON: {
+    transform(_doc, data) {
+      // Older documents can still contain these fields.
+      delete data.imageUrl;
+      delete data.imageId;
+      return data;
     },
   },
 });
