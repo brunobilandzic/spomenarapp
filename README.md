@@ -24,14 +24,21 @@ Open `http://localhost:3000`. Vite forwards `/api` requests to Express on `127.0
 npm run build
 ```
 
-Vite writes the static frontend to `client/build`. The application makes same-origin requests to `/api`.
+Vite writes the static frontend to `client/build`. Run `npm start` to serve the built frontend and `/api` from the same Express server. Open `http://localhost:5000` by default.
+
+## Deploy to Render
+
+1. Push the repository to your Git provider. In the Render Dashboard, choose **New → Blueprint** and connect the repository. `render.yaml` defines one free Node web service in Frankfurt.
+2. Supply `MONGO_URI`, `EMAIL_FROM`, and `RESEND_API_KEY` when prompted. Render generates `JWT_SECRET` and `ADMIN_KEY`. For public registration, use a sender on a verified Resend domain.
+3. In the new Render service, open **Connect → Outbound**. Add the listed ranges to the MongoDB Atlas project under **Network Access**. Redeploy if the initial startup could not connect to Atlas.
+4. Open the public URL and check `/api/dicts` for a successful JSON response. The server uses the Render URL for email links by default. Set `APP_URL` on the service if you use a custom domain.
 
 ## Environment variables
 
 | Variable | Used for |
 | --- | --- |
 | `MONGO_URI` | MongoDB connection string for database-backed routes |
-| `APP_URL` | Public frontend origin used in verification and password reset links. Defaults to `http://localhost:3000`. |
+| `APP_URL` | Optional frontend origin for email links. Defaults to Render's public URL on Render and `http://localhost:3000` locally. |
 | `JWT_SECRET` | Signing and verifying authentication tokens |
 | `EMAIL_FROM` | Sender address on a verified Resend domain |
 | `RESEND_API_KEY` | Resend key with sending access for verification and password reset emails |

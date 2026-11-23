@@ -1,0 +1,21 @@
+services:
+  - type: web
+    name: spomenar-demo
+    runtime: node
+    plan: free
+    region: frankfurt
+    buildCommand: npm ci && npm run client-install -- --include=dev && npm run build
+    startCommand: npm start
+    envVars:
+      - key: SKIP_INSTALL_DEPS
+        value: "true"
+      - key: MONGO_URI
+        sync: false
+      - key: EMAIL_FROM
+        sync: false
+      - key: RESEND_API_KEY
+        sync: false
+      - key: JWT_SECRET
+        generateValue: true
+      - key: ADMIN_KEY
+        generateValue: true

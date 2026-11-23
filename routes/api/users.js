@@ -22,6 +22,7 @@ router.get("/", auth, (req, res) => {
       $ne: req.user.id,
     },
   })
+    .select("username")
     .then((users) => {
       return res.json({ users });
     })
@@ -37,6 +38,7 @@ router.get("/", auth, (req, res) => {
 router.get("/u/:username", (req, res) => {
   const username = req.params.username;
   User.findOne({ username })
+    .select("username")
     .then((user) => {
       user
         ? res.send(user)

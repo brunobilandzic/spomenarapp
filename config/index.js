@@ -1,6 +1,8 @@
 require("dotenv").config();
 
-const appUrl = new URL(process.env.APP_URL || "http://localhost:3000");
+const appUrl = new URL(
+  process.env.APP_URL || process.env.RENDER_EXTERNAL_URL || "http://localhost:3000"
+);
 if (appUrl.protocol !== "http:" && appUrl.protocol !== "https:") {
   throw new Error("APP_URL must use HTTP or HTTPS.");
 }
