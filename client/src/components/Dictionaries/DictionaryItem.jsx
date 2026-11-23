@@ -5,6 +5,7 @@ import parseDate from "../../helpers/date";
 import truncate from "../../helpers/truncate";
 export default function DictionaryItem(props) {
   const { dict } = props;
+  const dictionaryPath = `/dictionary/${dict._id}`;
 
   return (
     <div className={import.meta.env.STATIC_DEMO ? "dict-item w-100" : "dict-item"}>
@@ -14,18 +15,24 @@ export default function DictionaryItem(props) {
             <div className="dict-item-head">
               <CardTitle>
                 <div className="dict-item-title">
-                  <Link
-                    to={`/dictionary/${dict._id}`}
-                    className="app-navigation-link"
-                  >
-                    <b className="">{dict.title}</b>
-                  </Link>
+                  {import.meta.env.STATIC_DEMO ? (
+                    <b className="dark-blue">{dict.title}</b>
+                  ) : (
+                    <Link to={dictionaryPath} className="app-navigation-link">
+                      <b>{dict.title}</b>
+                    </Link>
+                  )}
                 </div>
               </CardTitle>
             </div>
             <div className="dict-description">
               {truncate(dict.description, 150)}
             </div>
+            {import.meta.env.STATIC_DEMO && (
+              <Link to={dictionaryPath} className="btn btn-dark mb-3">
+                Open sample spomenar
+              </Link>
+            )}
           </div>
           <CardFooter className="dict-item-footer">
             {import.meta.env.STATIC_DEMO ? (
