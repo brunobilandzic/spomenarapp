@@ -50,8 +50,9 @@ function App() {
                     practice spomenars and answers stay in this browser.
                   </p>
                   <p>
-                    The full-stack version uses React, an Express API and
-                    MongoDB Atlas. It implements registration, login, email
+                    I built Spomenar as my final thesis project and earned a
+                    grade of 5/5. The full-stack version uses React, an Express
+                    API and MongoDB Atlas. It implements registration, login, email
                     verification and password reset.
                   </p>
                   <p className="small text-muted mb-0">
