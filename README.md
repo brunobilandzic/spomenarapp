@@ -39,6 +39,7 @@ Vite writes the static frontend to `client/build`. Run `npm start` to serve the 
 | --- | --- |
 | `MONGO_URI` | MongoDB connection string for database-backed routes |
 | `APP_URL` | Optional frontend origin for email links. Defaults to Render's public URL on Render and `http://localhost:3000` locally. |
+| `DEMO_MODE` | Set to `true` to disable registration and let guests try answering with browser-only drafts. The Render Blueprint enables it. Rebuild the frontend after changing it. |
 | `JWT_SECRET` | Signing and verifying authentication tokens |
 | `EMAIL_FROM` | Sender address on a verified Resend domain |
 | `RESEND_API_KEY` | Resend key with sending access for verification and password reset emails |

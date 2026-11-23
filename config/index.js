@@ -9,6 +9,7 @@ if (appUrl.protocol !== "http:" && appUrl.protocol !== "https:") {
 
 module.exports = {
   APP_URL: appUrl.origin,
+  DEMO_MODE: process.env.DEMO_MODE === "true",
   MONGO_URI: process.env.MONGO_URI,
   JWT_SECRET: process.env.JWT_SECRET,
   EMAIL_FROM: process.env.EMAIL_FROM,

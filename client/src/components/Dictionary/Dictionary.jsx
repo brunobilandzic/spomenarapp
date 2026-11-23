@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router";
 import axios from "axios";
 import AnsweringQuestionsWrap from "./Answering/QuestionsWrap";
+import GuestAnswers from "./Answering/GuestAnswers";
 import ReadingQuestionsWrap from "./Reading/QuestionsWrap";
 import { ButtonGroup, Button } from "reactstrap";
 import { connect } from "react-redux";
@@ -13,9 +14,11 @@ const ANSWERING = "ANSWERING";
 
 function Dictionary(props) {
   const [dictionary, setDictionary] = useState(null);
-  const [mode, setMode] = useState(ANSWERING);
+  const [selectedMode, setMode] = useState(null);
   const [control, setControl] = useState(false);
-  let { dictId } = useParams();
+  const { dictId } = useParams();
+  const guestDemo = import.meta.env.DEMO_MODE && !props.isAuthenticated;
+  const mode = selectedMode ?? (guestDemo ? READING : ANSWERING);
   useEffect(() => {
     let isMounted = true;
     axios
@@ -46,7 +49,7 @@ function Dictionary(props) {
           active={mode == ANSWERING}
           onClick={() => setMode(ANSWERING)}
         >
-          Answer
+          {guestDemo ? "Try answering" : "Answer"}
         </Button>
         <Button
           color="light"
@@ -57,13 +60,15 @@ function Dictionary(props) {
           Read
         </Button>
       </ButtonGroup>
-      {mode == ANSWERING ? (
+      {mode == READING ? (
+        <ReadingQuestionsWrap dictId={dictId} />
+      ) : guestDemo ? (
+        <GuestAnswers key={dictId} dictId={dictId} />
+      ) : (
         <AnsweringQuestionsWrap
           dictId={dictId}
           changeToRead={() => setMode(READING)}
         />
-      ) : (
-        <ReadingQuestionsWrap dictId={dictId} />
       )}
     </div>
   );

@@ -7,7 +7,6 @@ import {
   Collapse,
   Nav,
   Container,
-  NavLink,
 } from "reactstrap";
 import { Link } from "react-router-dom";
 import RegisterModal from "./Modals/RegisterModal";
@@ -38,9 +37,11 @@ function AppNavbar(props) {
   );
   const publicNavbar = (
     <Fragment>
-      <NavItem>
-        <RegisterModal />
-      </NavItem>
+      {!import.meta.env.DEMO_MODE && (
+        <NavItem>
+          <RegisterModal />
+        </NavItem>
+      )}
       <NavItem>
         <LoginModal />
       </NavItem>

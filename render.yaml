@@ -9,6 +9,8 @@ services:
     envVars:
       - key: SKIP_INSTALL_DEPS
         value: "true"
+      - key: DEMO_MODE
+        value: "true"
       - key: MONGO_URI
         sync: false
       - key: EMAIL_FROM

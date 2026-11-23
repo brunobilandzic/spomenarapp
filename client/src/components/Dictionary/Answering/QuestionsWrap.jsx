@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import Question from "./Question";
-import { Button, ButtonGroup, Form } from "reactstrap";
 import InformationModal from "../../Modals/InformationModal";
 import {
   addQuestions,
+  addAnswer,
   postAnswers,
   checkIfAnswered,
 } from "../../../actions/answerActions";
@@ -66,9 +66,15 @@ function QuestionsWrap(props) {
     if (questions === null) {
       return "...Loading";
     }
-    return questions.map((q, i) => (
-      <Question index={index} length={questions.length} {...q} key={q._id} />
-    ));
+    const question = questions.find((q) => q.order === index);
+    return question && (
+      <Question
+        {...question}
+        key={question._id}
+        length={questions.length}
+        onAnswerChange={props.addAnswer}
+      />
+    );
   }
 
   return (
@@ -133,6 +139,7 @@ QuestionsWrap.propTypes = {
   questions: propTypes.array.isRequired,
   isAnswered: propTypes.bool,
   addQuestions: propTypes.func.isRequired,
+  addAnswer: propTypes.func.isRequired,
   postAnswers: propTypes.func.isRequired,
   checkIfAnswered: propTypes.func.isRequired,
   isAuthenticated: propTypes.bool,
@@ -146,6 +153,7 @@ const mapStateToProps = (state, ownProps) => ({
 
 export default connect(mapStateToProps, {
   addQuestions,
+  addAnswer,
   postAnswers,
   checkIfAnswered,
 })(QuestionsWrap);

@@ -17,6 +17,7 @@ import { login } from "../../actions/authActions";
 import { returnErrors, clearErrors } from "../../actions/errorActions";
 
 function LoginModal(props) {
+  const title = import.meta.env.DEMO_MODE ? "Owner login" : "Login";
   const [info, setInfo] = useState({
     user: "",
     password: "",
@@ -52,10 +53,10 @@ function LoginModal(props) {
   return (
     <Fragment>
       <NavLink href="#" onClick={toggleModal}>
-        Login
+        {title}
       </NavLink>
       <Modal toggle={toggleModal} isOpen={modal}>
-        <ModalHeader toggle={toggleModal}>Login</ModalHeader>
+        <ModalHeader toggle={toggleModal}>{title}</ModalHeader>
         <ModalBody>
           <Form onSubmit={onSubmit}>
             <FormGroup>

@@ -10,7 +10,7 @@ const authUser = require("../../jwt");
 const auth = require("../../middleware/auth");
 const admin = require("../../middleware/admin");
 const { USER_NOT_FOUND } = require("../../config/errors");
-const { APP_URL } = require("../../config");
+const { APP_URL, DEMO_MODE } = require("../../config");
 const Dictionary = require("../../models/Dictionary");
 
 // @route GET /api/users
@@ -50,6 +50,9 @@ router.get("/u/:username", (req, res) => {
 // @desc Register new user
 // @access Public
 router.post("/", async (req, res) => {
+  if (DEMO_MODE) {
+    return res.status(403).json({ msg: "Registration is disabled in demo mode." });
+  }
   if (!req.is("application/json")) {
     return res.status(415).json({ msg: "Expected a JSON request." });
   }

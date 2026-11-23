@@ -5,10 +5,14 @@ import { defineConfig, loadEnv } from "vite";
 const backendDir = fileURLToPath(new URL("..", import.meta.url));
 
 export default defineConfig(({ mode }) => {
-  const { PORT = "5000" } = loadEnv(mode, backendDir, "PORT");
+  const { PORT = "5000", DEMO_MODE } = loadEnv(mode, backendDir, [
+    "PORT",
+    "DEMO_MODE",
+  ]);
 
   return {
     plugins: [react()],
+    define: { "import.meta.env.DEMO_MODE": JSON.stringify(DEMO_MODE === "true") },
     server: {
       port: 3000,
       strictPort: true,
