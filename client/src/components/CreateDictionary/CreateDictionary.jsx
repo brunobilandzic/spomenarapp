@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button, Input, Label } from "reactstrap";
 import QuestionModal from "./AddQuestion/QuestionModal";
 import InformationModal from "../Modals/InformationModal";
+import PreviewQuestion from "../Dictionary/Answering/Question";
 import { connect } from "react-redux";
 import propTypes from "prop-types";
 import { v4 as uuid } from "uuid";
@@ -9,18 +10,52 @@ import axios from "axios";
 import "../../style/dictionary/spacing.scss";
 import "../../style/dictionary/graphic.scss";
 
-function CreateDictionary(props) {
-  const [questions, setQuestions] = useState([]);
+const practiceDraftKey = "spomenar:demo-create";
+const emptyDraft = { title: "", description: "", questions: [] };
+
+function readPracticeDraft() {
+  try {
+    const draft = JSON.parse(window.localStorage.getItem(practiceDraftKey));
+    if (
+      typeof draft?.title === "string" &&
+      typeof draft.description === "string" &&
+      Array.isArray(draft.questions) &&
+      draft.questions.every((item) =>
+        typeof item?.id === "string" &&
+        typeof item.question === "string" &&
+        Array.isArray(item.choices)
+      )
+    ) {
+      return draft;
+    }
+  } catch {
+    // Start with an empty draft if browser storage is unavailable.
+  }
+  return emptyDraft;
+}
+
+export function CreateDictionary({ practice = false, token, user }) {
+  const [draft, setDraft] = useState(() => (practice ? readPracticeDraft() : emptyDraft));
+  const { title, description, questions } = draft;
+  const [preview, setPreview] = useState(false);
+  const [saveFailed, setSaveFailed] = useState(false);
   const [modal, setModal] = useState({
     success: false,
     fail: false,
   });
-  const [meta, setMeta] = useState({
-    title: "",
-    description: "",
-  });
   const [error, setError] = useState("");
   const [dictId, setDictId] = useState("");
+
+  useEffect(() => {
+    if (!practice) return;
+    try {
+      window.localStorage.setItem(practiceDraftKey, JSON.stringify(draft));
+      setSaveFailed(false);
+    } catch {
+      setSaveFailed(true);
+    }
+  }, [draft, practice]);
+
   const toggleSuccess = () => {
     setModal({
       ...modal,
@@ -34,52 +69,61 @@ function CreateDictionary(props) {
     });
   };
   const addQuestion = (question) => {
-    setQuestions((q) => [...q, { ...question }]);
+    const item = { ...question, id: uuid() };
+    setDraft((current) => ({ ...current, questions: [...current.questions, item] }));
     setError("");
   };
-  const deleteQuestion = (index) => {
-    setQuestions((q) => q.filter((_, __) => __ != index));
+  const deleteQuestion = (id) => {
+    setDraft((current) => ({
+      ...current,
+      questions: current.questions.filter((question) => question.id !== id),
+    }));
   };
   const clearDictionary = () => {
-    setMeta({
-      title: "",
-      description: "",
-    });
-    setQuestions([]);
+    setDraft(emptyDraft);
+    setError("");
   };
   const onChange = (e) => {
+    const { name, value } = e.target;
     setError("");
-    setMeta((m) => ({
-      ...m,
-      [e.target.name]: e.target.value,
+    setDraft((current) => ({ ...current, [name]: value }));
+  };
+  const updatePracticeAnswer = (questionId, value) => {
+    setDraft((current) => ({
+      ...current,
+      questions: current.questions.map((item) =>
+        item.id === questionId ? { ...item, answer: value } : item
+      ),
     }));
   };
 
   const submitDictionary = () => {
-    if (!props.user) return toggleFail();
-    if (
-      meta.title.length == 0 ||
-      meta.description.length == 0 ||
-      questions.length == 0
-    ) {
+    if (!practice && !user) return toggleFail();
+    if (!title || !description || questions.length === 0) {
       return setError("Please enter all fields.");
     }
-    if (meta.title.length > 100)
-      return setError("Title must contain less than 100 characters.");
+    if (title.length > 100) {
+      return setError("Title must contain at most 100 characters.");
+    }
+    if (practice) {
+      setError("");
+      setPreview(true);
+      return;
+    }
 
     const config = {
       headers: {
         "Content-Type": "application/json",
       },
     };
-    if (props.token) {
-      config.headers["x-auth-token"] = props.token;
+    if (token) {
+      config.headers["x-auth-token"] = token;
     }
     const body = {
-      author: props.user.id,
-      author_username: props.user.username,
-      title: meta.title,
-      description: meta.description,
+      author: user.id,
+      author_username: user.username,
+      title,
+      description,
     };
     axios
       .post("/api/dicts", body, config)
@@ -87,7 +131,9 @@ function CreateDictionary(props) {
         setDictId(res.data._id);
         const questionsData = {
           dictionary: res.data._id,
-          questions: [...questions.map((q, order) => ({ ...q, order }))],
+          questions: questions.map(({ question, type, choices }, order) => ({
+            question, type, choices, order,
+          })),
         };
         axios
           .post("/api/quests", questionsData, config)
@@ -107,7 +153,7 @@ function CreateDictionary(props) {
   };
   function renderQuestion(question, index) {
     return (
-      <div key={uuid()} className="question-list-item-wrap mb-2">
+      <div key={question.id} className="question-list-item-wrap mb-2">
         <div className="d-flex justify-content-between align-items-center question-highlight">
           <div className="value mr-2">
             {index + 1 + ") " + question.question}
@@ -116,21 +162,21 @@ function CreateDictionary(props) {
             <div className="type">
               <small className="type">{question.type}</small>
             </div>
-            <div
-              className="custom-btn-2 delete-question-btn"
-              onClick={() => {
-                deleteQuestion(index);
-              }}
+            <button
+              type="button"
+              className="custom-btn-2 delete-question-btn btn btn-link"
+              aria-label={`Delete question ${index + 1}`}
+              onClick={() => deleteQuestion(question.id)}
             >
-              <i className="fas fa-trash"></i>
-            </div>
+              <i className="fas fa-trash" aria-hidden="true"></i>
+            </button>
           </div>
         </div>
         <div>
           {question.choices.length != 0 && (
             <div className="create-choices-wrap">
               {question.choices.map((c) => (
-                <div key={uuid()}>
+                <div key={c.letter}>
                   {c.letter})&nbsp;<span>{c.choice}</span>
                 </div>
               ))}
@@ -140,8 +186,45 @@ function CreateDictionary(props) {
       </div>
     );
   }
+
+  const storageMessage = saveFailed ? (
+    <p role="alert">This browser could not save your practice spomenar.</p>
+  ) : (
+    <p>Your practice spomenar is saved only in this browser.</p>
+  );
+
+  if (practice && preview) {
+    return (
+      <section>
+        <h1>{title}</h1>
+        <p>{description}</p>
+        {storageMessage}
+        <Button type="button" onClick={() => setPreview(false)}>
+          Back to editing
+        </Button>
+        {questions.map(({ id, answer, ...question }, order) => (
+          <PreviewQuestion
+            {...question}
+            key={id}
+            _id={id}
+            order={order}
+            length={questions.length}
+            answer={typeof answer === "string" ? answer : ""}
+            onAnswerChange={updatePracticeAnswer}
+          />
+        ))}
+      </section>
+    );
+  }
+
   return (
     <div className="create-dictionary">
+      {practice && (
+        <>
+          <h1>Create a practice spomenar</h1>
+          {storageMessage}
+        </>
+      )}
       <InformationModal
         modal={modal.success}
         toggle={toggleSuccess}
@@ -159,21 +242,22 @@ function CreateDictionary(props) {
       />
       <div className="create-dictionary-meta">
         <div className="title-description">
-          <Label>Title</Label>
+          <Label for="dictionary-title">Title</Label>
           <Input
+            id="dictionary-title"
             type="text"
             name="title"
-            value={meta.title}
+            value={title}
             className="meta-input"
             onChange={onChange}
             placeholder="Dictionary title..."
             autoComplete="off"
           />
-          <Label>Description</Label>
+          <Label for="dictionary-description">Description</Label>
           <textarea
-            type="text"
+            id="dictionary-description"
             name="description"
-            value={meta.description}
+            value={description}
             className="form-control meta-input"
             onChange={onChange}
             placeholder="Dictionary description..."
@@ -195,16 +279,13 @@ function CreateDictionary(props) {
           <b>{error}</b>
         </p>
         <Button onClick={submitDictionary} color="success">
-          Finish Dictionary
+          {practice ? "Preview spomenar" : "Finish Dictionary"}
         </Button>
         <Button
           onClick={() => {
-            if (
-              window.confirm(
-                "Do you want to abort creation of this dictionary?"
-              )
-            )
-              window.location.pathname = "/";
+            if (!window.confirm("Do you want to discard this spomenar?")) return;
+            if (practice) clearDictionary();
+            else window.location.pathname = "/";
           }}
           color="danger"
         >
@@ -216,6 +297,8 @@ function CreateDictionary(props) {
 }
 
 CreateDictionary.propTypes = {
+  practice: propTypes.bool,
+  token: propTypes.string,
   user: propTypes.object,
 };
 

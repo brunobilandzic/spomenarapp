@@ -53,6 +53,11 @@ function AppNavbar(props) {
         <Container>
           <NavbarBrand href="/">Spomenar</NavbarBrand>
 
+          {import.meta.env.DEMO_MODE && !props.isAuthenticated && (
+            <Link className="btn btn-outline-light btn-sm ml-auto mr-2" to="/try-create">
+              Try creating
+            </Link>
+          )}
           <NavbarToggler onClick={toggle} />
 
           <Collapse isOpen={isOpen} navbar>

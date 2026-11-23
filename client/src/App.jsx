@@ -59,6 +59,11 @@ function App() {
             <ProtectedRoute path="/settings" component={Settings} />
             <ProtectedRoute path="/explore" component={ExploreUsers} />
             <ProtectedRoute path="/new" component={CreateDictionary} />
+            {import.meta.env.DEMO_MODE && (
+              <Route exact path="/try-create">
+                <CreateDictionary practice />
+              </Route>
+            )}
             <ProtectedRoute path="/delete" component={DeleteProfile} />
             <ProtectedRoute
               path="/user/dictionaries"
