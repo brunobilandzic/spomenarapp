@@ -34,7 +34,8 @@ function RegisterModal(props) {
   useEffect(() => {
     if (props.registerSuccess && props.user) {
       setModal(false);
-      window.location.href = "/goverify/" + props.user.id;
+      const result = props.user.verificationEmailSent === false ? "?email=failed" : "";
+      window.location.href = "/goverify/" + props.user.id + result;
     }
   }, [props.registerSuccess]);
   function toggleModal() {

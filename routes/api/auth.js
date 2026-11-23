@@ -7,6 +7,7 @@ const auth = require("../../middleware/auth");
 const sendPasswordResetLink = require("../../email/pass-reset");
 const router = express.Router();
 const admin = require("../../middleware/admin");
+const { APP_URL } = require("../../config");
 // @route POST /api/auth
 // @desc Authorization (Login)
 // @accsess Public
@@ -54,34 +55,30 @@ router.get("/user", auth, (req, res) => {
 // @route POST /api/auth/pwd
 // @desc Password reset request
 // @access Public
-router.post("/pwd", (req, res) => {
+router.post("/pwd", async (req, res) => {
   const { userInfo } = req.body;
-  User.findOne({
-    $or: [{ email: userInfo }, { username: userInfo }],
-  }).then((user) => {
+  try {
+    const user = await User.findOne({
+      $or: [{ email: userInfo }, { username: userInfo }],
+    });
     if (!user)
       return res.status(400).json({ msg: `User ${userInfo} not found.` });
 
-    bcrypt.genSalt(10, (err, salt) => {
-      if (err) throw err;
-      bcrypt.hash(user.password, salt, (err, hash) => {
-        if (err) throw err;
-        const link =
-          req.protocol +
-          "://" +
-          req.hostname +
-          ":3000/resetpassword/" +
-          user.username +
-          "/" +
-          base64url(hash);
-        sendPasswordResetLink(user, link);
-        return res.json({
-          username: user.username,
-          email: user.email,
-        });
-      });
+    const hash = await bcrypt.hash(user.password, 10);
+    const link = `${APP_URL}/resetpassword/${encodeURIComponent(user.username)}/${base64url(hash)}`;
+    try {
+      await sendPasswordResetLink(user, link);
+    } catch (error) {
+      console.error("Password reset email failed:", error.message);
+      return res.status(502).json({ msg: "Could not send the password reset email. Please try again." });
+    }
+    return res.json({
+      username: user.username,
+      email: user.email,
     });
-  });
+  } catch {
+    return res.status(500).json({ msg: "Could not request a password reset." });
+  }
 });
 
 // @route POST /api/auth/passwordceck

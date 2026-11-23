@@ -10,6 +10,7 @@ const authUser = require("../../jwt");
 const auth = require("../../middleware/auth");
 const admin = require("../../middleware/admin");
 const { USER_NOT_FOUND } = require("../../config/errors");
+const { APP_URL } = require("../../config");
 const Dictionary = require("../../models/Dictionary");
 
 // @route GET /api/users
@@ -65,7 +66,7 @@ router.post("/", async (req, res) => {
       password: hashedPassword,
       username,
     });
-    return hashAndSendVerificationLink(newUser, req, res);
+    return res.json(await sendAccountVerification(newUser));
   } catch (error) {
     if (error.code === 11000) {
       return res.status(400).json({ msg: "Credentials already in use." });
@@ -255,37 +256,37 @@ router.get("/email/:id", (req, res) => {
 // @desc Resend verification link
 // @access Public
 
-router.get("/resendverify/:id", (req, res) => {
-  User.findById(req.params.id)
-    .then((user) => {
-      if (!user) return;
-      else return hashAndSendVerificationLink(user, req, res);
-    })
-    .catch((err) => res.status(401).json({ msg: err.message }));
+router.get("/resendverify/:id", async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id);
+    if (!user) return res.status(404).json({ msg: "User does not exist." });
+    const result = await sendAccountVerification(user);
+    if (!result.verificationEmailSent) {
+      return res.status(502).json({ msg: "Could not send the verification email. Please try again." });
+    }
+    return res.json(result);
+  } catch {
+    return res.status(500).json({ msg: "Could not resend the verification email." });
+  }
 });
 
-function hashAndSendVerificationLink(user, req, res) {
-  bcrypt.genSalt(10, (err, salt) => {
-    if (err) throw err;
-    bcrypt.hash(String(user._id), salt, (err, hash) => {
-      if (err) throw err;
-      const link =
-        req.protocol +
-        "://" +
-        req.hostname +
-        ":3000/verify/" +
-        user.username +
-        "/" +
-        base64url(hash);
-      sendVerificationLink(user, link);
-      res.json({
-        username: user.username,
-        id: user._id,
-        verified: user.verified,
-        name: user.name,
-        email: user.email,
-      });
-    });
-  });
+async function sendAccountVerification(user) {
+  let verificationEmailSent = false;
+  try {
+    const hash = await bcrypt.hash(String(user._id), 10);
+    const link = `${APP_URL}/verify/${encodeURIComponent(user.username)}/${base64url(hash)}`;
+    await sendVerificationLink(user, link);
+    verificationEmailSent = true;
+  } catch (error) {
+    console.error("Verification email failed:", error.message);
+  }
+  return {
+    username: user.username,
+    id: user._id,
+    verified: user.verified,
+    name: user.name,
+    email: user.email,
+    verificationEmailSent,
+  };
 }
 module.exports = router;

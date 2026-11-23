@@ -2,14 +2,19 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { connect } from "react-redux";
 import propTypes from "prop-types";
-import { useParams } from "react-router";
+import { useLocation, useParams } from "react-router";
 import classNames from "classnames";
 
 function GoVerify(props) {
   const { userId } = useParams();
+  const { search } = useLocation();
   const [resent, setResent] = useState(false);
   const [email, setEmail] = useState(null);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState(() =>
+    new URLSearchParams(search).get("email") === "failed"
+      ? "Your account was created, but we couldn't send the verification email. Please try resending."
+      : null
+  );
   useEffect(() => {
     let isMounted = true;
     axios
@@ -24,25 +29,18 @@ function GoVerify(props) {
   }, [userId]);
 
   const handleClick = () => {
+    setError(null);
     axios
       .get("/api/users/resendverify/" + userId)
-      .then((res) => {
+      .then(() => {
         setResent(true);
       })
-      .catch((err) => setError(err.message));
+      .catch((err) => setError(err.response?.data?.msg || "Could not resend the verification email."));
   };
   return (
     <div>
-      <p>
-        We've sent you an email on <b>{email}</b>.<br></br>
-        In order to be able to log in into the app, please click on the link
-        we've sent in your inbox.
-        <br />
-        <br />
-        <i>
-          If you dont see the email in your inbox, please check spam folder.
-        </i>
-      </p>
+      <p>Verify your email address <b>{email}</b> to sign in. Check your inbox and spam folder for the verification link.</p>
+      {error && <p role="alert">{error}</p>}
       <hr></hr>
       <div>
         {!resent ? (
@@ -50,7 +48,7 @@ function GoVerify(props) {
             Resend verification link
           </div>
         ) : (
-          <div>Email sent, if you come across more problems please contact</div>
+          <div role="status">Verification email sent.</div>
         )}
       </div>
     </div>

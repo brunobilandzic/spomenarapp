@@ -16,7 +16,7 @@ Copy `.env.example` to `.env` in the repository root and fill in the settings fo
 npm run dev
 ```
 
-Open `http://localhost:3000`. Vite forwards `/api` requests to Express on `127.0.0.1:5000` by default. Set `PORT` in the root `.env` or the shell to change the Express port. The frontend uses port 3000 for the existing email verification and password reset links. To run either server separately, use `npm run server` or `npm run client`.
+Open `http://localhost:3000`. Vite forwards `/api` requests to Express on `127.0.0.1:5000` by default. Set `PORT` in the root `.env` or the shell to change the Express port. To run either server separately, use `npm run server` or `npm run client`.
 
 ## Frontend production build
 
@@ -31,7 +31,9 @@ Vite writes the static frontend to `client/build`. The application makes same-or
 | Variable | Used for |
 | --- | --- |
 | `MONGO_URI` | MongoDB connection string for database-backed routes |
+| `APP_URL` | Public frontend origin used in verification and password reset links. Defaults to `http://localhost:3000`. |
 | `JWT_SECRET` | Signing and verifying authentication tokens |
-| `EMAIL`, `EMAIL_PASS` | Gmail SMTP credentials for verification and password reset emails |
+| `EMAIL_FROM` | Sender address on a verified Resend domain |
+| `RESEND_API_KEY` | Resend key with sending access for verification and password reset emails |
 | `ADMIN_KEY` | Credential for routes guarded by the `admin-key` header |
 | `PORT` | Optional Express port, defaults to `5000` |
