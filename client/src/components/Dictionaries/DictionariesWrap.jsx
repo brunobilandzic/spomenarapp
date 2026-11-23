@@ -44,7 +44,10 @@ function DictionariesWrap(props) {
     ));
   }
 
-  return <div className="dicts-wrap">{renderDictionaries()}</div>;
+  const listClassName = import.meta.env.STATIC_DEMO
+    ? "dicts-wrap col-md-8 mx-auto px-0"
+    : "dicts-wrap";
+  return <div className={listClassName}>{renderDictionaries()}</div>;
 }
 
 DictionariesWrap.propTypes = {

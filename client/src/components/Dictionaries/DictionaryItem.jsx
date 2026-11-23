@@ -7,7 +7,7 @@ export default function DictionaryItem(props) {
   const { dict } = props;
 
   return (
-    <div className="dict-item">
+    <div className={import.meta.env.STATIC_DEMO ? "dict-item w-100" : "dict-item"}>
       <Card className="dict-item-card">
         <CardBody className="d-flex flex-column justify-content-between">
           <div>
